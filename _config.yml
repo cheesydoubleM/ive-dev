@@ -3,3 +3,10 @@ exclude:
   - README.md
   - DESIGN.md
   - .gitignore
+  - worker
+  - scripts
+  - wrangler.jsonc
+  - package.json
+  - package-lock.json
+  - node_modules
+  - waitlist-exports

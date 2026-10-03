@@ -15,10 +15,10 @@ clear outcome, not a collection of implementation details: one goal becomes
 visible parallel work and returns as one result a person can review.
 
 The footer is strictly factual: IVE, its relationship to AIFOREU, relevant
-links, its EU-based origin, and its Apache 2.0 license. Decorative system-status
+links, its EU-based origin, and the beta waitlist. Decorative system-status
 language and compressed technical metadata do not appear there.
 
-The header carries a compact “IVE / by AIFOREU” maker lockup. Header ink is explicitly bound to its own surface tokens so the logo and theme control stay readable over the dark opening. The 28px mark, 14px theme label, and 18px outlined “Get IVE” action provide clear hierarchy without a bright filled button; the action remains visible on mobile. The footer keeps
+The header carries a compact “IVE / by AIFOREU” maker lockup. Header ink is explicitly bound to its own surface tokens so the logo and theme control stay readable over the dark opening. The 28px mark, 14px theme label, and 18px outlined “Join the beta” action provide clear hierarchy without a bright filled button; the action remains visible on mobile. The footer keeps
 the product relationship “from AIFOREU,” with AIFOREU linked to
 `https://aiforgov.eu/`. “EU-backed” is not used because it can imply institutional
 EU funding or endorsement; no such claim is part of the verified product truth.
@@ -133,7 +133,7 @@ DARK
 Mission Control, the architecture security ledger, and the footer use the
 secondary ground. Human review remains the explicit opposite-ground moment.
 
-The high-intent hero CTA and the exit terminal's action use the execution accent:
+The high-intent hero CTA and the waitlist submit action use the execution accent:
 
 ```css
 .hero .btn-primary { background: var(--running); color: var(--on-accent); }
@@ -184,13 +184,14 @@ The homepage contains exactly these blocks, in order:
 5. Four user outcomes
 6. Merge: every session comes back as one review, drawn by scroll
 7. Human review and decision
-8. Open-source and local trust
+8. Beta invitation and local workflow
 9. Three concrete use cases in an interactive run chooser
-10. Exit: the call to action comes into focus. A wall of session tiles, the
-    headline and the local setup terminal sit on three depth planes; scroll
-    racks the focus through them until only the setup stands sharp, with the
-    reader's first goal; the chosen example goal carries forward as its
-    placeholder
+10. Beta waitlist: a static, immediately usable signup section. The established
+    Archivo / Source Sans 3 / IBM Plex Mono faces and cool gray / electric blue
+    tokens carry through. A two-column composition pairs the invitation with a
+    simple form; on mobile it stacks. Email is required, name is optional. A clear
+    consent checkbox links to the privacy notice. Submission has loading, retry,
+    and confirmation states; no fake success before the server saves the entry.
 
 Architecture, implementation totals, and the deeper security surface belong on
 the dedicated Architecture page or in the repository documentation.
@@ -255,7 +256,7 @@ Grammar: **Branch → Execute → Verify → Proof.**
   without motion.
 - Near the end, the run chooser lets the reader switch between three truthful
   use cases. Its four task rows advance only while the instrument is visible;
-  the selected example goal carries into the exit terminal as its placeholder.
+  the run remains an illustrated example.
 - Merge, between the parallel work and its review: one lane per session
   starts across the full width and curves into a single trunk. Scroll draws
   the lanes in a stagger, a dot rides each drawing edge, a small packet
@@ -263,19 +264,10 @@ Grammar: **Branch → Execute → Verify → Proof.**
   arrives. The trunk then draws down out of the section in the complete
   green, ending in one review. Faint ghost lines show the paths before they
   are drawn. Below 720px there are six lanes and id-only labels.
-- The page closes in focus. Three planes in depth: a tilted wall of session
-  tiles at the back, alive with a slow wave of queued → running → complete
-  that also answers a pointer moving over it; the headline “Start with one
-  goal.” in the middle; the local setup terminal in front. Scrolling racks
-  the focus like a camera, wall → headline → terminal: whatever is off the
-  focal plane softens, dims and drifts, and the piece ends with only the
-  setup sharp. The terminal types its two lines, then unfolds “Your first
-  goal” as a real text field with the GitHub action; enter plans the typed
-  goal into four task rows from a small word list, no model and no server,
-  and sends a wave through the wall behind. The wall redraws at most twelve
-  times a second while it is soft. Without JavaScript or with reduced motion
-  the exit is headline and terminal in plain flow, and the merge is fully
-  drawn.
+- The page closes with the static beta signup. It never waits for an animation
+  or scroll transition before revealing the form. Header and hero CTAs link
+  directly to `#waitlist`. Respect reduced motion and support native HTML POST
+  submission when JavaScript is disabled.
 - Ambient changes are sparse and product-relevant.
 - `prefers-reduced-motion` removes ambient and scroll animation, expands the run
   to its final state, and leaves the chooser in its completed review state.
@@ -303,7 +295,7 @@ Grammar: **Branch → Execute → Verify → Proof.**
 
 ## Honesty constraints
 
-- Alpha status and Apache-2.0 are stated plainly.
+- Access is by beta invitation. Do not promise open-source availability, a public repository, a license, or a direct installation.
 - If product telemetry is discussed, explain it in plain prose next to the
   relevant technical documentation rather than compressing it into metadata.
 - Supported CLIs: Claude Code and Gemini CLI only.
@@ -312,7 +304,7 @@ Grammar: **Branch → Execute → Verify → Proof.**
   types, 20 RALPH iterations maximum, 8,000+ skills, 6 board columns, 9 package
   scan steps, 3 access modes, and 4 memory types.
 - When numeric product totals are shown, they sit beside the visible source
-  line: “Alpha snapshot · counted in github.com/vibe2vibe/ive”.
+  line: “Development snapshot · capabilities may change during the beta.”.
 - No customer claims, social proof, release dates, version numbers, OS matrix,
   unverified metrics, or unsupported integrations.
 

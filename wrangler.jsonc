@@ -1,0 +1,34 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ive-beta-waitlist",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-10-03",
+  "workers_dev": true,
+  "preview_urls": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ive-beta-waitlist",
+      "database_id": "c96cd6f3-ef4e-455a-b1c7-0f29ec64eef3"
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "SIGNUP_LIMITER",
+      "namespace_id": "2026100301",
+      "simple": {
+        "limit": 5,
+        "period": 60
+      }
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "20 3 * * *"
+    ]
+  },
+  "observability": {
+    "enabled": false
+  },
+  "account_id": "09e664eee5ea251d91f207aba07c29bf"
+}
