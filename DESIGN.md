@@ -297,7 +297,7 @@ Grammar: **Branch → Execute → Verify → Proof.**
 
 The owner approved a publicly shareable macOS installer on 2026-10-11. The
 dedicated `/download/` page is an exception to the older invitation-only,
-no-version and CLI lists below: it uses verified IVE 1.0.1 release facts
+no-version and CLI lists below: it uses verified IVE 1.0.2 release facts
 (Apple Silicon, macOS 13.5+, Claude Code/Codex, signed/notarized app).
 The homepage keeps its waitlist flow. Do not infer an open-source app release.
 

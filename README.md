@@ -46,9 +46,9 @@ Serve the folder, open `assets/og.html` in a browser at exactly 1200×630, and c
 
 `https://ive.dev/download/` is the stable address to send to testers. It is accessible without an account and marked `noindex`; anyone with the link can download, and the GitHub release itself is public. This is not an invitation gate.
 
-The current installer is IVE 1.0.1 for Apple Silicon, macOS 13.5+. Its app is Developer ID signed and Apple-notarized. It includes interactive onboarding; AI sessions require separately installed Claude Code or Codex and provider authentication. Windows, Linux and Intel installers are not offered here.
+The current installer is IVE 1.0.2 for Apple Silicon, macOS 13.5+. Its app is Developer ID signed and Apple-notarized. It includes interactive onboarding; AI sessions require separately installed Claude Code or Codex and provider authentication. Windows, Linux and Intel installers are not offered here.
 
-The binary and its checksum are GitHub Release assets on this public website repository, tagged `macos-v1.0.1-beta`. The private app repository is separate. GitHub's automatic source archives contain this website only. App installation packages are never committed to this repository.
+The binary and its checksum are GitHub Release assets on this public website repository, tagged `macos-v1.0.2-beta`. The private app repository is separate. GitHub's automatic source archives contain this website only. App installation packages are never committed to this repository.
 
 For a new version: publish its notarized DMG and checksum as a new prerelease, verify an unauthenticated download against the local SHA-256, then update the version, file size and release links in `download/index.html`. Publish the page only after the asset works. Keep `/download/` stable. The current app does not automatically install updates.
 
