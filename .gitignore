@@ -6,3 +6,10 @@ node_modules/
 .env*
 .dev.vars*
 waitlist-exports/
+
+# Local installers and app bundles must never be committed.
+*.dmg
+*.pkg
+*.ipa
+*.app/
+IVE-*.zip
