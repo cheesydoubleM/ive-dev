@@ -295,6 +295,12 @@ Grammar: **Branch → Execute → Verify → Proof.**
 
 ## Honesty constraints
 
+The owner approved a publicly shareable macOS installer on 2026-10-11. The
+dedicated `/download/` page is an exception to the older invitation-only,
+no-version and CLI lists below: it uses verified IVE 1.0.1 release facts
+(Apple Silicon, macOS 13.5+, Claude Code/Codex, signed/notarized app).
+The homepage keeps its waitlist flow. Do not infer an open-source app release.
+
 - Access is by beta invitation. Do not promise open-source availability, a public repository, a license, or a direct installation.
 - If product telemetry is discussed, explain it in plain prose next to the
   relevant technical documentation rather than compressing it into metadata.

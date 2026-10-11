@@ -34,12 +34,23 @@ Serve the folder, open `assets/og.html` in a browser at exactly 1200×630, and c
 
 ## Product truth
 
-- IVE is presented as a beta with access by invitation. The website must not promise a public repository, an open-source release, a license, or a direct download.
-- The primary action is joining the beta waitlist. Email is required; name is optional. No release date or immediate-access promise.
+- The homepage presents IVE as a beta with access by invitation. It must not promise a public app repository, an open-source release, a license, or a direct download. The separately shared download page is the explicit exception below.
+- The primary homepage action is joining the beta waitlist. Email is required; name is optional. No release date or immediate-access promise.
+- The separately shared `/download/` page offers the owner's explicitly approved public macOS beta installer. Its verified release facts take precedence over the older invitation-only wording for this page only. The homepage keeps the waitlist flow.
 - Supported integrations are Claude Code and Gemini CLI. Supported models are Haiku, Sonnet, Opus, Gemini Pro, and Flash.
 - Additional CLIs or models may appear only as explicitly labeled roadmap items, never as current support.
 - Use only documented totals: 140+ API routes, 40+ shortcuts, 35+ MCP tools, 30+ event types, 20 RALPH iterations maximum, 8,000+ skills, a 6-column board, a 9-step package scan, 3 access modes, and 4 memory types.
 - Do not add social proof, customer claims, star counts, integrations, models, metrics, or capabilities that are absent from the product-truth source.
+
+## Shared beta download
+
+`https://ive.dev/download/` is the stable address to send to testers. It is accessible without an account and marked `noindex`; anyone with the link can download, and the GitHub release itself is public. This is not an invitation gate.
+
+The current installer is IVE 1.0.1 for Apple Silicon, macOS 13.5+. Its app is Developer ID signed and Apple-notarized. It includes interactive onboarding; AI sessions require separately installed Claude Code or Codex and provider authentication. Windows, Linux and Intel installers are not offered here.
+
+The binary and its checksum are GitHub Release assets on this public website repository, tagged `macos-v1.0.1-beta`. The private app repository is separate. GitHub's automatic source archives contain this website only. App installation packages are never committed to this repository.
+
+For a new version: publish its notarized DMG and checksum as a new prerelease, verify an unauthenticated download against the local SHA-256, then update the version, file size and release links in `download/index.html`. Publish the page only after the asset works. Keep `/download/` stable. The current app does not automatically install updates.
 
 ## Beta waitlist
 

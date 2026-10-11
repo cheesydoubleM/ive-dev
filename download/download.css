@@ -1,0 +1,79 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f5f6;
+  --ink: #15171a;
+  --dim: #4a4f55;
+  --line: #dde0e3;
+  --blue: #1647ff;
+  --link: #0e36c7;
+  --panel: #15171a;
+  --panel-ink: #f4f5f6;
+  --panel-dim: #b5bbc2;
+  --display: 'Archivo', system-ui, sans-serif;
+  --body: 'Source Sans 3', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', monospace;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 18px/1.5 var(--body); }
+a { color: inherit; text-underline-offset: .2em; }
+a:focus-visible { outline: 3px solid var(--blue); outline-offset: 5px; }
+.skip { position: absolute; left: 20px; top: -90px; padding: 12px; background: var(--bg); z-index: 10; }
+.skip:focus { top: 12px; }
+.header, main, footer { width: min(1120px, calc(100% - 80px)); margin-inline: auto; }
+.header { display: flex; align-items: center; gap: 16px; padding-block: 28px; border-bottom: 1px solid var(--line); }
+.brand { font: 900 34px/1 var(--display); letter-spacing: -.06em; text-decoration: none; }
+.brand span, .period { color: var(--blue); }
+.maker { font-size: 15px; color: var(--dim); text-decoration: none; }
+.beta { margin-left: auto; font: 12px var(--mono); color: var(--dim); }
+.download-hero { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(36px, 6vw, 88px); align-items: center; padding-block: 72px; }
+.eyebrow { margin: 0 0 24px; font: 11px/1.5 var(--mono); letter-spacing: .08em; color: var(--dim); }
+h1 { margin: 0; font: 750 clamp(48px, 5.5vw, 76px)/1.02 var(--display); letter-spacing: -.055em; }
+.lead { margin: 28px 0 0; color: var(--dim); max-width: 440px; font-size: 20px; line-height: 1.55; }
+.installer { background: var(--panel); color: var(--panel-ink); border-radius: 12px; padding: 32px; }
+.installer-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 40px; }
+.installer-mark { font: 900 44px/1 var(--display); letter-spacing: -.06em; }
+.installer-mark span { color: #5b8cff; }
+.version { font: 12px/1.5 var(--mono); color: var(--panel-dim); }
+.installer h2 { margin: 0 0 12px; font: 650 23px/1.25 var(--display); letter-spacing: -.03em; }
+.installer p { margin: 0; color: var(--panel-dim); font-size: 16px; }
+.nowrap { white-space: nowrap; }
+.download-button { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 58px; margin-top: 28px; padding: 12px 20px; border-radius: 6px; background: var(--blue); color: #fff; font-weight: 650; text-decoration: none; }
+.download-button:hover { background: #0e36c7; }
+.download-button span { font-size: 24px; line-height: 1; }
+.download-button:focus-visible { outline-color: #fff; }
+.installer .download-meta { margin-top: 12px; font: 11px/1.6 var(--mono); }
+.installer .trust { margin-top: 24px; padding-top: 16px; border-top: 1px solid #343a42; font-size: 14px; }
+.getting-started { padding-block: 32px; border-block: 1px solid var(--line); }
+.getting-started h2 { margin: 0 0 28px; font: 650 24px/1.25 var(--display); letter-spacing: -.025em; }
+.steps { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; list-style: none; }
+.steps li { display: flex; gap: 14px; }
+.step-number { font: 13px/1.6 var(--mono); width: 24px; height: 24px; flex-shrink: 0; color: var(--dim); border-bottom: 1px solid var(--line); }
+.steps h3 { margin: 0 0 6px; font-size: 18px; font-weight: 650; line-height: 1.4; }
+.steps p { margin: 0; color: var(--dim); font-size: 16px; }
+.requirements { max-width: 850px; padding-top: 20px; font-size: 16px; color: var(--dim); }
+.requirements a { color: var(--link); }
+.requirements strong { font-weight: 650; color: var(--ink); }
+.help-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin: 28px 0 48px; font-size: 15px; }
+.help-row a:first-child { color: var(--link); }
+footer { padding-block: 24px; border-top: 1px solid var(--line); display: flex; justify-content: space-between; gap: 24px; color: var(--dim); font-size: 14px; }
+footer p { margin: 0; font-family: var(--display); font-weight: 800; }
+footer p span { margin-left: 10px; font-family: var(--body); font-weight: 400; }
+footer nav { display: flex; gap: 20px; }
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: dark; --bg: #101012; --ink: #ededE9; --dim: #a3a39e; --line: #34343b; --link: #8aa5ff; --panel: #1e2125; }
+}
+@media (max-width: 760px) {
+  .header, main, footer { width: calc(100% - 40px); }
+  .header { padding-block: 22px; gap: 12px; }
+  .brand { font-size: 30px; }
+  .maker, .beta { font-size: 11px; }
+  .download-hero { grid-template-columns: 1fr; gap: 32px; padding-block: 40px; }
+  h1 { font-size: clamp(44px, 10vw, 64px); }
+  .eyebrow { margin-bottom: 18px; }
+  .lead { margin-top: 22px; font-size: 18px; }
+  .installer { padding: 24px; }
+  .installer-heading { margin-bottom: 28px; }
+  .steps { grid-template-columns: 1fr; gap: 22px; }
+  .download-button { font-size: 17px; padding-inline: 16px; }
+  footer { flex-wrap: wrap; }
+}
