@@ -79,11 +79,8 @@
   var STEPS = 7;
   var currentStep = 0;
   var storyScroll = null;
-  var rbWord = document.querySelector('[data-ralph-word]');
-  var rbIter = document.querySelector('[data-ralph-i]');
-  var storyRalphTimer = null;
-  var storyRalphState = 0;
-  var STORY_WORDS = ['work', 'check', 'fix'];
+  var storySecs = document.querySelectorAll('[data-story-secs]');
+  var storyClockTimer = null;
 
   var setStep = function (step) {
     if (step === currentStep) return;
@@ -99,21 +96,22 @@
     captions.forEach(function (c) {
       c.classList.toggle('on', c.getAttribute('data-caption') === String(step));
     });
-    if (step === 5) startStoryRalph(); else stopStoryRalph();
+    if (step >= 4 && step < 7) startStoryClock(); else stopStoryClock();
+    if (step < 4) resetStoryClock();
   };
 
-  /* story RALPH badge: cycle execute → verify → fix while step 5 */
-  function startStoryRalph() {
-    if (storyRalphTimer || !rbWord || reduceMotion) return;
-    storyRalphState = 0;
-    storyRalphTimer = setInterval(function () {
-      storyRalphState++;
-      rbWord.textContent = STORY_WORDS[storyRalphState % 3];
-      if (rbIter) rbIter.textContent = String(Math.min(2, 1 + Math.floor(storyRalphState / 3)));
-    }, 700);
+  /* story board: the "Assistant is responding… Ns" counters tick while the sessions work (steps 4–6) */
+  function startStoryClock() {
+    if (storyClockTimer || !storySecs.length || reduceMotion) return;
+    storyClockTimer = setInterval(function () {
+      storySecs.forEach(function (el) { el.textContent = String((parseInt(el.textContent, 10) || 0) + 1); });
+    }, 1000);
   }
-  function stopStoryRalph() {
-    if (storyRalphTimer) { clearInterval(storyRalphTimer); storyRalphTimer = null; }
+  function stopStoryClock() {
+    if (storyClockTimer) { clearInterval(storyClockTimer); storyClockTimer = null; }
+  }
+  function resetStoryClock() {
+    storySecs.forEach(function (el) { el.textContent = el.getAttribute('data-story-secs'); });
   }
 
   var clearStorySteps = function () {
@@ -133,16 +131,14 @@
     if (story) story.classList.remove('story-scroll');
     stage.classList.add('story-static');
     clearStorySteps();
-    stopStoryRalph();
-    if (rbWord) rbWord.textContent = 'passed';
-    if (rbIter) rbIter.textContent = '2';
+    stopStoryClock();
+    resetStoryClock();
   };
 
   if (story && stage && !reduceMotion && window.matchMedia('(min-width: 661px)').matches) {
     story.classList.add('story-scroll');
     stage.classList.remove('story-static');
-    if (rbWord) rbWord.textContent = STORY_WORDS[0];
-    if (rbIter) rbIter.textContent = '1';
+    resetStoryClock();
     storyScroll = function () {
       var rect = story.getBoundingClientRect();
       var total = story.offsetHeight - window.innerHeight;
@@ -183,124 +179,244 @@
   function stopAmbientIntervals() {
     ambientStops.forEach(function (stop) { stop(); });
     ambientStops = [];
-    stopStoryRalph();
+    stopStoryClock();
   }
 
-  /* ── hero ambient: terminals advance, commander cycles ── */
+  /* ── hero ambient: step lines advance, the first tile finishes ── */
   var heroStage = document.querySelector('.hero-stage');
   var termA = document.querySelector('[data-term="a"]');
   var termB = document.querySelector('[data-term="b"]');
-  var cmdStatus = document.querySelector('[data-cmd-status]');
-  var glanceSteps = document.querySelectorAll('[data-glance-step]');
-  var glanceStatus = document.querySelector('[data-glance-status]');
-  var GLANCE_LABELS = ['Goal received', '4 tasks running', 'Tests running', 'Ready to review'];
+  var heroTileA = document.querySelector('[data-hero-tile="a"]');
+  var heroSideRowA = document.querySelector('[data-side-row="a"]');
+  var agentsRunning = document.querySelector('[data-agents-running]');
 
+  /* Step lines as the app shows them: a spinner while a step runs, a check once it is done. */
   var A_LINES = [
-    ['<span class="glyph" aria-hidden="true">●</span><span class="sr-only">running: </span> working on sign-in backend', 'updating session handling', '3 files changed'],
-    ['<span class="glyph" aria-hidden="true">●</span> running sign-in checks', '<span class="glyph" aria-hidden="true">✓</span><span class="sr-only">complete: </span> 31 passed · 3 skipped', 'strengthening token rotation'],
-    ['<span class="glyph" aria-hidden="true">●</span><span class="sr-only">running: </span> updating sign-in session', 'separate backend workspace', '4 files changed']
+    [['spin', 'Add session rotation to auth.js']],
+    [['done', 'Add session rotation to auth.js'], ['spin', 'Invalidate old sessions on sign-out']],
+    [['done', 'Add session rotation to auth.js'], ['done', 'Invalidate old sessions on sign-out'], ['spin', 'Run the auth tests']]
   ];
   var B_LINES = [
-    ['<span class="glyph" aria-hidden="true">●</span><span class="sr-only">running: </span> updating sign-in screen', 'keeping the session active', ''],
-    ['<span class="glyph" aria-hidden="true">●</span><span class="sr-only">running: </span> connecting the new flow', 'handling session expiry', ''],
-    ['<span class="glyph" aria-hidden="true">✓</span><span class="sr-only">complete: </span> interface checks passed', '<span class="glyph" aria-hidden="true">●</span><span class="sr-only">running: </span> finishing redirect flow', '']
+    [['spin', 'Keep the session after a refresh']],
+    [['done', 'Keep the session after a refresh'], ['spin', 'Add the error states to SignIn.jsx']],
+    [['done', 'Keep the session after a refresh'], ['done', 'Add the error states to SignIn.jsx'], ['spin', 'Check the redirect after expiry']]
   ];
-  var CMD_STATES = [
-    ['◐', 'planning', 'st-thinking'],
-    ['●', 'dispatching', 'st-running'],
-    ['●', 'monitoring', 'st-running']
-  ];
+  var A_PERIOD = 7; /* three step states, then the tile sits at Done for a while */
   var heroTick = 0;
-  var setGlance = function (index) {
-    glanceSteps.forEach(function (step, i) {
-      step.classList.toggle('is-active', i === index);
-      step.classList.toggle('is-past', i < index);
-    });
-    if (glanceStatus) glanceStatus.textContent = GLANCE_LABELS[index];
-  };
+  var heroADone = false;
   var renderTermLines = function (term, lines) {
     if (!term) return;
-    var kids = term.children;
-    for (var i = 0; i < kids.length && i < lines.length; i++) {
-      if (lines[i]) {
-        kids[i].innerHTML = lines[i].indexOf('<') === 0 ? lines[i]
-          : lines[i];
-        kids[i].className = lines[i].indexOf('✓') >= 0 ? 't-done'
-          : lines[i].indexOf('●') >= 0 ? 't-run'
-          : lines[i].indexOf('$') >= 0 && lines[i].indexOf('ps1') >= 0 ? ''
-          : 't-dim';
-        if (lines[i].indexOf('ps1') >= 0) kids[i].className = '';
-      }
+    var html = '';
+    for (var i = 0; i < lines.length; i++) {
+      var done = lines[i][0] === 'done';
+      html += '<span class="au-step"><span class="' + (done ? 'au-check' : 'au-spin') + '"></span>'
+        + '<span class="sr-only">' + (done ? 'done: ' : 'in progress: ') + '</span>' + lines[i][1] + '</span>';
     }
+    term.innerHTML = html;
+  };
+  /* The first tile finishes the way a session does in the app: pill, status line,
+     chat body, composer and the sidebar row all switch to Done. */
+  var setTileDone = function (done) {
+    if (!heroTileA) return;
+    var pill = heroTileA.querySelector('[data-tile-pill]');
+    var status = heroTileA.querySelector('[data-tile-status]');
+    var state = heroTileA.querySelector('[data-tile-state]');
+    var preview = heroTileA.querySelector('[data-tile-preview]');
+    var text = heroTileA.querySelector('[data-composer-text]');
+    var secs = heroTileA.querySelector('[data-secs]');
+    if (pill) { pill.textContent = done ? 'Done' : 'Running'; pill.className = 'au-pill ' + (done ? 'is-done' : 'is-running'); }
+    if (status) status.classList.toggle('is-done', done);
+    if (state) state.textContent = done ? 'Reply ready' : 'Working on your request';
+    if (preview) preview.textContent = preview.getAttribute(done ? 'data-preview-done' : 'data-preview-run');
+    if (text) text.textContent = text.getAttribute(done ? 'data-text-done' : 'data-text-run');
+    if (secs && !done) secs.textContent = '2';
+    heroTileA.querySelectorAll('[data-tile-running]').forEach(function (el) { el.hidden = done; });
+    heroTileA.querySelectorAll('[data-tile-done]').forEach(function (el) { el.hidden = !done; });
+    if (heroSideRowA) {
+      var dot = heroSideRowA.querySelector('[data-side-dot]');
+      var meta = heroSideRowA.querySelector('[data-side-meta]');
+      if (dot) dot.className = 'au-dot ' + (done ? 'is-done' : 'is-running');
+      if (meta) meta.textContent = done ? 'Done' : 'Running';
+    }
+    if (agentsRunning) agentsRunning.textContent = done ? '1' : '2';
+    heroADone = done;
   };
   ambient(heroStage, function () {
     heroTick++;
-    setGlance(heroTick % glanceSteps.length);
-    renderTermLines(termA, A_LINES[heroTick % A_LINES.length]);
-    if (heroTick % 2 === 0) renderTermLines(termB, B_LINES[(heroTick / 2) % B_LINES.length]);
-    if (cmdStatus) {
-      var st = CMD_STATES[heroTick % CMD_STATES.length];
-      cmdStatus.innerHTML = '<span class="glyph" aria-hidden="true">' + st[0] + '</span> ' + st[1];
-      cmdStatus.className = 'status ' + st[2];
+    var a = heroTick % A_PERIOD;
+    if (a < A_LINES.length) {
+      if (heroADone) setTileDone(false);
+      renderTermLines(termA, A_LINES[a]);
+    } else if (!heroADone) {
+      setTileDone(true);
     }
+    if (heroTick % 2 === 0) renderTermLines(termB, B_LINES[(heroTick / 2) % B_LINES.length]);
   }, 3400);
-
-  /* Subtle pointer response keeps Mission Control feeling like an instrument. */
-  if (heroStage && !reduceMotion && window.matchMedia('(pointer: fine)').matches) {
-    heroStage.addEventListener('pointermove', function (event) {
-      var rect = heroStage.getBoundingClientRect();
-      var x = Math.min(1, Math.max(0, (event.clientX - rect.left) / rect.width));
-      var y = Math.min(1, Math.max(0, (event.clientY - rect.top) / rect.height));
-      heroStage.style.setProperty('--tilt-x', ((0.5 - y) * 1.8).toFixed(2) + 'deg');
-      heroStage.style.setProperty('--tilt-y', ((x - 0.5) * 2.2).toFixed(2) + 'deg');
-      heroStage.style.setProperty('--glint-x', (x * 100).toFixed(1) + '%');
-      heroStage.style.setProperty('--glint-y', (y * 100).toFixed(1) + '%');
+  /* "Assistant is responding… 12s" counts up like the app's timer. */
+  ambient(heroStage, function () {
+    heroStage.querySelectorAll('[data-secs]').forEach(function (c) {
+      if (c.closest('[hidden]')) return;
+      c.textContent = String((parseInt(c.textContent, 10) || 0) + 1);
     });
-    heroStage.addEventListener('pointerleave', function () {
-      heroStage.style.setProperty('--tilt-x', '0deg');
-      heroStage.style.setProperty('--tilt-y', '0deg');
-      heroStage.style.setProperty('--glint-x', '72%');
-      heroStage.style.setProperty('--glint-y', '18%');
-    });
-  }
+  }, 1000);
 
-  /* ── mission control ambient: statuses tick realistically ── */
-  var mc = document.querySelector('.mc');
+  /* ── what you bring: the terminal drawer replays npm test, the model menu picks Opus ── */
+  var roTermWin = document.querySelector('[data-ro-terminal]');
+  var roTerm = roTermWin ? roTermWin.querySelector('[data-ro-term]') : null;
+  var roStep = roTermWin ? roTermWin.querySelector('[data-ro-step]') : null;
+  /* npm test as vitest prints it, in the bursts a real run shows */
+  var RO_BURSTS = [
+    ['<span class="au-prompt">❯</span> npm test'],
+    ['', '<span class="au-dim">&gt; orbit@0.4.2 test</span>', '<span class="au-dim">&gt; vitest run</span>', ''],
+    ['<span class="au-dim"> RUN  v2.1.8 /Projects/orbit</span>', ''],
+    [' <span class="au-ok">✓</span> test/auth.test.js <span class="au-dim">(6 tests) 212ms</span>'],
+    [' <span class="au-ok">✓</span> test/session.test.js <span class="au-dim">(8 tests) 341ms</span>'],
+    ['', ' <span class="au-dim">Test Files</span>  <span class="au-ok">2 passed</span> (2)', '      <span class="au-dim">Tests</span>  <span class="au-ok">14 passed</span> (14)', '   <span class="au-dim">Duration</span>  1.92s', '']
+  ];
+  var RO_PROMPT = '<span class="au-prompt">❯</span> <span class="au-caret"></span>';
+  var RO_CYCLE = RO_BURSTS.length + 2 + 5; /* empty prompt, the bursts, the prompt back, then a hold */
+  var roTick = -1;
+  var setRoStep = function (done) {
+    if (!roStep) return;
+    roStep.innerHTML = '<span class="' + (done ? 'au-check' : 'au-spin') + '"></span><span class="sr-only">'
+      + (done ? 'done: ' : 'in progress: ') + '</span>Run the auth tests';
+  };
+  ambient(roTermWin, function () {
+    roTick = (roTick + 1) % RO_CYCLE;
+    var n = Math.min(roTick, RO_BURSTS.length);
+    var finished = roTick > RO_BURSTS.length;
+    var lines = [];
+    for (var i = 0; i < n; i++) lines = lines.concat(RO_BURSTS[i]);
+    if (finished) lines.push(RO_PROMPT);
+    if (roTerm) roTerm.innerHTML = roTick === 0 ? RO_PROMPT : lines.join('\n');
+    setRoStep(finished);
+    var roSecs = roTermWin.querySelector('[data-ro-secs]');
+    if (roSecs && roTick === 0) roSecs.textContent = '2';
+  }, 800);
+  ambient(roTermWin, function () {
+    var c = roTermWin.querySelector('[data-ro-secs]');
+    if (c) c.textContent = String((parseInt(c.textContent, 10) || 0) + 1);
+  }, 1000);
+
+  var roModels = document.querySelector('[data-ro-models]');
+  /* the menu as the app shows it: Sonnet is set, Opus gets hovered, then picked */
+  var RO_MENU = [['sonnet', ''], ['sonnet', ''], ['sonnet', 'opus'], ['opus', 'opus'], ['opus', 'opus'], ['opus', ''], ['opus', ''], ['opus', '']];
+  var roMenuTick = -1;
+  ambient(roModels, function () {
+    roMenuTick = (roMenuTick + 1) % RO_MENU.length;
+    var selected = RO_MENU[roMenuTick][0];
+    var hovered = RO_MENU[roMenuTick][1];
+    var roModelId = roModels.querySelector('[data-ro-model]');
+    if (roModelId) roModelId.textContent = selected;
+    roModels.querySelectorAll('[data-ro-item]').forEach(function (item) {
+      var m = item.getAttribute('data-ro-item');
+      item.classList.toggle('is-selected', m === selected);
+      item.classList.toggle('is-hover', m === hovered);
+    });
+  }, 1100);
+
+  /* ── pillars · overview: the board's statuses tick like the app's ── */
+  var mc = document.querySelector('[data-mc]');
   var MC_FLOW = [
-    { sel: 's-07', seq: [['○', 'queued', 'st-queued'], ['◐', 'thinking', 'st-thinking'], ['●', 'running', 'st-running']] },
-    { sel: 's-04', seq: [['◐', 'thinking', 'st-thinking'], ['●', 'running', 'st-running'], ['✓', 'complete', 'st-done']] },
-    { sel: 's-06', seq: [['◇', 'waiting', 'st-waiting'], ['●', 'running', 'st-running']] }
+    { tile: 'b', seq: [
+      { kind: 'running', pill: 'Running', state: 'Working on your request', meta: 'Running', preview: 'Keeping the user signed in after a refresh; the error states come next.' },
+      { kind: 'running', pill: 'Running', state: 'Working on your request', meta: 'Running', preview: 'Adding the error states for a wrong password and an expired session.' },
+      { kind: 'done', pill: 'Done', state: 'Reply ready', meta: 'Done', preview: 'SignIn.jsx keeps the session after a refresh and shows both error states. npm test passes (14 tests).' }
+    ] },
+    { tile: 'c', seq: [
+      { kind: 'waiting', pill: 'Waiting', state: 'Your answer is needed', meta: 'Needs your reply', preview: 'I’ll run the suite now. It needs your permission for npm test.' },
+      { kind: 'running', pill: 'Running', state: 'Working on your request', meta: 'Running', preview: 'Running the sign-in checks.' },
+      { kind: 'done', pill: 'Done', state: 'Reply ready', meta: 'Done', preview: 'npm test passes (14 tests). Sign-in works for a fresh sign-in and after a refresh.' }
+    ] }
   ];
   var mcTick = 0;
-  var mcTiles = {};
-  document.querySelectorAll('.mc-tile').forEach(function (t) {
-    var sid = t.querySelector('.sid');
-    if (sid) mcTiles[sid.textContent.trim()] = t.querySelector('.status');
-  });
+  var mcKinds = { a: 'running', b: 'running', c: 'waiting', d: 'done' };
+  var mcApply = function (id, s, idx) {
+    var tile = mc.querySelector('[data-mc-tile="' + id + '"]');
+    var row = mc.querySelector('[data-mc-row="' + id + '"]');
+    if (!tile) return;
+    var pill = tile.querySelector('[data-mc-pill]');
+    var status = tile.querySelector('[data-mc-status]');
+    if (pill) { pill.className = 'au-pill is-' + s.kind; pill.textContent = s.pill; }
+    if (status) status.className = 'au-tile-status' + (s.kind === 'running' ? '' : ' is-' + s.kind);
+    var state = tile.querySelector('[data-mc-state]');
+    var preview = tile.querySelector('[data-mc-preview]');
+    if (state) state.textContent = s.state;
+    if (preview) preview.textContent = s.preview;
+    tile.classList.toggle('is-waiting', s.kind === 'waiting');
+    tile.querySelectorAll('[data-mc-when]').forEach(function (el) { el.hidden = el.getAttribute('data-mc-when') !== String(idx); });
+    tile.querySelectorAll('[data-mc-run]').forEach(function (el) { el.hidden = s.kind !== 'running'; });
+    tile.querySelectorAll('[data-mc-idle]').forEach(function (el) { el.hidden = s.kind === 'running'; });
+    if (row) {
+      row.classList.toggle('is-waiting', s.kind === 'waiting');
+      var dot = row.querySelector('[data-mc-dot]');
+      var meta = row.querySelector('[data-mc-meta]');
+      if (dot) dot.className = 'au-dot is-' + s.kind;
+      if (meta) meta.textContent = s.meta;
+    }
+    mcKinds[id] = s.kind;
+  };
   ambient(mc, function () {
     mcTick++;
     MC_FLOW.forEach(function (f, i) {
       var idx = Math.floor((mcTick + i * 2) / 3) % f.seq.length;
-      var s = f.seq[idx];
-      var el = mcTiles[f.sel];
-      if (el) {
-        el.innerHTML = '<span class="glyph" aria-hidden="true">' + s[0] + '</span> ' + s[1];
-        el.className = 'status ' + s[2];
-      }
+      mcApply(f.tile, f.seq[idx], idx);
     });
+    var running = 0, waiting = 0;
+    Object.keys(mcKinds).forEach(function (k) {
+      if (mcKinds[k] === 'running') running++;
+      if (mcKinds[k] === 'waiting') waiting++;
+    });
+    var mcRunning = mc.querySelector('[data-mc-running]');
+    var mcAttention = mc.querySelector('[data-mc-attention]');
+    if (mcRunning) mcRunning.textContent = String(running);
+    if (mcAttention) mcAttention.hidden = waiting === 0;
   }, 2600);
 
-  /* ── RALPH section loop ──────────────────────────────── */
+  /* ── pillars · tasks: the goal is typed on Home, the sessions appear ── */
+  var delegateFig = document.querySelector('[data-delegate]');
+  if (delegateFig) {
+    var dText = delegateFig.querySelector('[data-delegate-text]');
+    var dCaret = delegateFig.querySelector('[data-delegate-caret]');
+    var dStart = delegateFig.querySelector('[data-delegate-start]');
+    var dSection = delegateFig.querySelector('[data-delegate-section]');
+    var dRows = delegateFig.querySelectorAll('[data-delegate-row]');
+    var dCount = delegateFig.querySelector('[data-delegate-count]');
+    var dCountN = delegateFig.querySelector('[data-delegate-n]');
+    var dGoal = dText.getAttribute('data-delegate-goal');
+    var dHint = dText.getAttribute('data-delegate-placeholder');
+    var D_PAUSE = 6, D_ROW_GAP = 5, D_HOLD = 22, D_ROWS = 4;
+    var dTotal = dGoal.length + D_PAUSE + D_ROWS * D_ROW_GAP + D_HOLD;
+    var dFrame = -1;
+    var dRender = function (f) {
+      var n = Math.min(f, dGoal.length);
+      dText.firstChild.nodeValue = n ? dGoal.slice(0, n) : dHint;
+      dText.classList.toggle('is-typed', n > 0);
+      dCaret.hidden = f >= dGoal.length + D_PAUSE;
+      dStart.classList.toggle('is-ready', n >= dGoal.length);
+      var shown = Math.min(D_ROWS, Math.max(0, Math.floor((f - dGoal.length - D_PAUSE) / D_ROW_GAP) + 1));
+      if (f < dGoal.length + D_PAUSE) shown = 0;
+      dRows.forEach(function (r) { r.hidden = parseInt(r.getAttribute('data-delegate-row'), 10) > shown; });
+      dSection.hidden = shown === 0;
+      if (dCount) dCount.hidden = shown === 0;
+      if (dCountN) dCountN.textContent = String(shown);
+    };
+    if (!reduceMotion && 'IntersectionObserver' in window) dRender(0);
+    ambient(delegateFig, function () {
+      dFrame = (dFrame + 1) % dTotal;
+      dRender(dFrame);
+    }, 120);
+  }
+
+  /* ── pillars · retries: one session tile walks fail → retry → pass ── */
   var ralphTrack = document.querySelector('.ralph-track');
-  var ralphCount = document.querySelector('[data-ralph-count]');
   var ralphState = document.querySelector('[data-ralph-state]');
   var R_STATES = [
-    [0, 'applying changes…'],
-    [1, 'running tests…'],
-    [2, '2 failing · patching…'],
-    [0, 'applying fix…'],
-    [1, 'running tests…'],
-    [3, 'green · loop closed']
+    [0, 'Running the sign-in checks.'],
+    [1, '2 of 14 tests fail: after an expired session the redirect goes to / instead of /sign-in.'],
+    [2, 'Fixing the expired-session redirect, then running npm test again.'],
+    [3, 'Running npm test again.'],
+    [4, 'The redirect after an expired session now goes to /sign-in. npm test passes (14 tests).']
   ];
   var rTick = -1;
   ambient(ralphTrack, function () {
@@ -309,7 +425,6 @@
     var s = R_STATES[rTick];
     ralphTrack.setAttribute('data-ralph-stage', String(s[0]));
     if (ralphState) ralphState.textContent = s[1];
-    if (ralphCount) ralphCount.textContent = rTick < 3 ? '1' : '2';
   }, 1500);
 
   /* ── board: cause → effect loop ──────────────────────── */
@@ -334,33 +449,48 @@
   var runTaskNames = document.querySelectorAll('[data-run-task-name]');
   var runTasks = document.querySelectorAll('[data-run-task]');
   var runTaskStatuses = document.querySelectorAll('[data-run-task-status]');
+  var runTaskDots = document.querySelectorAll('[data-run-task-dot]');
   var runStatus = document.querySelector('[data-run-status]');
+  var runAttention = document.querySelector('[data-run-attention]');
   var runResult = document.querySelector('[data-run-result]');
   var runProof = document.querySelector('[data-run-proof]');
   var runA11yStatus = document.querySelector('[data-run-a11y-status]');
   var runShouldAnnounceReady = false;
   var runTick = 4;
   var RUN_STEP_SEQUENCE = [0, 1, 2, 3, 4, 4];
+  /* The figure is the app's Home screen: the goal in the prompt box, the four
+     sessions it became in the sidebar and under "Continue working". Both lists
+     carry the same four sessions in the same order (index % 4). All four start
+     together and finish in order; `ask` names the session that needs a reply
+     at its step (the app's "Needs your reply" / "Waiting"). The words are the
+     app's own: sidebar rows say "Needs your reply", Home rows say "Waiting". */
   var RUNS = {
     feature: {
       goal: 'Build a secure passkey sign-in flow.',
-      tasks: ['sign-in API', 'account interface', 'regression checks', 'final review'],
+      tasks: ['Passkey backend', 'Passkey sign-in screen', 'Passkey checks', 'Review the changes'],
       result: 'One feature. Four focused tasks. One review.',
       proof: 'Separate workspaces · checks before merge'
     },
     queue: {
       goal: 'Work through the approved accessibility queue.',
-      tasks: ['navigation fixes', 'form labels', 'contrast checks', 'release review'],
+      tasks: ['Fix the navigation', 'Label the forms', 'Contrast checks', 'Review the release'],
+      ask: 3,
       result: 'Queued work keeps moving while decisions stay visible.',
       proof: 'Progress and open decisions in one summary'
     },
     risk: {
       goal: 'Upgrade the authentication package safely.',
-      tasks: ['dependency scan', 'isolated upgrade', 'compatibility checks', 'diff review'],
+      tasks: ['Scan the dependencies', 'Upgrade in isolation', 'Compatibility checks', 'Review the diff'],
+      ask: 1,
       result: 'Risk stays separate until you approve the change.',
       proof: 'Worktree isolation · dependency checks · you approve'
     }
   };
+  var RUN_WORDS = {
+    home: { running: 'Running', waiting: 'Waiting', done: 'Done' },
+    side: { running: 'Running', waiting: 'Needs your reply', done: 'Done' }
+  };
+  var runCurrent = RUNS.feature;
 
   var runOrientationQuery = window.matchMedia('(min-width: 721px) and (max-width: 1080px)');
   function syncRunOrientation() {
@@ -369,30 +499,40 @@
   syncRunOrientation();
   runOrientationQuery.addEventListener('change', syncRunOrientation);
 
+  function runStateAt(index, step, data) {
+    if (step >= data.tasks.length || index < step) return 'done';
+    if (data.ask === index && step === index) return 'waiting';
+    return 'running';
+  }
+
   function setRunStep(step) {
     if (!runDemo) return;
-    var isReady = step >= runTasks.length;
+    var data = runCurrent;
+    var count = data.tasks.length;
+    var isReady = step >= count;
+    var running = 0;
+    var waiting = 0;
     runDemo.classList.toggle('is-ready', isReady);
-    if (runStatus) {
-      runStatus.className = 'status ' + (isReady ? 'st-done' : 'st-running');
-      runStatus.innerHTML = isReady
-        ? '<span class="glyph" aria-hidden="true">✓</span> ready to review'
-        : '<span class="glyph" aria-hidden="true">●</span> working';
-    }
     runTasks.forEach(function (task, index) {
-      var status = runTaskStatuses[index];
-      var isComplete = index < step || isReady;
-      var isActive = index === step && !isReady;
-      task.classList.toggle('is-complete', isComplete);
-      task.classList.toggle('is-active', isActive);
-      if (!status) return;
-      status.className = 'status ' + (isComplete ? 'st-done' : isActive ? 'st-running' : 'st-waiting');
-      status.innerHTML = isComplete
-        ? '<span class="glyph" aria-hidden="true">✓</span> complete'
-        : isActive
-          ? '<span class="glyph" aria-hidden="true">●</span> running'
-          : '<span class="glyph" aria-hidden="true">○</span> queued';
+      task.setAttribute('data-run-state', runStateAt(index % count, step, data));
     });
+    runTaskDots.forEach(function (dot, index) {
+      dot.className = 'au-dot is-' + runStateAt(index % count, step, data);
+    });
+    runTaskStatuses.forEach(function (status, index) {
+      var words = RUN_WORDS[status.getAttribute('data-run-vocab')] || RUN_WORDS.home;
+      status.textContent = words[runStateAt(index % count, step, data)];
+    });
+    for (var i = 0; i < count; i++) {
+      var state = runStateAt(i, step, data);
+      if (state === 'running') running++;
+      if (state === 'waiting') waiting++;
+    }
+    if (runStatus) {
+      runStatus.textContent = running + ' running';
+      runStatus.hidden = running === 0;
+    }
+    if (runAttention) runAttention.hidden = waiting === 0;
     if (isReady && runShouldAnnounceReady && runA11yStatus) {
       runA11yStatus.textContent = 'Ready to review. ' + (runResult ? runResult.textContent : 'The example run is complete.');
       runShouldAnnounceReady = false;
@@ -413,13 +553,14 @@
     runDemo.setAttribute('aria-labelledby', choice.id);
     if (runGoal) runGoal.textContent = data.goal;
     if (finalGoal) finalGoal.textContent = data.goal;
-    runTaskNames.forEach(function (name, index) { name.textContent = data.tasks[index]; });
+    runCurrent = data;
+    runTaskNames.forEach(function (name, index) { name.textContent = data.tasks[index % data.tasks.length]; });
     if (runResult) runResult.textContent = data.result;
     if (runProof) runProof.textContent = data.proof;
     if (runA11yStatus) {
       runA11yStatus.textContent = reduceMotion
         ? 'Example selected: ' + data.goal + ' The completed run is ready to review.'
-        : 'Example selected: ' + data.goal + ' Four focused tasks started.';
+        : 'Example selected: ' + data.goal + ' Four sessions started.';
     }
     runShouldAnnounceReady = !reduceMotion;
     runDemo.classList.remove('is-changing');
@@ -519,15 +660,21 @@
     var Z_END = 0.72;                   /* zoomed out of the letters, the mark stands */
     var P_START = 0.76, P_END = 0.92;   /* the name unfolds, then holds */
     var RINGS = 8, GRID = 120;
+    /* sessions as the board's tile header names them: title + model id (mono) */
     var AGENTS = [
-      ['s-01 · backend', 'updating session handling'], ['s-02 · frontend', 'redirect flow next'],
-      ['s-03 · tests', 'running checks again'], ['s-04 · review', 'waiting on changes'],
-      ['s-05 · docs', '3 files changed'], ['s-06 · api', 'code_verifier route'],
-      ['s-07 · auth', 'src/auth/pkce.ts'], ['s-08 · build', 'bundling · 2 warnings'],
-      ['s-09 · lint', '12 files checked'], ['s-10 · migrate', 'schema v14 → v15'],
-      ['s-11 · e2e', 'sign-in flow · attempt 2'], ['s-12 · release', 'changelog drafted']
+      ['Sign-in backend', 'sonnet'], ['Sign-in screen', 'sonnet'],
+      ['Sign-in checks', 'haiku'], ['Review the changes', 'opus'],
+      ['Build the workspace', 'sonnet'], ['Connect the API', 'gemini-pro'],
+      ['Check the sign-in flow', 'sonnet'], ['Theme toggle', 'gemini-flash'],
+      ['Session list paging', 'haiku'], ['WebSocket reconnect', 'opus'],
+      ['Migrate the schema', 'sonnet'], ['Write the changelog', 'haiku']
     ];
-    var STATUS = { run: ['●', 'running'], att: ['!', 'retrying'], wait: ['◇', 'waiting'], done: ['✓', 'complete'] };
+    /* per state: the tile header's pill (word + class) and the status line's words, as the app shows them */
+    var STATUS = {
+      run: { pill: 'Running', cls: 'is-running', state: 'Working on your request' },
+      wait: { pill: 'Waiting', cls: 'is-waiting', state: 'Your answer is needed' },
+      done: { pill: 'Done', cls: 'is-done', state: 'Reply ready' }
+    };
     var m = null;                       /* measurements in em (taken at 100px) */
     var raw = 0, lastRaw = -1;
     var hintReady = false;              /* the scroll hint waits a moment on the black screen */
@@ -550,13 +697,13 @@
     }
     var agents = AGENTS.map(function (def, i) {
       var el = document.createElement('div');
-      el.className = 'scene-agent';
-      el.innerHTML = '<div class="sa-head"><span class="sa-id"></span><span class="sa-st"><span class="glyph"></span><span class="sa-word"></span></span></div><p class="sa-line"></p>';
-      el.querySelector('.sa-id').textContent = def[0];
-      el.querySelector('.sa-line').textContent = def[1];
+      el.className = 'scene-agent au au-tile';
+      el.innerHTML = '<div class="au-tile-head"><span class="au-title"></span><span class="au-pill"></span><span class="au-model"></span></div><div class="au-tile-status"><span class="au-state"></span></div>';
+      el.querySelector('.au-title').textContent = def[0];
+      el.querySelector('.au-model').textContent = def[1];
       swarmBox.appendChild(el);
       return {
-        el: el, glyph: el.querySelector('.glyph'), word: el.querySelector('.sa-word'), st: '',
+        el: el, pill: el.querySelector('.au-pill'), status: el.querySelector('.au-tile-status'), word: el.querySelector('.au-state'), st: '',
         x0: (rnd(i, 1) * 2 - 1) * 0.9, y0: (rnd(i, 2) * 2 - 1) * 0.8, z0: rnd(i, 3),
         v: (0.045 + 0.06 * rnd(i, 4)) * (rnd(i, 5) < 0.3 ? -1 : 1),
         ax: 0.12 + 0.3 * rnd(i, 6), ay: 0.08 + 0.22 * rnd(i, 7),
@@ -569,9 +716,13 @@
     function setStatus(a, st) {
       if (a.st === st) return;
       a.st = st;
+      var d = STATUS[st];
       a.el.setAttribute('data-st', st);
-      a.glyph.textContent = STATUS[st][0];
-      a.word.textContent = STATUS[st][1];
+      a.el.classList.toggle('is-waiting', st === 'wait');
+      a.pill.textContent = d.pill;
+      a.pill.className = 'au-pill ' + d.cls;
+      a.status.className = 'au-tile-status' + (st === 'run' ? '' : ' ' + d.cls);
+      a.word.textContent = d.state;
     }
 
     function measure() {
@@ -590,10 +741,13 @@
       var column = columnQuery.matches;
       var sumCap = capEm.reduce(function (a, b) { return a + b; }, 0);
       var sumRest = restEm.reduce(function (a, b) { return a + b; }, 0);
-      /* board slots for the controlled agents */
-      var cols = column ? 2 : 4, rows = AGENTS.length / cols;
-      var cw = column ? 162 : 214, ch = column ? 58 : 66;
-      var boardScale = column ? 1 : 1.12;
+      /* board slots for the controlled agents: the pitch comes from the card's real size
+         (fixed width, two strips; see app-ui-blocks.css), 4 columns where they fit, else 3, 2 on phones */
+      var card = agents[0].el, gap = column ? 8 : 10;
+      var cw = card.offsetWidth + gap, ch = card.offsetHeight + gap;
+      var cols = column ? 2 : (4 * cw + 28 <= pin.clientWidth - 160 ? 4 : 3);   /* 4 across only with 80px to spare on each side */
+      var rows = Math.ceil(AGENTS.length / cols);
+      var boardScale = 1;
       var slots = agents.map(function (a, i) {
         var col = i % cols, row = Math.floor(i / cols);
         return { x: (col - (cols - 1) / 2) * cw, y: (row - (rows - 1) / 2) * ch };
@@ -661,7 +815,7 @@
       /* agents: swarm in depth, then glide onto the board */
       var RX = m.w * 0.55, RY = m.h * 0.5;
       var t = clock;
-      var counts = { run: 0, att: 0, wait: 0, done: 0 };
+      var counts = { run: 0, wait: 0, done: 0 };
       for (var n = 0; n < agents.length; n++) {
         var a = agents[n];
         var dz = ((a.z0 + t * a.v + c * 0.6 * (a.v > 0 ? 1 : -1)) % 1 + 1) % 1;   /* 0 = at the viewer, 1 = far */
@@ -675,12 +829,13 @@
         var tiltY = -sx * 16, tiltX = sy * 10;
         var st;
         if (k < 0.5) {
+          /* now and then a session needs you: the tile flips to "Waiting" / "Your answer is needed" and shivers */
           var f = Math.sin(t * a.flick + a.px * 2);
-          st = f > 0.82 ? 'att' : f < -0.9 ? 'wait' : 'run';
+          st = f > 0.76 ? 'wait' : 'run';
         } else {
           st = (k - 0.78) / 0.22 > (n + 0.5) / agents.length ? 'done' : 'run';
         }
-        if (st === 'att' && k < 0.5) { px += (rnd(frameNo, n) - 0.5) * 3; py += (rnd(frameNo, n + 40) - 0.5) * 3; }
+        if (st === 'wait' && k < 0.5) { px += (rnd(frameNo, n) - 0.5) * 3; py += (rnd(frameNo, n + 40) - 0.5) * 3; }
         if (k > 0) {
           var slot = m.slots[n];
           px += (slot.x - px) * k; py += (slot.y - py) * k;
@@ -703,8 +858,8 @@
       /* captions and live counts */
       capA.style.opacity = (ease((age - 0.6) / 0.8) * (1 - ease(k / 0.4))).toFixed(3);
       capB.style.opacity = (ease((k - 0.55) / 0.35) * dim).toFixed(3);
-      var textA = counts.run + ' running · ' + counts.att + ' retrying · ' + counts.wait + ' waiting';
-      var textB = counts.done + ' complete' + (counts.run ? ' · ' + counts.run + ' running' : '');
+      var textA = counts.run + ' running · ' + counts.wait + (counts.wait === 1 ? ' needs your reply' : ' need your reply');
+      var textB = counts.done + ' done' + (counts.run ? ' · ' + counts.run + ' running' : '');
       if (textA !== lastCountA) { countA.textContent = textA; lastCountA = textA; }
       if (textB !== lastCountB) { countB.textContent = textB; lastCountB = textB; }
 
@@ -1156,8 +1311,9 @@
 })();
 
 /* Why IVE: first let the question fill the viewport and hold.
-   It then docks above four answers. The same session sheets unfold, face the reader,
-   pass under a verification sweep, and become a human review.
+   It then docks above four answers. Four board tiles, drawn as the app draws them,
+   spread from one stack into a 2×2 board, change state (running, waiting, failed,
+   retried, done) and finally stack beneath one "Reply ready" review tile.
    Scroll owns the timeline in both directions; there is no autoplay. */
 (function () {
   'use strict';
@@ -1177,9 +1333,7 @@
   var beats = Array.from(section.querySelectorAll('[data-why-beat]'));
   var planes = Array.from(section.querySelectorAll('[data-why-plane]'));
   var statuses = Array.from(section.querySelectorAll('[data-why-status]'));
-  var tracks = Array.from(section.querySelectorAll('[data-why-track]'));
   var jumps = Array.from(section.querySelectorAll('[data-why-jump]'));
-  var scan = section.querySelector('[data-why-scan]');
   var receipt = section.querySelector('[data-why-receipt]');
   var caption = section.querySelector('[data-why-caption]');
   var captions = ['one goal, four focused tasks', 'every session, one clear view', 'check, retry, check again', 'the final decision stays yours'];
@@ -1188,22 +1342,30 @@
   var mix = function (a, b, t) { return a + (b - a) * t; };
   var live = false, raf = 0, current = -1, scale = 1, questionPoses = [];
   var ANSWERS_START = 0.28;
-  // x, y, z, rotation X, rotation Y, rotation Z, opacity — per sheet.
-  var poses = [
-    [[-140, -96, 0, 48, -12, -24, 1], [116, -84, 48, 48, -12, -24, 1], [-120, 85, 35, 48, -12, -24, 1], [136, 102, 83, 48, -12, -24, 1]],
-    [[-128, -88, 0, 0, 0, 0, 1], [128, -88, 0, 0, 0, 0, 1], [-128, 88, 0, 0, 0, 0, 1], [128, 88, 0, 0, 0, 0, 1]],
-    [[-128, -88, 0, 12, -8, 0, 1], [128, -88, 0, 12, -8, 0, 1], [-128, 88, 0, 12, -8, 0, 1], [128, 88, 0, 12, -8, 0, 1]],
-    [[-12, 55, -45, 0, 0, -6, 1], [12, 40, -30, 0, 0, 5, 1], [-8, 23, -15, 0, 0, -3, 1], [0, 6, 0, 0, 0, 0, 1]]
-  ];
+  // x, y — per tile, per step. The tiles sit flat, as on the board: one stack
+  // becomes a 2×2 grid, the grid holds for two steps, then everything stacks
+  // beneath the review tile (which is the fourth tile's reply, full size).
+  var board = [[-134, -96], [134, -96], [-134, 96], [134, 96]];
+  var poses = [board, board, board, [[0, 10], [0, 26], [0, 42], [0, 58]]];
+  // The pill in each tile header uses the app's words and colours.
+  var PILLS = {
+    run: ['is-running', 'Running'], wait: ['is-waiting', 'Waiting'], fail: ['is-failed', 'Failed'],
+    retry: ['is-running', 'Running'], done: ['is-done', 'Done'], idle: ['is-idle', 'Not Started']
+  };
 
   function setState(index, state) {
     var plane = planes[index];
-    if (plane.dataset.state === state) return;
+    if (plane.dataset.state === state && plane.dataset.whySynced) return;
     plane.dataset.state = state;
-    plane.classList.toggle('is-done', state === 'done');
-    plane.classList.toggle('is-attention', state === 'retry');
+    plane.dataset.whySynced = '1';
     plane.classList.toggle('is-waiting', state === 'wait');
-    statuses[index].textContent = { done: '✓ complete', retry: '! retrying', wait: '◇ waiting', run: '● running' }[state];
+    statuses[index].className = 'au-pill ' + PILLS[state][0];
+    statuses[index].textContent = PILLS[state][1];
+    // Each tile carries its status line, step lines and composer text for every
+    // state it passes through; only the current state's elements show.
+    Array.prototype.forEach.call(plane.querySelectorAll('[data-why-on]'), function (el) {
+      el.hidden = (' ' + el.getAttribute('data-why-on') + ' ').indexOf(' ' + state + ' ') < 0;
+    });
   }
 
   function render() {
@@ -1262,25 +1424,28 @@
     });
 
     var review = step === 3 ? ease((local - 0.2) / 0.38) : 0;
+    // The small tiles' content goes first, then they gather; the review tile last.
+    var detail = step === 3 ? 1 - ease((local - 0.04) / 0.22) : 1;
     deck.style.transform = 'scale(' + scale.toFixed(3) + ')';
     planes.forEach(function (plane, i) {
       var to = poses[step][i];
-      var from = step === 0 ? [i * 8, i * -12, i * 16, 58, -12, -28, 1] : poses[step - 1][i];
+      // Before the first step the four tiles lie on one stack, the first on top.
+      var from = step === 0 ? [0, i * 9] : poses[step - 1][i];
       var transition = ease((local - i * 0.035) / (step === 0 ? 0.46 : 0.38));
       var p = to.map(function (value, axis) { return mix(from[axis], value, transition); });
-      plane.style.transform = 'translate3d(' + p[0].toFixed(2) + 'px,' + p[1].toFixed(2) + 'px,' + p[2].toFixed(2) + 'px) rotateX(' + p[3].toFixed(2) + 'deg) rotateY(' + p[4].toFixed(2) + 'deg) rotateZ(' + p[5].toFixed(2) + 'deg) scale(' + (1 + review * 0.46).toFixed(3) + ',' + (1 + review * 0.64).toFixed(3) + ')';
-      plane.style.setProperty('--why-detail', (1 - review).toFixed(3));
+      // In the last step the small tiles grow to the review tile's footprint, so the
+      // stack peeks out beneath it; their content has faded by then.
+      plane.style.transform = 'translate3d(' + p[0].toFixed(2) + 'px,' + p[1].toFixed(2) + 'px,0) scale(' + (1 + review * 0.5).toFixed(3) + ',' + (1 + review * 0.58).toFixed(3) + ')';
+      plane.style.setProperty('--why-detail', detail.toFixed(3));
       var done = step === 3 || (step === 2 && local > 0.48 + i * 0.075);
-      var state = done ? 'done' : i === 2 && step === 2 ? 'retry' : i === 3 ? 'wait' : 'run';
+      // The review session starts once the first sessions have replied.
+      var state = done ? 'done'
+        : i === 2 ? (step === 1 ? 'wait' : step === 2 ? (local < 0.26 ? 'fail' : 'retry') : 'run')
+        : i === 3 ? (step === 2 && local > 0.5 ? 'run' : 'idle') : 'run';
       setState(i, state);
-      var fill = done ? 1 : step === 2 && i === 2 ? mix(0.12, 0.9, ease(local / 0.7)) : i === 3 ? 0.08 : clamp(0.15 + i * 0.09 + timeline * 0.21);
-      tracks[i].style.transform = 'scaleX(' + fill.toFixed(3) + ')';
     });
-    var sweep = ease((local - 0.25) / 0.55);
-    scan.style.opacity = step === 2 ? (ease((local - 0.2) / 0.08) * (1 - ease((local - 0.81) / 0.12))).toFixed(3) : '0';
-    scan.style.transform = 'translate3d(0,' + (sweep * 355).toFixed(2) + 'px,70px)';
     receipt.style.opacity = review.toFixed(3);
-    receipt.style.transform = 'translate3d(0,' + ((1 - review) * 35).toFixed(2) + 'px,' + ((1 - review) * 180).toFixed(2) + 'px) rotateX(' + ((1 - review) * -12).toFixed(2) + 'deg)';
+    receipt.style.transform = 'translate3d(0,' + ((1 - review) * 35).toFixed(2) + 'px,0)';
   }
 
   function schedule() {
@@ -1364,7 +1529,11 @@
 
 /* IVE.DEV — merge: every session comes back as one review.
    One lane per session, drawn by scroll as they curve into a single trunk;
-   a packet travels each lane while it runs; the trunk ends in one review. */
+   a packet travels each lane while it runs; the trunk ends in one review.
+   The lane heads are the app's session rows (dot + name + status word, static
+   HTML in index.html); the trunk ends in the review tile's head and status line.
+   build() measures the rows, fits as many lanes as the width takes and places
+   rows and tile; render() turns each row from Running to Done as its lane lands. */
 (function () {
   'use strict';
 
@@ -1377,22 +1546,18 @@
   var live = root.classList.contains('mark-live') && !reduceMotion;
 
   var pin = sec.querySelector('[data-merge-pin]');
+  var copy = sec.querySelector('[data-merge-copy]');
   var svg = sec.querySelector('[data-merge-svg]');
   var ghostsG = sec.querySelector('[data-merge-ghosts]');
   var lanesG = sec.querySelector('[data-merge-lanes]');
   var packetsG = sec.querySelector('[data-merge-packets]');
   var dotsG = sec.querySelector('[data-merge-dots]');
-  var labelsG = sec.querySelector('[data-merge-labels]');
   var trunk = sec.querySelector('[data-merge-trunk]');
   var node = sec.querySelector('[data-merge-node]');
-  var nodeLabel = sec.querySelector('[data-merge-node-label]');
+  var review = sec.querySelector('[data-merge-review]');
+  var rows = Array.prototype.slice.call(sec.querySelectorAll('[data-merge-row]'));
   var columnQuery = window.matchMedia('(max-width: 720px)');
   var NS = 'http://www.w3.org/2000/svg';
-  var LANES = [
-    ['s-01', 'backend'], ['s-02', 'frontend'], ['s-03', 'tests'], ['s-04', 'review'],
-    ['s-05', 'docs'], ['s-06', 'api'], ['s-07', 'auth'], ['s-08', 'build'],
-    ['s-09', 'lint'], ['s-10', 'migrate'], ['s-11', 'e2e'], ['s-12', 'release']
-  ];
   var TRUNK0 = 0.60, TRUNK1 = 0.82;
 
   var m = null, raw = 0, lastRaw = -1;
@@ -1405,24 +1570,62 @@
 
   function build() {
     var column = columnQuery.matches;
+    var isStatic = sec.classList.contains('is-static');
     var box = svg.getBoundingClientRect();
     var W = Math.round(box.width), H = Math.round(box.height);
     if (!W || !H) return;
-    if (m && m.W === W && m.H === H && m.column === columnQuery.matches) {
+    /* the rows at their natural width (fonts can settle late), the tile's height.
+       Measured at left 0 and fractional: an absolute box with a left offset is
+       squeezed by the space remaining to its right, and a rounded width would
+       trip the name's ellipsis by a sub-pixel. Each row is then placed at its
+       centre minus half its own width, so no width is ever frozen. */
+    var rowW = 0, rowH = 0, widths = [], i;
+    for (i = 0; i < rows.length; i++) {
+      rows[i].hidden = false;
+      rows[i].style.left = '0px';
+      rows[i].style.maxWidth = '';
+      var rb = rows[i].getBoundingClientRect();
+      widths[i] = rb.width;
+      rowW = Math.max(rowW, rb.width);
+      rowH = Math.max(rowH, rb.height);
+    }
+    var place = function (k, x) { rows[k].style.left = (x - widths[k] / 2).toFixed(2) + 'px'; };
+    var cardH = review.offsetHeight;
+    if (m && m.W === W && m.H === H && m.column === column && m.rowW === rowW && m.cardH === cardH) {
+      for (i = 0; i < rows.length; i++) {
+        rows[i].hidden = i >= m.n;
+        rows[i].style.maxWidth = m.maxW;
+        if (i < m.n) place(i, m.xs[i]);
+      }
       m.top = sec.getBoundingClientRect().top + window.scrollY;
       m.travel = Math.max(1, sec.offsetHeight - pin.offsetHeight);
       return;
     }
-    var n = column ? 6 : LANES.length;
-    var pad = column ? 26 : 84;
-    var y0 = column ? 0.34 * H : 0.36 * H;
-    var ym = column ? 0.82 * H : 0.84 * H;
+    var gap = column ? 10 : 16;
+    var pad = Math.ceil(rowW / 2) + (column ? 12 : 32);
+    var n = Math.min(rows.length, Math.max(2, Math.floor((W - 2 * pad) / (rowW + gap)) + 1));
+    var spacing = n > 1 ? (W - 2 * pad) / (n - 1) : 0;
+    var maxW = Math.ceil(n > 1 ? spacing - gap : rowW) + 'px';
+    /* the lanes start under the rows, which sit clear of the heading; the trunk ends in the tile */
+    var copyBottom = isStatic ? 0 : copy.offsetTop + copy.offsetHeight;
+    var y0 = isStatic ? rowH + 20 : Math.max((column ? 0.36 : 0.34) * H, copyBottom + rowH + 48);
+    var stem = column ? 22 : 28;
+    var ym = H - cardH - stem - (column ? 16 : 24);
+    if (ym < y0 + 120) ym = y0 + 120;
     var cx = W / 2;
     svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
-    ghostsG.textContent = ''; lanesG.textContent = ''; packetsG.textContent = ''; dotsG.textContent = ''; labelsG.textContent = '';
+    ghostsG.textContent = ''; lanesG.textContent = ''; packetsG.textContent = ''; dotsG.textContent = '';
     lanes = [];
-    for (var i = 0; i < n; i++) {
+    var xs = [];
+    for (i = 0; i < rows.length; i++) {
+      var row = rows[i];
+      row.hidden = i >= n;
+      row.style.maxWidth = maxW;
+      if (i >= n) continue;
       var x = pad + (W - 2 * pad) * (n === 1 ? 0.5 : i / (n - 1));
+      xs[i] = x;
+      place(i, x);
+      row.style.top = (y0 - 12).toFixed(1) + 'px';
       var d = 'M' + x.toFixed(1) + ' ' + y0.toFixed(1) + ' C' + x.toFixed(1) + ' ' + (y0 + (ym - y0) * 0.58).toFixed(1) + ', ' + cx.toFixed(1) + ' ' + (y0 + (ym - y0) * 0.42).toFixed(1) + ', ' + cx.toFixed(1) + ' ' + ym.toFixed(1);
       var ghost = el('path', 'merge-ghost'); ghost.setAttribute('d', d); ghostsG.appendChild(ghost);
       var path = el('path', 'merge-lane'); path.setAttribute('d', d); lanesG.appendChild(path);
@@ -1431,23 +1634,17 @@
       path.style.strokeDashoffset = len.toFixed(1);
       var dot = el('circle', 'merge-dot'); dot.setAttribute('r', column ? 3.5 : 4.5); dotsG.appendChild(dot);
       var packet = el('circle', 'merge-packet'); packet.setAttribute('r', column ? 2 : 2.5); packetsG.appendChild(packet);
-      var label = el('text', 'merge-label');
-      label.setAttribute('x', x.toFixed(1)); label.setAttribute('y', (y0 - 16).toFixed(1));
-      label.setAttribute('text-anchor', 'middle');
-      label.textContent = column ? LANES[i][0] : LANES[i][0] + ' · ' + LANES[i][1];
-      labelsG.appendChild(label);
-      lanes.push({ path: path, len: len, dot: dot, packet: packet, label: label, a0: 0.04 + (column ? 0.05 : 0.03) * i, seed: (i * 0.37) % 1 });
+      lanes.push({ path: path, len: len, dot: dot, packet: packet, row: row, rowDot: row.querySelector('.au-dot'), a0: 0.04 + 0.33 * (n > 1 ? i / (n - 1) : 0), seed: (i * 0.37) % 1 });
     }
     trunk.setAttribute('d', 'M' + cx.toFixed(1) + ' ' + ym.toFixed(1) + ' L' + cx.toFixed(1) + ' ' + (H + 40).toFixed(1));
     trunkLen = trunk.getTotalLength();
     trunk.style.strokeDasharray = trunkLen.toFixed(1);
     trunk.style.strokeDashoffset = trunkLen.toFixed(1);
     node.setAttribute('transform', 'translate(' + cx.toFixed(1) + ' ' + ym.toFixed(1) + ') scale(0)');
-    nodeLabel.setAttribute('x', (cx + (column ? 18 : 24)).toFixed(1));
-    nodeLabel.setAttribute('y', (ym + 4).toFixed(1));
-    nodeLabel.textContent = 'one review';
-    nodeLabel.style.opacity = '0';
-    m = { W: W, H: H, cx: cx, ym: ym, column: column, top: sec.getBoundingClientRect().top + window.scrollY, travel: Math.max(1, sec.offsetHeight - pin.offsetHeight) };
+    review.style.left = cx.toFixed(1) + 'px';
+    review.style.top = (ym + stem).toFixed(1) + 'px';
+    review.style.opacity = '0';
+    m = { W: W, H: H, cx: cx, ym: ym, column: column, n: n, rowW: rowW, cardH: cardH, maxW: maxW, xs: xs, top: sec.getBoundingClientRect().top + window.scrollY, travel: Math.max(1, sec.offsetHeight - pin.offsetHeight) };
     lastRaw = -1;
   }
 
@@ -1460,7 +1657,9 @@
       L.dot.setAttribute('cx', pt.x.toFixed(1)); L.dot.setAttribute('cy', pt.y.toFixed(1));
       var done = p >= 1;
       L.dot.classList.toggle('is-done', done);
-      L.label.classList.toggle('is-done', done);
+      L.row.classList.toggle('is-done', done);
+      L.rowDot.classList.toggle('is-done', done);
+      L.rowDot.classList.toggle('is-running', !done);
       if (p > 0.08 && !done) {
         var q = ((clock * 0.16 + L.seed) % 1) * p;
         var pp = L.path.getPointAtLength(L.len * q);
@@ -1474,7 +1673,9 @@
     trunk.style.strokeDashoffset = (trunkLen * (1 - tp)).toFixed(1);
     var ns = live ? ease((raw - (TRUNK0 - 0.06)) / 0.08) : 1;
     node.setAttribute('transform', 'translate(' + m.cx.toFixed(1) + ' ' + m.ym.toFixed(1) + ') scale(' + ns.toFixed(3) + ')');
-    nodeLabel.style.opacity = (live ? ease((raw - TRUNK0) / 0.12) : 1).toFixed(3);
+    var ro = live ? ease((raw - TRUNK0) / 0.12) : 1;
+    review.style.opacity = ro.toFixed(3);
+    review.style.transform = 'translate(-50%, ' + ((1 - ro) * 10).toFixed(1) + 'px)';
   }
 
   function frame(ts) {

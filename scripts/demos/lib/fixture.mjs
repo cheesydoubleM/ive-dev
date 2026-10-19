@@ -1,0 +1,159 @@
+// Demo workspace for the site recordings: the real IVE frontend (installed app build)
+// on the isolated test transport. All project, session and conversation data below is
+// a labelled demonstration; no provider runs and nothing is written to a real IVE.
+import { chromium } from '/Users/maximilianschwarz/Projekte/AIFOREU/ive-team/frontend/node_modules/playwright/index.mjs';
+import { createTourFixture } from '/Users/maximilianschwarz/Projekte/AIFOREU/ive-team-worktrees/quiet-focus/frontend/tests/interactive-onboarding-fixture.mjs';
+
+export const DIST = '/Applications/IVE.app/Contents/Resources/backend/_internal/frontend/dist';
+export const VIEWPORT = { width: 1600, height: 1000 };
+
+const ago = (min) => new Date(Date.now() - min * 60000).toISOString();
+export const workspace = { id: 'orbit', name: 'Orbit', path: '/Projects/orbit', created_at: ago(300) };
+
+export const PERMISSION_SCREEN = [
+  'Bash command', '  npm test', '  Run the sign-in checks', '', 'Do you want to proceed?',
+  '❯ 1. Yes', '  2. Yes, and don’t ask again for npm test commands in /Projects/orbit', '  3. No', '', 'Esc to cancel',
+].join('\n');
+export const permissionAttention = () => ({ kind: 'permission', title: 'Permission needed', message: 'npm test', tool_name: 'Bash', context: PERMISSION_SCREEN, source: 'hook', options: [], actions: [], notification_type: '', tool_input: { command: 'npm test', description: 'Run the sign-in checks' }, asked_at: Date.now() / 1000 });
+
+export const session = (id, name, cli_type, model, status = 'idle', extra = {}) => ({
+  id, name, cli_type, model, status,
+  agentState: status === 'running' ? 'working' : status === 'waiting' ? 'prompting' : 'idle',
+  workspace_id: workspace.id, session_type: 'worker', created_at: ago(40), last_active_at: ago(1), archived: 0, pty_alive: true, tags: [], ...extra,
+});
+export const blocks = (arr) => JSON.stringify(arr);
+let seq = 0;
+export const msg = (sid, role, content, minAgo = 0, extra = {}) => ({ id: `${sid}-${role}-${++seq}`, session_id: sid, role, content, created_at: ago(minAgo), ...extra });
+
+// The four sessions of the Orbit project, as the stills and clips use them.
+export function demoSessions() {
+  return [
+    session('interface', 'Build the workspace', 'claude', 'sonnet', 'idle'),
+    session('api', 'Connect the API', 'codex', 'gpt-6-astra', 'idle'),
+    session('checks', 'Check the sign-in flow', 'claude', 'sonnet', 'idle'),
+    session('review', 'Review the changes', 'claude', 'opus', 'idle'),
+  ];
+}
+
+export const transcripts = {
+  interface: [
+    msg('interface', 'user', 'Add a dark theme toggle to the sidebar. Keep the existing keyboard shortcuts working.', 9),
+    msg('interface', 'assistant', blocks([
+      { type: 'thinking', thinking: 'The sidebar lives in src/components/layout/Sidebar.jsx and the theme hook already exists, so the toggle can reuse it. I should check how shortcuts are registered before adding anything.' },
+      { type: 'tool_use', id: 'i1', name: 'Read', input: { file_path: 'src/components/layout/Sidebar.jsx' } },
+      { type: 'tool_result', tool_use_id: 'i1', content: '312 lines. The footer renders ConnectionStatus and CostToday.' },
+      { type: 'tool_use', id: 'i2', name: 'Grep', input: { pattern: 'useTheme', path: 'src' } },
+      { type: 'tool_result', tool_use_id: 'i2', content: 'src/hooks/useTheme.js\nsrc/components/settings/GeneralSettingsPanel.jsx' },
+      { type: 'tool_use', id: 'i3', name: 'Edit', input: { file_path: 'src/components/layout/Sidebar.jsx', description: 'Add ThemeToggle to the sidebar footer' } },
+      { type: 'tool_result', tool_use_id: 'i3', content: 'Edited 1 file: +18 −2' },
+      { type: 'text', text: 'The toggle sits in the sidebar footer and reuses `useTheme`. Existing shortcuts are untouched; `npm test` passes (12 tests).' },
+    ]), 6),
+  ],
+  api: [
+    msg('api', 'user', 'Connect the sessions list to the new /api/sessions endpoint and keep the event stream in sync.', 7),
+    msg('api', 'assistant', blocks([
+      { type: 'tool_use', id: 'a1', name: 'Read', input: { file_path: 'src/lib/api.js' } },
+      { type: 'tool_result', tool_use_id: 'a1', content: '184 lines.' },
+      { type: 'tool_use', id: 'a2', name: 'Edit', input: { file_path: 'src/lib/api.js', description: 'Add listSessions() with cursor paging' } },
+      { type: 'tool_result', tool_use_id: 'a2', content: 'Edited 1 file: +24 −6' },
+      { type: 'text', text: 'Reading the WebSocket handler next so the list and the stream agree on the session shape.' },
+    ]), 3),
+  ],
+  checks: [
+    msg('checks', 'user', 'Run the sign-in checks: empty state, expired session, and the return to the workspace.', 5),
+    msg('checks', 'assistant', blocks([
+      { type: 'tool_use', id: 'c1', name: 'Read', input: { file_path: 'tests/sign-in.spec.js' } },
+      { type: 'tool_result', tool_use_id: 'c1', content: '96 lines, 3 cases.' },
+      { type: 'text', text: 'I’ll run the suite now. It needs your permission for `npm test`.' },
+    ]), 2),
+  ],
+  review: [
+    msg('review', 'user', 'Review the changed files and call out anything that needs another look.', 14),
+    msg('review', 'assistant', blocks([
+      { type: 'tool_use', id: 'r1', name: 'Bash', input: { command: 'git diff --stat', description: 'List the changed files' } },
+      { type: 'tool_result', tool_use_id: 'r1', content: ' src/components/layout/Sidebar.jsx | 20 ++-\n src/lib/api.js | 30 +++-\n 2 files changed' },
+      { type: 'text', text: '### Review\n\n- **Sidebar.jsx** — the toggle reuses `useTheme`; the footer keeps its height. Fine.\n- **api.js** — `listSessions()` pages with a cursor, but the WebSocket reconnect still resets to page one. Worth another look.\n\nThe final decision stays with you.' },
+    ]), 11),
+  ],
+};
+
+export async function launch() {
+  const browser = await chromium.launch({ headless: true });
+  // The fake clock must exist before the app loads so every timer it creates is controllable.
+  const wrapped = { newContext: async (opts) => {
+    const context = await browser.newContext({ ...opts, deviceScaleFactor: 2, reducedMotion: 'no-preference' });
+    await context.clock.install();
+    return context;
+  } };
+  return { browser, wrapped };
+}
+
+/**
+ * Opens the real frontend with the demo workspace. `outputScreens` maps a session id to
+ * the terminal screen its prompt snapshot should show (a Claude Code permission dialog
+ * makes the Allow/Don't allow card appear).
+ */
+export async function openDemo(wrapped, { sessions = demoSessions(), messages = transcripts, storage = {}, outputScreens = {}, diff = '', gitStatus = null, workspacePatch = {} } = {}) {
+  const f = await createTourFixture(wrapped, {
+    dist: DIST, viewport: VIEWPORT,
+    settings: { product_tour_version: '2', language: 'en' },
+    storage: { 'ive.onboarding.v2.owner': 'done', ...storage },
+    workspaces: [{ ...workspace, ...workspacePatch }], sessions, messages, diff,
+  });
+  const screens = { ...outputScreens };
+  await f.context.route('**/api/sessions/*/output**', (route) => {
+    const sid = new URL(route.request().url()).pathname.split('/')[3];
+    const screen = screens[sid] || '❯ ';
+    route.fulfill({ json: { text: screen, output: screen, screen, startup_blocker: null, pty_alive: true, permission_view_state: null } });
+  });
+  if (gitStatus) await f.context.route('**/api/workspaces/*/git/status**', (route) => route.fulfill({ json: gitStatus }));
+  // Session edits the fixture does not cover (model, agent mode): merge and announce like the backend.
+  await f.context.route('**/api/sessions/*', async (route) => {
+    const request = route.request();
+    const parts = new URL(request.url()).pathname.split('/');
+    if (request.method() !== 'PUT' || parts.length !== 4) return route.fallback();
+    let body = {};
+    try { body = request.postDataJSON() || {}; } catch { /* no body */ }
+    const item = f.data.sessions.find((s) => s.id === parts[3]);
+    if (!item || Object.hasOwn(body, 'archived')) return route.fallback();
+    const { apply_live, ...patch } = body;
+    Object.assign(item, patch);
+    f.controls.broadcast({ type: 'session_update', session_id: item.id, session: item });
+    return route.fulfill({ json: item });
+  });
+  await f.context.route('**/api/sessions/*/permission-mode/apply-now', (route) => route.fulfill({ json: { ok: true } }));
+  // Home "Start": the backend creates the session in the shown project and returns it.
+  let quickSeq = 0;
+  await f.context.route('**/api/sessions/quick', async (route) => {
+    if (route.request().method() !== 'POST') return route.fallback();
+    let body = {};
+    try { body = route.request().postDataJSON() || {}; } catch { /* no body */ }
+    const item = { id: `demo-session-${++quickSeq}`, workspace_id: body.workspace_id || workspace.id, name: body.name || 'New session', cli_type: body.cli_type || 'claude', model: body.model || 'sonnet', status: 'idle', agentState: 'idle', pty_alive: false, session_type: 'worker', created_at: new Date().toISOString(), last_active_at: new Date().toISOString(), archived: 0, tags: [], attention: null, quick: false };
+    f.data.sessions.push(item);
+    f.data.messages[item.id] = [];
+    return route.fulfill({ json: item });
+  });
+  f.screens = screens;
+  await f.page.locator('#ive-project-sidebar, .x-app-shell').first().waitFor();
+  await f.page.evaluate(() => document.fonts.ready);
+  await f.page.waitForTimeout(1200);
+  return f;
+}
+
+/** One agent step: append blocks, nudge the open views to refetch, give the network a moment. */
+export async function agentStep(f, sid, blockList, { done = false } = {}) {
+  pushAssistant(f, sid, blockList, { done });
+  await f.page.evaluate((id) => window.dispatchEvent(new CustomEvent('cc-session-messages-refresh', { detail: { sessionId: id } })), sid);
+  await f.page.waitForTimeout(250);
+}
+
+/** Appends an assistant message with the given blocks and tells the UI (like the backend does). */
+export function pushAssistant(f, sid, blockList, { done = false } = {}) {
+  const m = f.controls.addMessage(sid, 'assistant', blocks(blockList));
+  f.controls.broadcast({ type: 'session_update', session_id: sid, session: f.data.sessions.find((s) => s.id === sid) });
+  if (done) {
+    f.controls.setSessionStatus(sid, 'idle');
+    f.controls.broadcast({ type: 'session_idle', session_id: sid });
+  }
+  return m;
+}

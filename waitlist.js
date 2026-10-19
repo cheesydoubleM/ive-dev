@@ -5,7 +5,19 @@
   var status = document.querySelector('[data-waitlist-status]');
   var success = document.querySelector('[data-waitlist-success]');
   var button = form.querySelector('button[type="submit"]');
+  var buttonLabel = form.querySelector('[data-waitlist-button-label]');
+  var sentTo = document.querySelector('[data-waitlist-email-sent]');
+  var edit = document.querySelector('[data-waitlist-edit]');
   var busy = false;
+
+  if (edit) edit.addEventListener('click', function () {
+    success.hidden = true;
+    form.hidden = false;
+    status.textContent = '';
+    status.classList.remove('is-error');
+    form.elements.email.focus();
+    form.elements.email.select();
+  });
 
   form.addEventListener('submit', async function (event) {
     event.preventDefault();
@@ -13,7 +25,8 @@
     busy = true;
     button.disabled = true;
     form.setAttribute('aria-busy', 'true');
-    status.textContent = 'Adding you to the waitlist…';
+    if (buttonLabel) buttonLabel.textContent = 'Sending…';
+    status.textContent = 'Saving your place on the waitlist…';
     status.classList.remove('is-error');
     var controller = new AbortController();
     var timeout = setTimeout(function () { controller.abort(); }, 15000);
@@ -31,10 +44,11 @@
         })
       });
       if (response.status === 429) throw new Error('Please wait a minute before trying again.');
-      if (!response.ok) throw new Error('We couldn’t save your entry. Please try again.');
-      var result = await response.json();
-      if (result.ok !== true) throw new Error('We couldn’t save your entry. Please try again.');
-      form.reset();
+      var result = await response.json().catch(function () { return {}; });
+      // The service answers with fixed texts only, never with submitted data.
+      if (!response.ok || result.ok !== true) throw new Error(result.error || 'We couldn’t save your entry. Please try again.');
+      if (sentTo) sentTo.textContent = form.elements.email.value.trim();
+      status.textContent = '';
       form.hidden = true;
       success.hidden = false;
       success.focus();
@@ -47,6 +61,7 @@
       clearTimeout(timeout);
       busy = false;
       button.disabled = false;
+      if (buttonLabel) buttonLabel.textContent = 'Join the beta';
       form.removeAttribute('aria-busy');
     }
   });

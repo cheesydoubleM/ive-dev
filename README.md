@@ -14,7 +14,11 @@ Then open `http://localhost:8000/`. The marketing pages can also be opened from 
 
 ## File map
 
-- `index.html` — 10-block homepage: the IVE mark unfolds into “Integrated Vibecoding Environment”, then GOAL → PLAN → WORK → CHECK → REVIEW
+- `index.html` — homepage: the agent tunnel opening, IVE unfolds into “Integrated Vibecoding Environment”, then the hero, Inside IVE (five app recordings and a tunnel into a failed check's feedback loop), Why IVE, two app details, GOAL → PLAN → WORK → CHECK → REVIEW, merge, review with the real code review, what you bring (terminal, models, tokens), run chooser, FAQ, and the beta waitlist
+- `behind.css`, `behind.js` — the early illustrated board-to-session-to-feedback tunnel within Inside IVE, keyboard controls, and static fallbacks
+- `showcase.css`, `showcase.js` — styles, tabs, playback and the full-size viewer for the recorded app demos, on the tokens of `styles.css`
+- `assets/app/` — recorded application demos (`<view>.mp4` at 3200×2000, `<view>-s.mp4` at 1600×1000, lossless WebP posters); made by `scripts/demos/record.mjs`
+- `scripts/demos/` — the recorder: the real IVE frontend on the isolated test transport, driven frame by frame (`lib/recorder.mjs`), one script per clip in `clips/`
 - `architecture.html` — engineering architecture page using the same design system
 - `imprint.html` and `privacy.html` — legal provider information and site-specific privacy notice
 - `404.html` — self-contained not-found page
@@ -36,8 +40,9 @@ Serve the folder, open `assets/og.html` in a browser at exactly 1200×630, and c
 
 - The homepage presents IVE as a beta with access by invitation. It must not promise a public app repository, an open-source release, a license, or a direct download.
 - The primary homepage action is joining the beta waitlist. Email is required; name is optional. No release date or immediate-access promise.
-- Supported integrations are Claude Code and Gemini CLI. Supported models are Haiku, Sonnet, Opus, Gemini Pro, and Flash.
-- Additional CLIs or models may appear only as explicitly labeled roadmap items, never as current support.
+- Supported integrations are Claude Code, Codex, and Gemini CLI (app profiles in `backend/cli_profiles.py`, checked 2026-10-17). Models depend on the installed CLI and account; illustrations name only Haiku, Sonnet, Opus, Gemini Pro, and Flash.
+- The app demos are recordings of the actual IVE frontend (the installed app build) on the isolated test transport from the app's own test suite. The Orbit project, its sessions and conversations are a clearly labelled demonstration; no provider ran and no live execution success is claimed. The animated scenes elsewhere on the page are illustrations.
+- Reverify compatibility against the app before changing provider claims.
 - Use only documented totals: 140+ API routes, 40+ shortcuts, 35+ MCP tools, 30+ event types, 20 RALPH iterations maximum, 8,000+ skills, a 6-column board, a 9-step package scan, 3 access modes, and 4 memory types.
 - Do not add social proof, customer claims, star counts, integrations, models, metrics, or capabilities that are absent from the product-truth source.
 
@@ -46,6 +51,10 @@ Serve the folder, open `assets/og.html` in a browser at exactly 1200×630, and c
 No public installer or download page is published from this repository. Do not commit application bundles, DMG/PKG/IPA installers, release ZIP archives, or private app source here. Publishing an installer requires a new explicit request from the owner.
 
 ## Beta waitlist
+
+The 2026-10-19 website release uses the existing signup service. Prepared
+double-opt-in work remains in the local review branch and is not deployed here.
+The form therefore confirms a saved signup without promising an automatic email.
 
 The website stays on GitHub Pages. Signup is handled by
 `https://ive-beta-waitlist.intertrans-vorschau.workers.dev/api/waitlist` in

@@ -13,3 +13,6 @@ waitlist-exports/
 *.ipa
 *.app/
 IVE-*.zip
+
+# Local redesign captures, reproduction scripts, and browser QA.
+review/

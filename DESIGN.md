@@ -177,24 +177,51 @@ communicate without color.
 The homepage contains exactly these blocks, in order:
 
 1. Header
-2. Hero: the controlled run
-3. Why IVE: four short benefits, one at a time — parallel work, every agent
+2. Mark: inside the machine, the agent swarm comes under control, IVE unfolds
+3. Hero: the controlled run
+4. Inside IVE: five recorded demos of the actual app in tabs (Board, Session,
+   Home, Review, Models and modes); the visible one plays muted and loops,
+   every recording opens full size. Directly after the recordings, within
+   this same section, the complete board opens into a scroll-driven tunnel:
+   board → its Sign-in checks session → failed check → failure context →
+   fix and verify again → human review.
+   The tile and tunnel use example content; recordings keep their own
+   provenance label. The explanatory sample-output footer was removed at the
+   user’s request. The old late architecture scene is removed.
+5. Why IVE: four short benefits, one at a time — parallel work, every agent
    in view, automatic retries, and the reader's final decision
-4. How it works
-5. Four user outcomes
-6. Merge: every session comes back as one review, drawn by scroll
-7. Human review and decision
-8. Beta invitation and local workflow
-9. Three concrete use cases in an interactive run chooser
-10. Beta waitlist: a static, immediately usable signup section. The established
+6. In the app: two crops from the same captures (board, focused session)
+7. How it works
+8. Four user outcomes
+9. Merge: every session comes back as one review, drawn by scroll
+10. Human review and decision, with the actual code review capture
+11. What you bring: the terminal inside the app, your own models, your own
+    accounts and tokens; two panels drawn in the app's design (a session with
+    the terminal open, the model menu)
+12. Beta invitation and local workflow
+13. Three concrete use cases in an interactive run chooser
+14. Questions: five short answers, including what is real and what is illustrated
+15. Beta waitlist: a static, immediately usable signup section. The established
     Archivo / Source Sans 3 / IBM Plex Mono faces and cool gray / electric blue
     tokens carry through. A two-column composition pairs the invitation with a
-    simple form; on mobile it stacks. Email is required, name is optional. A clear
+    simple form; on mobile it stacks, with the form before any repeated step
+    explanation. Email comes first and is required; name is optional. A clear
     consent checkbox links to the privacy notice. Submission has loading, retry,
     and confirmation states; no fake success before the server saves the entry.
+    The success screen shows the saved address and explains that invitations
+    follow later. Email confirmation is not enabled on the live service.
 
 Architecture, implementation totals, and the deeper security surface belong on
 the dedicated Architecture page or in the repository documentation.
+
+The page mixes two kinds of pictures on purpose. The set pieces (mark, hero
+stage, Why IVE, story, merge, what you bring, run chooser) are illustrations of how a run works.
+Blocks 4, 6 and the capture in 10 are real captures of the IVE frontend
+(`assets/app/`, provenance in `review/PROVENANCE.txt`) with demonstration
+content, labelled as such. Keep the real captures between the set pieces; do not
+replace the set pieces with captures or the other way round. Styles for the
+capture blocks live in `showcase.css`, tabs and the full-size viewer in
+`showcase.js`; both use the tokens from `styles.css`.
 
 ## Radius and surface
 
@@ -268,6 +295,18 @@ Grammar: **Branch → Execute → Verify → Proof.**
   or scroll transition before revealing the form. Header and hero CTAs link
   directly to `#waitlist`. Respect reduced motion and support native HTML POST
   submission when JavaScript is disabled.
+- The tunnel is part of Inside IVE, immediately after the app recordings and
+  before Why IVE. It starts with the complete app-style board: sidebar and
+  four sessions. One continuous camera zooms into its lower-left Sign-in checks
+  tile, pauses so the session is readable, then pushes into the failed line;
+  perspective frames pass the reader while three planes come into focus:
+  failure details handed to the next attempt, the bounded fix/verify loop,
+  then the illustrative diff and human review. The changing state explains
+  the mechanism; it does not claim measured improvements or bug-free output.
+  Five keyboard-accessible controls jump to settled states. Motion reverses
+  with scroll and has no continuous animation timer. On short/narrow screens,
+  without JavaScript or with reduced motion, all planes appear in normal flow.
+  `behind.css` and `behind.js` own the scene; recorded demos stay unchanged.
 - Ambient changes are sparse and product-relevant.
 - `prefers-reduced-motion` removes ambient and scroll animation, expands the run
   to its final state, and leaves the chooser in its completed review state.
@@ -300,8 +339,10 @@ No public installer or download page is published on this website. Do not add a 
 - Access is by beta invitation. Do not promise open-source availability, a public repository, a license, or a direct installation.
 - If product telemetry is discussed, explain it in plain prose next to the
   relevant technical documentation rather than compressing it into metadata.
-- Supported CLIs: Claude Code and Gemini CLI only.
-- Supported models: Haiku, Sonnet, Opus, Gemini Pro, and Flash only.
+- Supported CLIs: Claude Code, Codex, and Gemini CLI (profiles in the app's
+  `backend/cli_profiles.py`, checked 2026-10-17).
+- Models depend on the installed CLI and provider account. Illustrations name
+  only Haiku, Sonnet, Opus, Gemini Pro, and Flash.
 - Allowed totals: 140+ API routes, 40+ shortcuts, 35+ MCP tools, 30+ event
   types, 20 RALPH iterations maximum, 8,000+ skills, 6 board columns, 9 package
   scan steps, 3 access modes, and 4 memory types.
