@@ -1,153 +1,120 @@
-# IVE.DEV — Design System (WP2)
+# IVE.DEV design system (redesign 2026-10)
 
-Internal reference. Every page and section must comply with this document.
-Product truth comes from `_reference-old-site-copy.txt` and the Product truth
-block in `README.md`. No capability may be shown that is absent from those.
+Internal reference for every page of ive.dev. The full specification is
+`design/REDESIGN-BRIEF.md`; the shared markup and classes are in
+`design/partials/USAGE.md`. Product truth comes from the Product truth block in
+`README.md` and `design/research/04-inventory-and-constraints.md` (section 2) and
+`design/research/05-loops-and-automation.md` (sections 2 and 6). Everything is
+checked against IVE 1.0.17; the site shows no version number.
 
----
+## Idea
 
-## Brand idea
+IVE is the local control room for parallel coding agents: several sessions run
+side by side on your own machine, one board shows who runs, who waits and who is
+done, and every change comes back to you for review. The homepage lands one idea:
+more gets done because several agents work at once, and you can see each one
+because they all live on one board.
 
-**Run agents. Keep control.**
+Spirit: Cursor and Linear (owner request). Dark first, quiet chrome, real footage
+of the app, very little text. The footage carries the message; text only frames it.
 
-IVE is the local control room for parallel coding work. The website presents a
-clear outcome, not a collection of implementation details: one goal becomes
-visible parallel work and returns as one result a person can review.
+## Pages
 
-The footer is strictly factual: IVE, its relationship to AIFOREU, relevant
-links, its EU-based origin, and the open-source license (Apache 2.0). Decorative system-status
-language and compressed technical metadata do not appear there.
+| Page | Job |
+|---|---|
+| `index.html` | Opening scene, hero, Why IVE, Inside IVE, Get IVE, Maker |
+| `product.html` | The catalogue: every view and every loop, one row each, real footage |
+| `download.html` | Mac app, terminal install, source, requirements, removal, five questions |
+| `architecture.html` | Engineering page (old content, restyled) |
+| `imprint.html`, `privacy.html` | Legal; `<main class="legal-main">` is byte-identical, only the chrome changes |
+| `404.html` | Self-contained (own hashed style and script, root-absolute URLs) |
 
-The header carries a compact “IVE / by AIFOREU” maker lockup. Header ink is explicitly bound to its own surface tokens so the logo and theme control stay readable over the dark opening. The 28px mark, 14px theme label, and 18px outlined “Install IVE” action provide clear hierarchy without a bright filled button; the action remains visible on mobile. The footer keeps
-the product relationship “from AIFOREU,” with AIFOREU linked to
-`https://aiforgov.eu/`. “EU-backed” is not used because it can imply institutional
-EU funding or endorsement; no such claim is part of the verified product truth.
+### Homepage composition map
 
-No character, avatar, robot, employee, personality, or workforce metaphor is
-used. Commander is a product control, not a persona.
+No two neighbours share a composition, and none appears twice.
 
-## Visual thesis
-
-**A controlled run, live in Mission Control.**
-
-The five product phases remain the internal structural grammar:
-
-`REQUEST → ROUTE → EXECUTE → VERIFY → PROOF`
-
-The public homepage translates that system into immediate language:
-
-`GOAL → PLAN → WORK → CHECK → REVIEW`
-
-Section eyebrows name the reader’s question or benefit — “Why IVE,” “How it
-works,” “Your decision” — instead of exposing internal phase terminology.
-
-The hero’s right column is a live Mission Control composition with a Commander,
-four parallel sessions, real terminal output, supported model labels, the
-status glyph vocabulary, and a visible verification gate. This is the primary
-product expression; it is HTML, not an image. Its caption identifies it as a
-product-derived interaction concept rather than a recording.
-
-The signature moment is the living Mission Control instrument: a restrained
-pointer tilt, one passing specular glint, moving session progress, and a
-four-step “Run at a glance” rail. The motion exposes state and direction; it is
-never a decorative particle field.
-
-The end-to-end run retains the scroll-driven branch / execute / verify / merge
-story. Its no-JavaScript and reduced-motion form is the fully expanded final
-state.
-
----
-
-## Typography
-
-| Role | Face | Notes |
+| Section | One job | Composition |
 |---|---|---|
-| Display | **Archivo** (500–800, width 100–125%) | H1, H2, concise product headlines, and wordmark. Expanded width gives the control-room voice a recognizable silhouette. |
-| Body | **Source Sans 3** (400–600) | All explanatory and marketing copy. 16–18px, generous leading, ~64ch maximum. |
-| Machine | **IBM Plex Mono** (400/500/600) | Terminals, session IDs, statuses, metadata, eyebrows, keyboard keys, install commands, ledgers. |
+| Opening (in `#hero`) | The problem and the payoff without words, then the name | Pinned scroll scene on a dark ground in both themes: swarm, board, zoom out of the V, IVE unfolds into Integrated Vibecoding Environment |
+| Hero `#hero` | Name the product and show it | Left headline block, then a 1,320px product frame with the board recording |
+| Why IVE `#why` | The four reasons | Viewport-wide question that docks, statement column plus sticky media panel (pinned at 720px and up, in flow on phones) |
+| Inside IVE `#inside` | What IVE really does, as it happens | Chapter rail, one wide player, caption block; four real clips auto-advance: start and queue, Auto-fix loop, Pipelines, loop detection |
+| Get IVE `#install` | The action | Centred headline, two panels: Mac app and terminal |
+| Maker `#aiforeu` | Who makes it | Signature strip: the approved logo film left, one line right |
 
-All three families are self-hosted from `assets/fonts/`; production pages make no
-request to Google Fonts or another font CDN.
+Bento grids, icon walls, card stacks and repeated split sections are out.
 
-Rules:
+## Navigation and footer
 
-- Archivo carries the display voice at 125% width for H1/H2 and 112.5% for
-  smaller display roles; its expanded construction is the typographic signature.
-- Source Sans 3 keeps explanatory copy calm and readable beside the wider display face.
-- Machine voice is IBM Plex Mono. Terminal output is never proportional.
-- The H1 leads the product copy. The standalone “WHY IVE?” question deliberately
-  fills the viewport before the answers; other chapters step down from the H1.
-- The size ladder is hero 42–66px, chapter 32–46px, Why IVE statements 30–54px,
-  use-case and section titles 22–30px, card titles 17–19px, and body 16–18px.
-- Headlines use weight 620, negative tracking from -0.045em at the largest size
-  toward -0.02em at the smallest, balanced wrapping, expanded width, and 1.01–1.15 leading.
-- Section eyebrows use IBM Plex Mono at 11px/500, 0.13em tracking, and uppercase
-  text; they encode run state.
+- Header on every page: fixed, 64px (56px below 720px), transparent until 8px of
+  scroll, then glass with a hairline. Left the wordmark "IVE" at 22px with the blue
+  dot, no by-line. Right, all in one button family (36px, 6px radius): the quiet
+  links Product, Download, Architecture; the theme switch as an icon button
+  (sun in dark, moon in light, the label names the action); the GitHub icon button;
+  the outlined primary action (Download for Mac or Install IVE). Below 720px:
+  wordmark, primary action, Menu button with a panel.
+- While the opening scene is pinned the header uses the dark ink (`html.mark-dark`)
+  and hides its wordmark; the wordmark fades in at the hand-over.
+- Footer: IVE and "from AIFOREU" (link to aiforgov.eu), the six links, and the line
+  "EU-based · Open source under the Apache 2.0 license". The 404 keeps only the
+  line and the legal links.
 
-## Color
+## Tokens
 
-The page follows a 60 / 30 / 10 allocation. Roughly 60% is the cool light work
-surface, 30% is neutral anthracite across bounded control and verification
-fields, and 10% is functional accent. One electric blue means active execution
-and routing; it is also the mark’s signal dot. Dark mode reverses the grounds
-while preserving those roles. (Amber was the accent until 2026-09-08 and was
-retired because it read as a warning and dated the anthracite.)
+Dark is the default (also without JS); `html[data-theme="light"]` overrides.
+`.ink-dark` forces the dark set on any surface that is dark in both themes.
 
 ```text
-LIGHT
---bg          #F4F5F6
---bg-raised   #FFFFFF
---bg-inset    #EBEDEF
---bg-glass    rgba(244, 245, 246, 0.82)
---line        #DDE0E3
---line-strong #BFC4C9
---text        #15171A
---text-dim    #4A4F55
---text-faint  #6B7178
+                 dark                  light
+--bg             #0E1014               #F6F7F8
+--bg-raised      #15181D               #FFFFFF
+--bg-inset       #0A0C0F               #EEF0F2
+--line           rgba(255,255,255,.08) rgba(16,18,22,.10)
+--line-strong    rgba(255,255,255,.16) rgba(16,18,22,.18)
+--text-1         #F2F3F5               #15171A
+--text-2         #C6CAD1               #3E434A
+--text-3         #8B919B               #646A73
+--text-4         #7C828C               #686E77    (lifted in QA round 1: at least 4.5:1 on all three grounds)
+--accent         #5B8CFF               #1647FF    (links, running, focus, the dot)
+--accent-fill    #3A66FA               #1647FF    (filled hero button, white text 4.7:1 and 6.2:1)
+--done           #7DCE82               #087A4B
+--waiting        #E0A54A               #B7791F
+--attention      #F2545B               #C83B24
 ```
 
-Semantic colors split marks from readable ink:
+One accent. Blue only for running states, links, focus, the wordmark dot and the
+filled hero button. No purple, no neon, no glows.
 
-```text
---running       #1647FF   --running-ink   #0E36C7
---complete      #087A4B   --complete-ink  #066B41
---waiting       #98A0A8   --waiting-ink   #5A6067
---attention     #C83B24   --attention-ink #A82F1B
---route         #1647FF   --route-ink     #0E36C7
---focus         #1647FF
-```
+## Type
 
-```text
-DARK
---bg #101012 · --bg-raised #17171A · --bg-inset #0B0B0D
---bg-glass rgba(16, 16, 18, 0.82)
---line #26262B · --line-strong #34343B
---text #EDEDE9 · --text-dim #A3A39E · --text-faint #85857F
---running / --running-ink #5B8CFF
---complete / --complete-ink #7DCE82
---waiting / --waiting-ink #8A8A93
---attention / --attention-ink #F2545B
---route / --route-ink #5B8CFF · --focus #5B8CFF
-```
+Archivo (display, 500 to 800, width 100 to 125%), Source Sans 3 (body),
+IBM Plex Mono (labels, provenance, commands), all self-hosted in `assets/fonts`.
 
-Mission Control, the architecture security ledger, and the footer use the
-secondary ground. Human review remains the explicit opposite-ground moment.
+| Role | Setting |
+|---|---|
+| H1 | Archivo 700, 110%, 56px (40 on phones) |
+| H2 | Archivo 700, 110%, 40px (30); subpage rows 32px (26) |
+| Statement pair | Archivo 600, 32px (26): white line, grey line, same size |
+| Lead | Source Sans 3, 20px (18), `--text-2` |
+| Body | 16px, `--text-2`; captions `--text-3` |
+| Mono | IBM Plex Mono 500, 12px labels and provenance, 13px ledgers, 14px terminal boxes |
 
-The high-intent hero CTA (“Download for Mac”) and the download button of the install section use the execution accent; “View on GitHub” in the install section is a ghost button:
+No faded second headline line. Lines at most 64ch. Arrows, chevrons and icons are
+inline SVG, never font glyphs.
 
-```css
-.hero .btn-primary { background: var(--running); color: var(--on-accent); }
-.exit .exit-cta { background: #1647FF; color: #FFFFFF; } /* fixed: it sits on the black room in both themes */
-```
+## Components
 
-Rules:
-
-- Blue is earned by live/running marks, the two run actions, routes,
-  architecture paths, and routing links. Nothing else is blue.
-- No broad multicolor gradients, neon glow, purple, or decorative saturation.
-  The hero may use a low-opacity grid, a contained blue signal field, and one
-  white/blue specular glint to make Mission Control feel physically present.
-- The focus ring remains visible on every interactive control.
+- Buttons, one family, 6px radius, no pills: primary outlined (header, Get IVE),
+  primary filled (hero only), icon button 36×36, quiet (closers, links row).
+- Product frame: `--bg-inset`, 8px radius, hairline ring, soft shadow. No title bar
+  and no fake macOS chrome: the app's own sidebar and top bar are the chrome.
+  Pause and Expand controls; Expand opens the shared `<dialog>` viewer.
+- Panels: `--bg-raised`, hairline ring, 8px radius. Terminal box: `--bg-inset`,
+  mono 14px, `$` prompt drawn by CSS, Copy button with its own live region.
+- Captions: provenance in mono 12 `--text-4` ("IVE app · demo project · no provider
+  ran"); chapter captions as title 18/600 plus one sentence.
+- Product rows: hairlines between rows, text and frame alternate sides; the three
+  stills of the Models row share hairlines on a dark ground in both themes.
 
 ## Status language
 
@@ -155,251 +122,84 @@ Rules:
 ○ queued   ◐ thinking   ● running   ◇ waiting   ✓ complete   ! attention
 ```
 
-Use IBM Plex Mono. Pair a symbol with a word at first use. The symbol must still
-communicate without color.
+IBM Plex Mono, a symbol always paired with a word, readable without colour.
+Status glyphs belong only to product states inside diagrams and recordings.
 
-## Layout
+## Motion and video
 
-- Twelve-column fluid grid, 1480px maximum content width, 8px base spacing.
-- Strongly left aligned and deliberately asymmetric.
-- Section eyebrows carry plain-language orientation and reserve no viewport
-  edge or content column.
-- Raw page plus hairline rules is the default surface.
-- Panels are reserved for product UI: terminals, session tiles, board columns,
-  run ledgers, and generated briefings.
-- Marketing copy never sits in a card.
-- Section rhythm stays uneven: thesis → human problem → visible run → four
-  outcomes → inverted human review → local trust → concrete examples → simple
-  final action.
+- Budget: the opening scene, Why IVE, the recordings, and 120 to 220ms hover and
+  crossfade transitions. No scroll reveals, no parallax, no blur on text.
+- Recordings are muted product loops that play only in view: `preload="none"`, the
+  source is attached one viewport ahead, `-s` (1600) unless width × DPR > 1700,
+  `-m` 3:4 crops below 720px. One video plays at a time; off-screen, a hidden tab or
+  the open viewer pauses it. The Maker film is the one clip with sound.
+- `prefers-reduced-motion`: nothing starts by itself, the two scenes show their
+  static states, transitions are instant. Without JS every page is a calm static
+  page with posters, captions and plain navigation.
 
-## Information architecture
+## Voice and copy
 
-The homepage contains exactly these blocks, in order:
+- English, short, concrete. No em or en dashes as punctuation, no emojis, no AI
+  vocabulary (unlock, seamless, supercharge, revolutionize, elevate and their kin).
+- Hard word budgets per section (brief 2.4). Round 1 measured on the rendered
+  homepage: 271 marketing words (hero 14, Why 109, Inside 111, Get 31, Maker 6).
+- One primary home per claim (brief 2.5). The homepage gives the short version,
+  Product describes the view or mechanism in other words. Functional lines
+  (commands, requirements, provenance, legal, buttons) may repeat where needed.
+- Benefit first, mechanism second; deep implementation detail lives on Architecture.
+- Buttons name the page or action they open.
 
-1. Header
-2. Mark: inside the machine, the agent swarm comes under control, IVE unfolds
-3. Hero: the controlled run
-4. Inside IVE: five recorded demos of the actual app in tabs (Board, Session,
-   Home, Review, Models and modes); the visible one plays muted and loops,
-   every recording opens full size. Directly after the recordings, within
-   this same section, the complete board opens into a scroll-driven tunnel:
-   board → its Sign-in checks session → failed check → failure context →
-   fix and verify again → human review.
-   The tile and tunnel use example content; recordings keep their own
-   provenance label. The explanatory sample-output footer was removed at the
-   user’s request. The old late architecture scene is removed.
-5. Why IVE: four short benefits, one at a time — parallel work, every agent
-   in view, automatic retries, and the reader's final decision
-6. In the app: two crops from the same captures (board, focused session)
-7. How it works
-8. Four user outcomes
-9. Merge: every session comes back as one review, drawn by scroll
-10. Human review and decision, with the actual code review capture
-11. What you bring: the terminal inside the app, your own models, your own
-    accounts and tokens; two panels drawn in the app's design (a session with
-    the terminal open, the model menu)
-12. Open source and local workflow: Apache 2.0 license, telemetry off by default, link to the public repository
-13. Three concrete use cases in an interactive run chooser
-14. Questions: five short answers, including what is real and what is illustrated
-15. Install (`#install`, with `#waitlist` and `#get-ive` kept as alias anchors
-    for old links): a static section. The Mac app comes first: “Download for
-    Mac” links the DMG of the latest GitHub release, followed by its
-    requirements (Apple silicon, macOS 13.5 or newer), how to install it (drag
-    into Applications; the app runs its own local service, one app in the
-    Dock) and that it is signed by AIFOREU GmbH and notarized by Apple. Below a
-    “Linux, Intel Macs and developers” divider follows the one-line installer
-    `curl -fsSL https://ive.dev/install.sh | bash` in a terminal panel with a
-    copy button, then “Then start IVE with: ive”, what the installer does, a
-    link to read the script, and the requirements. The clone path
-    (`git clone`, `cd ive`, `bash install.sh`, `bin/ive`) sits folded in a
-    native `<details>`. Copy buttons ship `hidden` and only appear with
-    JavaScript; without it the commands stay selectable. On mobile the
-    panel comes before the buttons. The beta waitlist form was retired on
-    2026-10-22; its backend and data were deleted the same day (see README).
-    Below the command, one line asks for a GitHub star; it is the only
-    star ask on the site. The header carries a GitHub logo link on every page.
-16. Behind all this (`#aiforeu`): who makes IVE. The approved AIFOREU logo
-    film (`assets/aiforeu/`, first 5.9 s of the master with its sound, which
-    fades out at the end) plays once when it comes into view, on the owner's
-    request (2026-10-22). It asks for sound first; browsers allow that only
-    after the visitor has clicked or typed on the page, otherwise it plays
-    muted and offers "Sound on". It pauses when scrolled away, stops on the
-    finished logo with the EU co-funding notice and offers "Replay". Reduced
-    motion starts nothing on its own ("Play with sound"). The film has a fixed
-    light ground, so the section keeps the light palette in both themes.
-    Logic in `madeby.js`.
+## Honesty
 
-Architecture, implementation totals, and the deeper security surface belong on
-the dedicated Architecture page or in the repository documentation.
+- Only claims that are true for the current release. No speed or quality claims,
+  no numbers as proof, no testimonials, customer logos, star counts or other
+  social proof. Asking once for a GitHub star is fine.
+- Never "your code stays on your machine": IVE runs on your computer, and the
+  coding CLI sends prompts, context and code to the provider the user chose.
+- CLIs: the site names Claude Code, Codex and Gemini (owner decision, 2026-10-22).
+  In 1.0.17 Gemini runs through the Antigravity CLI profile, Google's agent CLI; the
+  standalone Gemini CLI profile is inactive (`backend/cli_profiles.py`).
+  Full lists: "Claude Code, Codex and Gemini (Antigravity CLI)".
+  Short lists and chips: "Claude Code · Codex · Gemini". Never "Gemini CLI" alone.
+  Models depend on the installed CLI and account; illustrations name only Haiku,
+  Sonnet, Opus and the Gemini Pro and Flash models (`gemini-3.1-pro`,
+  `gemini-3.5-flash`).
+- Recordings are the real IVE frontend on its isolated test transport with the
+  demo project Orbit; no provider ran. The opening scene and the Why ledger are the
+  only illustrations. Never fake app UI where a recording exists.
+- Numeric totals (Architecture only) sit beside "Development snapshot ·
+  capabilities may change during the beta.".
+- No Windows support, no Intel Mac app, no version number or file size for the
+  Mac app, no "EU-backed".
 
-The page mixes two kinds of pictures on purpose. The set pieces (mark, hero
-stage, Why IVE, story, merge, what you bring, run chooser) are illustrations of how a run works.
-Blocks 4, 6 and the capture in 10 are real captures of the IVE frontend
-(`assets/app/`, provenance in `review/PROVENANCE.txt`) with demonstration
-content, labelled as such. Keep the real captures between the set pieces; do not
-replace the set pieces with captures or the other way round. Styles for the
-capture blocks live in `showcase.css`, tabs and the full-size viewer in
-`showcase.js`; both use the tokens from `styles.css`.
+## Technical contract
 
-## Radius and surface
+- Static HTML, CSS and JS, no build step. Shared: `site.css`, `site.js`; homepage
+  adds `opening.css`, `home.css`, `opening.js`, `home.js`, `madeby.js`.
+- Every page: strict CSP meta (`default-src 'none'`, `'self'` only, inline scripts
+  and styles by sha256 hash, `media-src 'self'` only on pages with video,
+  `base-uri 'none'`, `form-action 'none'`). Recompute a hash after any change to
+  an inline block. No external requests; fonts are local.
+- `?v=` cache version on every CSS and JS reference; raise it with every change
+  (GitHub Pages caches for 10 minutes).
+- Theme: inline boot script, `localStorage['ive-theme']` only, dark by default.
+- Download logic (`[data-mac-download]`): Apple silicon Mac keeps the DMG link;
+  every other platform, touch Macs (iPad) and Intel Macs in Chromium
+  (`userAgentData` architecture `x86`) get "Install IVE" to the terminal install.
+  Plain DMG links never change.
+- `install.sh` stays byte-identical; `CNAME` and `robots.txt` unchanged; legal
+  `<main>` unchanged; `_config.yml` keeps `design`, `review` and `scripts` out of
+  the published site.
 
-- Product panels and terminals: 8px.
-- Small chips and keys: 4px. Buttons: 6px.
-- Nothing pill-shaped.
-- Terminals use `--bg-inset`, a 1px line, and 13px mono output.
-- No fake macOS chrome.
+## Hard bans
 
-## Motion
-
-Grammar: **Branch → Execute → Verify → Proof.**
-
-- The end-to-end run uses CSS transforms with vanilla JavaScript.
-- “WHY IVE?” first owns the entire viewport. “You have the agents.” sets up
-  the question, which holds on its own with a quiet scroll cue. The same two
-  words then shrink and move into a prominent chapter heading; only once that
-  movement is nearly complete do the four short answers and their visual appear.
-  On mobile the opening question stacks on two lines, then comes together into
-  one line above the answers. The first 28% of the scroll belongs to this setup.
-  The question animates through real font sizes and positioned words. Never
-  enlarge a small text layer with `scale()` or `will-change: transform`: Safari
-  can retain the small raster and visibly pixelate the full-screen lettering.
-  Each answer has one explanatory sentence. One continuous composition of four session
-  sheets unfolds in perspective for parallel work, turns face-on into an
-  overview, passes beneath a verification scan that changes retry to complete,
-  and stacks beneath a final review. The reader controls the pace in either
-  direction. Text fades out before the next statement appears, with a small
-  depth and focus shift. Four labeled progress controls jump to each settled
-  state and work with the keyboard. The visual is labeled as an illustrated
-  example, and its review surface is an illustration, not a live merge action.
-  The sequence has no continuous animation loop: only scroll and resize request
-  frames. Small screens scale the instrument beneath the text. Reduced motion,
-  no JavaScript, and short landscape windows show all four benefits in normal
-  flow. All four explanations remain available to assistive technology.
-- The page opens inside the machine: black ground, a grid corridor (floor,
-  ceiling, walls in true perspective) rushing past with ring frames, a slow
-  camera drift, and coding agents as two-line session cards swarming around
-  the viewer in depth, running, retrying, waiting, with a live count under
-  the caption. The swarm moves on its own; scrolling drives the story. Under
-  “Under control.” the cards glide onto one Mission Control board and settle
-  to complete. Then everything goes dark, and the viewer zooms out of the
-  letters themselves: the view starts inside the V’s left stroke, the stroke
-  edges recede, the light page appears around the black shapes, I and E
-  come in from the sides, until the mark “IVE” stands, filling the viewport. The header sits on the black
-  ground in light ink until then. Scrolling on pulls the three letters apart
-  while “ntegrated”, “ibecoding” and “nvironment” slide out from behind them
-  until the full name stands. The type size always follows the room the line
-  needs, so the name never leaves the viewport. Below 720px the letters stack
-  and unfold to the right. A “Scroll” cue with a running line sits below at
-  the start. Once the name stands, the maker's signature “made by AIFOREU ↗”
-  appears at the foot of the pin and links to AIFOREU; in the header,
-  “by AIFOREU” under the wordmark is that same link. Without JavaScript or
-  with reduced motion the full name stands as a plain block with the
-  signature below. The cards are product objects, not characters.
-- The hero enters as one orchestrated sequence once it scrolls into view;
-  Mission Control may respond by no more than 2.2 degrees to a fine pointer.
-- “Run at a glance” advances with the example state and always remains readable
-  without motion.
-- Near the end, the run chooser lets the reader switch between three truthful
-  use cases. Its four task rows advance only while the instrument is visible;
-  the run remains an illustrated example.
-- Merge, between the parallel work and its review: one lane per session
-  starts across the full width and curves into a single trunk. Scroll draws
-  the lanes in a stagger, a dot rides each drawing edge, a small packet
-  travels every running lane, and a lane and its label turn complete as it
-  arrives. The trunk then draws down out of the section in the complete
-  green, ending in one review. Faint ghost lines show the paths before they
-  are drawn. Below 720px there are six lanes and id-only labels.
-- The page closes with the static install section. It never waits for an
-  animation or scroll transition before revealing the commands. The header
-  CTA links to `#install`. The hero CTA downloads the Mac app; on phones,
-  tablets, Linux and Windows `script.js` turns it into “Install IVE” → `#install`.
-  Intel Macs get the same in Chromium browsers, which report the CPU
-  architecture; Safari and Firefox do not, so there the note below the button
-  names Apple silicon. Everything works without JavaScript.
-- The tunnel is part of Inside IVE, immediately after the app recordings and
-  before Why IVE. It starts with the complete app-style board: sidebar and
-  four sessions. One continuous camera zooms into its lower-left Sign-in checks
-  tile, pauses so the session is readable, then pushes into the failed line;
-  perspective frames pass the reader while three planes come into focus:
-  failure details handed to the next attempt, the bounded fix/verify loop,
-  then the illustrative diff and human review. The changing state explains
-  the mechanism; it does not claim measured improvements or bug-free output.
-  Five keyboard-accessible controls jump to settled states. Motion reverses
-  with scroll and has no continuous animation timer. On short/narrow screens,
-  without JavaScript or with reduced motion, all planes appear in normal flow.
-  `behind.css` and `behind.js` own the scene; recorded demos stay unchanged.
-- Ambient changes are sparse and product-relevant.
-- `prefers-reduced-motion` removes ambient and scroll animation, expands the run
-  to its final state, and leaves the chooser in its completed review state.
-- With JavaScript disabled all content and the final run state remain readable.
-
-## Voice
-
-- Clear, confident, and human. Short declarative sentences.
-- State the user-visible action or result directly: one goal, separate tasks,
-  visible checks, and one result to review.
-- Use words a product user recognizes: goal, task, work, check, result, review.
-  Keep route, PTY, MCP, worktree, event bus, and implementation details off the
-  first explanatory layer.
-- Benefit first, mechanism second. Put deep implementation detail on the
-  Architecture page.
-- Describe controls and review states, not personalities.
-- Compatibility copy says what is supported today. Anything else is explicitly
-  labeled roadmap.
-- No corporate filler, meme voice, grandiosity, or workforce metaphor.
-- No decorative system messages, fake operational states, or internal phase
-  labels in public copy. Status glyphs belong only to product states inside
-  diagrams and demonstrations.
-- Avoid compressed slogans when one factual sentence can explain the same
-  thing. Buttons name the page or action they actually open.
-
-## Honesty constraints
-
-IVE is open source under the Apache 2.0 license (owner decision, 2026-10-22). The
-site offers the one-line installer `install.sh` (served at
-https://ive.dev/install.sh) and the source path from
-https://github.com/michael-ra/ive. Since 2026-10-22 (owner request) it also
-links the Mac app: https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg
-(stable across releases). Facts that may be stated: Apple silicon (M1 or newer),
-macOS 13.5 or newer, a signed-in coding CLI, signed with the Developer ID of
-AIFOREU GmbH and notarized by Apple (the app, not the DMG), runs its own local
-service, opens in its own window (no terminal, no browser tab), one app in the
-Dock. Never host the DMG in this repository and show no version number or file
-size for it. Do not promise Windows support, an Intel Mac app, a community,
-stars, or contributors.
-Asking for a GitHub star is fine; never show a star count that is not current.
-
-- Supported systems for the one-line install: macOS or Linux. Requirements:
-  Python 3.11+, Node.js 22.12+ with npm, Git, and at least one supported coding
-  CLI. The Mac app needs none of the first three, only a signed-in coding CLI.
-- Telemetry is off by default; the site may say so, nothing more about it.
-- If product telemetry is discussed, explain it in plain prose next to the
-  relevant technical documentation rather than compressing it into metadata.
-- Supported CLIs: Claude Code, Codex, and Gemini CLI (profiles in the app's
-  `backend/cli_profiles.py`, checked 2026-10-17).
-- Models depend on the installed CLI and provider account. Illustrations name
-  only Haiku, Sonnet, Opus, Gemini Pro, and Flash.
-- Allowed totals: 140+ API routes, 40+ shortcuts, 35+ MCP tools, 30+ event
-  types, 20 RALPH iterations maximum, 8,000+ skills, 6 board columns, 9 package
-  scan steps, 3 access modes, and 4 memory types.
-- When numeric product totals are shown, they sit beside the visible source
-  line: “Development snapshot · capabilities may change during the beta.”.
-- No customer claims, social proof, release dates, version numbers, OS matrix,
-  unverified metrics, or unsupported integrations.
-
-## Anti-patterns (hard bans)
-
-- Purple/violet, neon cyan+magenta, diffuse neon glows, star fields, orbs, or
-  sparkle icons. A contained surface glint is allowed only in the hero.
-- Matrix green, hacker cosplay, ASCII art as decoration.
-- Cards for everything; icon-grid feature walls; decorative bento layouts.
-- Generic node graphs, neural imagery, robot/AI-head illustrations.
-- Character, avatar, robot, employee, personality, or workforce metaphors.
-- Fake macOS chrome, fake customers, fake numbers, fake code.
-- Custom cursors, WebGL, animation libraries, autoplay video. Only exception:
-  the AIFOREU logo film in Behind all this (owner request, 2026-10-22).
-- Warm-cream + serif + terracotta; black + acid-green; broadsheet templates.
-- Looking like Cursor, Linear, Zed, Raycast, or Warp.
-- Retired brand line: “One brain. Infinite&#32;hands.”
-- Retired collaboration wording: “agent&#32;army” / “agent&#32;armies”.
-- Retired session line: “tmux wish&#101;s it could do this.”
+- Social proof of any kind, fake customers, fake numbers, fake code, fake chrome.
+- Purple or violet, neon, glows, star fields, orbs, sparkle icons; matrix green,
+  hacker cosplay, ASCII decoration.
+- Bento grids, icon-grid feature walls, cards for everything, pill buttons.
+- Robots, AI heads, characters, avatars, personalities, workforce metaphors.
+- Custom cursors, WebGL, animation libraries.
+- Retired lines: "Run agents. Keep control.", "Your code stays on your machine",
+  "One brain. Infinite&#32;hands.", "agent&#32;army", "tmux wish&#101;s it could do
+  this.", every GOAL → PLAN → WORK → CHECK → REVIEW strip, "Mission Control" as a
+  label, "Ralph" as a product name (the UI says Auto-fix loop).

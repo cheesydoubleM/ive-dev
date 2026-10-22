@@ -1,0 +1,762 @@
+{
+ "source": "ive-oss backend/pipeline_engine.py PRESETS (IVE 1.0.17, 5d33e8e)",
+ "presets": {
+  "research-loop": {
+   "name": "Research Loop",
+   "description": "Research -> Plan -> Implement -> Test -> Document -> Loop. The full CI/CD agent cycle, ending with docs once tests pass.",
+   "stages": [
+    {
+     "id": "research",
+     "name": "Research",
+     "type": "agent",
+     "session_type": "worker",
+     "prompt_template": "Research improvements and opportunities for {topic}. Focus on actionable findings with clear implementation paths.",
+     "position": {
+      "x": 80,
+      "y": 200
+     },
+     "config": {
+      "icon": "search"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "plan",
+     "name": "Plan",
+     "type": "agent",
+     "session_type": "commander",
+     "prompt_template": "Based on the research findings, create implementation tasks. Branch if needed. Assign clear scope to each task.",
+     "position": {
+      "x": 320,
+      "y": 200
+     },
+     "config": {
+      "icon": "map"
+     },
+     "agent_config": {
+      "model": "opus",
+      "permission_mode": "plan"
+     }
+    },
+    {
+     "id": "implement",
+     "name": "Implement",
+     "type": "agent",
+     "session_type": "worker",
+     "prompt_template": "Implement the planned changes. Follow the task description and acceptance criteria. Write tests alongside code.",
+     "position": {
+      "x": 560,
+      "y": 200
+     },
+     "config": {
+      "icon": "code"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "test",
+     "name": "Test",
+     "type": "agent",
+     "session_type": "tester",
+     "prompt_template": "Run the test suite and verify the implementation. Report results clearly. When done, use the report_pipeline_result tool with status 'pass' or 'fail' and a summary.",
+     "position": {
+      "x": 800,
+      "y": 200
+     },
+     "config": {
+      "icon": "check-circle"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "evaluate",
+     "name": "Evaluate",
+     "type": "condition",
+     "session_type": null,
+     "prompt_template": "",
+     "position": {
+      "x": 1040,
+      "y": 200
+     },
+     "config": {
+      "mode": "keyword",
+      "require_report": true,
+      "icon": "git-branch",
+      "pass_keywords": [
+       "pass",
+       "passed",
+       "success",
+       "all tests"
+      ],
+      "fail_keywords": [
+       "fail",
+       "failed",
+       "error",
+       "broken"
+      ]
+     }
+    },
+    {
+     "id": "document",
+     "name": "Document",
+     "type": "agent",
+     "session_type": "documentor",
+     "prompt_template": "Document the just-shipped changes for {topic}. Inspect the relevant git commits, capture screenshots of new UI, record GIF workflows for new flows, and update the docs site. Use the documentor MCP tools (get_changes_since, screenshot_page, record_workflow, update_docs_manifest, build_docs), and include task IDs plus relevant commit_shas in update_docs_manifest.",
+     "position": {
+      "x": 1280,
+      "y": 200
+     },
+     "config": {
+      "icon": "book-open"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    }
+   ],
+   "transitions": [
+    {
+     "id": "t1",
+     "source": "research",
+     "target": "plan",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t2",
+     "source": "plan",
+     "target": "implement",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t3",
+     "source": "implement",
+     "target": "test",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t4",
+     "source": "test",
+     "target": "evaluate",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t5",
+     "source": "evaluate",
+     "target": "document",
+     "condition": "on_pass",
+     "label": "Document",
+     "condition_config": {}
+    },
+    {
+     "id": "t6",
+     "source": "evaluate",
+     "target": "implement",
+     "condition": "on_fail",
+     "label": "Retry",
+     "condition_config": {}
+    },
+    {
+     "id": "t7",
+     "source": "document",
+     "target": "research",
+     "condition": "always",
+     "label": "Next cycle"
+    }
+   ],
+   "triggers": []
+  },
+  "tdd-loop": {
+   "name": "TDD Loop",
+   "description": "Implement -> Test -> Fix -> Repeat until green.",
+   "stages": [
+    {
+     "id": "implement",
+     "name": "Implement",
+     "type": "agent",
+     "session_type": "worker",
+     "prompt_template": "Implement the feature: {topic}. Write code with tests.",
+     "position": {
+      "x": 200,
+      "y": 200
+     },
+     "config": {
+      "icon": "code"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "test",
+     "name": "Test",
+     "type": "agent",
+     "session_type": "tester",
+     "prompt_template": "Run all tests. When done, use the report_pipeline_result tool with status 'pass' or 'fail' and a summary of results.",
+     "position": {
+      "x": 500,
+      "y": 200
+     },
+     "config": {
+      "icon": "check-circle"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "evaluate",
+     "name": "Evaluate",
+     "type": "condition",
+     "session_type": null,
+     "prompt_template": "",
+     "position": {
+      "x": 800,
+      "y": 200
+     },
+     "config": {
+      "mode": "keyword",
+      "require_report": true,
+      "icon": "git-branch",
+      "pass_keywords": [
+       "pass",
+       "passed",
+       "success"
+      ],
+      "fail_keywords": [
+       "fail",
+       "failed",
+       "error"
+      ]
+     }
+    }
+   ],
+   "transitions": [
+    {
+     "id": "t1",
+     "source": "implement",
+     "target": "test",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t2",
+     "source": "test",
+     "target": "evaluate",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t3",
+     "source": "evaluate",
+     "target": "implement",
+     "condition": "on_fail",
+     "label": "Fix",
+     "condition_config": {}
+    }
+   ],
+   "triggers": []
+  },
+  "review-loop": {
+   "name": "Review Loop",
+   "description": "Implement -> Code Review -> Revise -> Repeat until approved.",
+   "stages": [
+    {
+     "id": "implement",
+     "name": "Implement",
+     "type": "agent",
+     "session_type": "worker",
+     "prompt_template": "Implement: {topic}",
+     "position": {
+      "x": 200,
+      "y": 200
+     },
+     "config": {
+      "icon": "code"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "review",
+     "name": "Review",
+     "type": "agent",
+     "session_type": "commander",
+     "prompt_template": "Review the changes. Check code quality, correctness, and test coverage. Use the report_pipeline_result tool: 'pass' if approved or 'fail' with specific feedback.",
+     "position": {
+      "x": 500,
+      "y": 200
+     },
+     "config": {
+      "icon": "eye"
+     },
+     "agent_config": {
+      "model": "opus",
+      "permission_mode": "plan"
+     }
+    },
+    {
+     "id": "evaluate",
+     "name": "Evaluate",
+     "type": "condition",
+     "session_type": null,
+     "prompt_template": "",
+     "position": {
+      "x": 800,
+      "y": 200
+     },
+     "config": {
+      "mode": "keyword",
+      "require_report": true,
+      "icon": "git-branch",
+      "pass_keywords": [
+       "approved",
+       "pass",
+       "lgtm"
+      ],
+      "fail_keywords": [
+       "changes requested",
+       "fail",
+       "rejected"
+      ]
+     }
+    }
+   ],
+   "transitions": [
+    {
+     "id": "t1",
+     "source": "implement",
+     "target": "review",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t2",
+     "source": "review",
+     "target": "evaluate",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t3",
+     "source": "evaluate",
+     "target": "implement",
+     "condition": "on_fail",
+     "label": "Revise",
+     "condition_config": {}
+    }
+   ],
+   "triggers": []
+  },
+  "verification-cascade": {
+   "name": "Verification Cascade",
+   "description": "Unit Tests -> E2E Tests -> Quality Audit, with fix-and-restart at every level. Escalating verification that checks if outputs are actually useful, not just working.",
+   "stages": [
+    {
+     "id": "unit_test",
+     "name": "Unit Tests",
+     "type": "agent",
+     "session_type": "tester",
+     "prompt_template": "Run unit tests for {topic}. Use pytest or the project's test framework. If relevant tests don't exist yet, write them first — cover core logic, edge cases, and gating conditions. When done, use the report_pipeline_result tool with status 'pass' if all tests pass, or 'fail' with the failure summary.",
+     "position": {
+      "x": 100,
+      "y": 150
+     },
+     "config": {
+      "icon": "test-tubes"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "unit_eval",
+     "name": "Unit Gate",
+     "type": "condition",
+     "session_type": null,
+     "prompt_template": "",
+     "position": {
+      "x": 280,
+      "y": 150
+     },
+     "config": {
+      "mode": "keyword",
+      "require_report": true,
+      "icon": "git-branch",
+      "pass_keywords": [
+       "pass",
+       "passed",
+       "success",
+       "all tests"
+      ],
+      "fail_keywords": [
+       "fail",
+       "failed",
+       "error",
+       "broken"
+      ]
+     }
+    },
+    {
+     "id": "e2e_test",
+     "name": "E2E Tests",
+     "type": "agent",
+     "session_type": "tester",
+     "prompt_template": "Test {topic} end-to-end against the running system. Hit real API endpoints, start real sessions, verify WebSocket events arrive, check database state. Don't mock — test actual behavior. Verify the feature behaves as intended, not just that it doesn't crash. When done, use the report_pipeline_result tool with 'pass' or 'fail' and a behavioral summary.",
+     "position": {
+      "x": 460,
+      "y": 150
+     },
+     "config": {
+      "icon": "monitor"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "e2e_eval",
+     "name": "E2E Gate",
+     "type": "condition",
+     "session_type": null,
+     "prompt_template": "",
+     "position": {
+      "x": 640,
+      "y": 150
+     },
+     "config": {
+      "mode": "keyword",
+      "require_report": true,
+      "icon": "git-branch",
+      "pass_keywords": [
+       "pass",
+       "passed",
+       "success",
+       "verified"
+      ],
+      "fail_keywords": [
+       "fail",
+       "failed",
+       "error",
+       "broken",
+       "unexpected"
+      ]
+     }
+    },
+    {
+     "id": "quality_audit",
+     "name": "Quality Audit",
+     "type": "agent",
+     "session_type": "commander",
+     "prompt_template": "Audit the output quality of {topic}. This is NOT a correctness check — the previous stages already verified that. Your job: run the feature with realistic inputs and evaluate whether the outputs are actually USEFUL to a human user. Check: Are generated texts meaningful and relevant? Are suggestions actionable? Do edge cases produce reasonable results or garbage? Test with at least 3 different realistic scenarios. Compare outputs against what a good human-crafted version would look like. Report 'pass' via report_pipeline_result only if outputs are production-quality. Report 'fail' with specific examples of low-quality output and what 'good' would look like.",
+     "position": {
+      "x": 820,
+      "y": 150
+     },
+     "config": {
+      "icon": "eye"
+     },
+     "agent_config": {
+      "model": "opus",
+      "permission_mode": "plan"
+     }
+    },
+    {
+     "id": "quality_eval",
+     "name": "Quality Gate",
+     "type": "condition",
+     "session_type": null,
+     "prompt_template": "",
+     "position": {
+      "x": 1000,
+      "y": 150
+     },
+     "config": {
+      "mode": "keyword",
+      "require_report": true,
+      "icon": "git-branch",
+      "pass_keywords": [
+       "pass",
+       "production-quality",
+       "approved",
+       "useful"
+      ],
+      "fail_keywords": [
+       "fail",
+       "low-quality",
+       "garbage",
+       "misleading",
+       "wrong"
+      ]
+     }
+    },
+    {
+     "id": "fix",
+     "name": "Fix",
+     "type": "agent",
+     "session_type": "worker",
+     "reuse_session_from": "__from_failure__",
+     "prompt_template": "Fix the issues found during verification of {topic}. Address the root cause, not just symptoms. If the quality audit flagged misleading outputs, fix the data/context the feature uses, not just the formatting. If unit or e2e tests failed, fix the code and update tests if needed.",
+     "position": {
+      "x": 550,
+      "y": 350
+     },
+     "config": {
+      "icon": "wrench"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    }
+   ],
+   "transitions": [
+    {
+     "id": "t1",
+     "source": "unit_test",
+     "target": "unit_eval",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t2",
+     "source": "unit_eval",
+     "target": "e2e_test",
+     "condition": "on_pass",
+     "label": "Tests pass",
+     "condition_config": {}
+    },
+    {
+     "id": "t3",
+     "source": "unit_eval",
+     "target": "fix",
+     "condition": "on_fail",
+     "label": "Tests fail",
+     "condition_config": {}
+    },
+    {
+     "id": "t4",
+     "source": "e2e_test",
+     "target": "e2e_eval",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t5",
+     "source": "e2e_eval",
+     "target": "quality_audit",
+     "condition": "on_pass",
+     "label": "Behavior OK",
+     "condition_config": {}
+    },
+    {
+     "id": "t6",
+     "source": "e2e_eval",
+     "target": "fix",
+     "condition": "on_fail",
+     "label": "Behavior wrong",
+     "condition_config": {}
+    },
+    {
+     "id": "t7",
+     "source": "quality_audit",
+     "target": "quality_eval",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t8",
+     "source": "quality_eval",
+     "target": "fix",
+     "condition": "on_fail",
+     "label": "Quality issues",
+     "condition_config": {}
+    },
+    {
+     "id": "t9",
+     "source": "fix",
+     "target": "unit_test",
+     "condition": "always",
+     "label": "Re-verify from start"
+    }
+   ],
+   "triggers": []
+  },
+  "ralph-pipeline": {
+   "name": "RALPH Pipeline",
+   "description": "Execute -> Verify -> Fix -> Repeat. Multi-agent version of RALPH mode.",
+   "stages": [
+    {
+     "id": "execute",
+     "name": "Execute",
+     "type": "agent",
+     "session_type": "worker",
+     "prompt_template": "Execute the task: {topic}. Do the work completely.",
+     "position": {
+      "x": 150,
+      "y": 200
+     },
+     "config": {
+      "icon": "zap"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "verify",
+     "name": "Verify",
+     "type": "agent",
+     "session_type": "tester",
+     "prompt_template": "Verify the work is correct. Run tests, check output, validate behavior. When done, use the report_pipeline_result tool with status 'pass' or 'fail' and a summary.",
+     "position": {
+      "x": 450,
+      "y": 200
+     },
+     "config": {
+      "icon": "shield"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    },
+    {
+     "id": "evaluate",
+     "name": "Evaluate",
+     "type": "condition",
+     "session_type": null,
+     "prompt_template": "",
+     "position": {
+      "x": 750,
+      "y": 200
+     },
+     "config": {
+      "mode": "keyword",
+      "require_report": true,
+      "icon": "git-branch",
+      "pass_keywords": [
+       "pass",
+       "verified",
+       "correct"
+      ],
+      "fail_keywords": [
+       "fail",
+       "incorrect",
+       "broken"
+      ]
+     }
+    },
+    {
+     "id": "fix",
+     "name": "Fix",
+     "type": "agent",
+     "session_type": "worker",
+     "reuse_session_from": "execute",
+     "prompt_template": "Fix the issues found during verification. Apply the feedback.",
+     "position": {
+      "x": 600,
+      "y": 380
+     },
+     "config": {
+      "icon": "wrench"
+     },
+     "agent_config": {
+      "model": "sonnet",
+      "permission_mode": "auto"
+     }
+    }
+   ],
+   "transitions": [
+    {
+     "id": "t1",
+     "source": "execute",
+     "target": "verify",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t2",
+     "source": "verify",
+     "target": "evaluate",
+     "condition": "always",
+     "label": ""
+    },
+    {
+     "id": "t3",
+     "source": "evaluate",
+     "target": "fix",
+     "condition": "on_fail",
+     "label": "Fix issues",
+     "condition_config": {}
+    },
+    {
+     "id": "t4",
+     "source": "fix",
+     "target": "verify",
+     "condition": "always",
+     "label": "Re-verify"
+    }
+   ],
+   "triggers": []
+  },
+  "auto-dispatch": {
+   "name": "Auto-Dispatch",
+   "description": "When a task enters Todo, automatically route it to Commander to spawn a worker and begin implementation. Enable the board_column trigger to make todo tasks self-dispatching. Commander checks current in_progress load before acting.",
+   "stages": [
+    {
+     "id": "dispatch",
+     "name": "Dispatch to Worker",
+     "type": "agent",
+     "session_type": "commander",
+     "prompt_template": "A task just entered the Todo queue and needs a worker:\n\nTitle: {task_title}\nTask ID: {task_id}\nPriority: {task_priority}\nDescription: {task_description}\nAcceptance criteria: {task_criteria}\n\nSteps:\n1. Call list_tasks(status_filter='in_progress') to check current workload.\n2. If the task is already in_progress (another agent claimed it), stop — do nothing.\n3. If you have capacity under your max_workers limit, call create_session(task_id='{task_id}') to spawn a worker. The worker will automatically mark the task in_progress and update status when done.\n4. If at max capacity, call update_task(task_id='{task_id}', status='backlog', result_summary='Queue full — requeued to backlog') to hold it until a slot opens.",
+     "position": {
+      "x": 300,
+      "y": 200
+     },
+     "config": {
+      "icon": "send"
+     },
+     "agent_config": {
+      "model": "opus",
+      "permission_mode": "auto"
+     }
+    }
+   ],
+   "transitions": [],
+   "triggers": [
+    {
+     "type": "board_column",
+     "config": {
+      "column": "todo"
+     },
+     "guards": {
+      "max_concurrent": 10,
+      "cooldown_seconds": 2
+     },
+     "enabled": true
+    }
+   ]
+  }
+ }
+}

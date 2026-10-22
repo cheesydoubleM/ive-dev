@@ -7,3 +7,5 @@ exclude:
   - scripts
   - node_modules
   - waitlist-exports
+  - design
+  - review

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<!-- REFERENCE MARKUP for index.html, tested with the shared CSS/JS (design/partials/USAGE.md).
+     Paths are written for the site root, exactly as index.html uses them. The two lines marked
+     REFERENCE ONLY (<base> and base-uri 'self') exist so this file renders from design/partials/;
+     index.html uses base-uri 'none' and no <base>. Copy the sections into index.html as they are. -->
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- REFERENCE ONLY: index.html has base-uri 'none' -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-+2YNjuKpdbuWgZxIc7gAIrNdi+jwYzA8xrWiQxbwjCI='; style-src 'self'; img-src 'self' data:; media-src 'self'; font-src 'self'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0E1014">
+<script>(function(){var d=document.documentElement,t='dark';d.classList.remove('no-js');try{var s=localStorage.getItem('ive-theme');if(s==='light'||s==='dark')t=s;}catch(e){}d.setAttribute('data-theme',t);if(t==='light'){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#F6F7F8');}try{if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('mark-live','mark-dark');}}catch(e){}})();</script>
+<!-- REFERENCE ONLY: index.html has no <base> -->
+<base href="/">
+<title>IVE · Run your coding agents side by side</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/archivo-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/source-sans-3-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/fonts.css?v=20261023a">
+<link rel="stylesheet" href="site.css?v=20261023a">
+<link rel="stylesheet" href="opening.css?v=20261023a">
+<link rel="stylesheet" href="home.css?v=20261023a">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header" data-header>
+  <div class="site-header-inner">
+    <a class="wordmark" href="#top" aria-label="IVE, home"><span class="wordmark-text">IVE</span><span class="wordmark-dot" aria-hidden="true"></span></a>
+    <div class="site-menu" id="site-menu">
+      <nav aria-label="Main">
+        <ul class="nav-links">
+          <li><a class="nav-link" href="product.html">Product</a></li>
+          <li><a class="nav-link" href="download.html">Download</a></li>
+          <li><a class="nav-link" href="architecture.html">Architecture</a></li>
+        </ul>
+      </nav>
+      <div class="nav-tools">
+        <button class="tool" type="button" data-theme-toggle aria-label="Switch to light theme"><span class="tool-icon"><svg class="icon theme-icon-sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.75"/><path d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5M3.58 3.58l1.06 1.06M11.36 11.36l1.06 1.06M3.58 12.42l1.06-1.06M11.36 4.64l1.06-1.06"/></svg><svg class="icon theme-icon-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.25 9.9A5.5 5.5 0 0 1 6.1 2.75a5.5 5.5 0 1 0 7.15 7.15Z"/></svg></span><span class="tool-name">Theme</span></button>
+        <a class="tool" href="https://github.com/michael-ra/ive" target="_blank" rel="noopener" aria-label="IVE on GitHub (opens in a new tab)"><span class="tool-icon"><svg class="icon icon-fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg></span><span class="tool-name">GitHub</span></a>
+      </div>
+    </div>
+    <a class="btn btn-outline btn-sm nav-cta" href="https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg" data-mac-download><span data-mac-download-label>Download for Mac</span></a>
+    <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-controls="site-menu" aria-expanded="false" aria-label="Menu"><svg class="icon menu-icon-open" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 5.5h10.5M2.75 10.5h10.5"/></svg><svg class="icon menu-icon-close" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- 0 + 1 · OPENING (4.1) AND HERO (3.1.1) -->
+<section class="hero" id="hero" aria-labelledby="hero-title">
+  <div class="mark" id="top" data-mark>
+    <div class="mark-pin" data-mark-pin>
+      <div class="scene" data-scene aria-hidden="true">
+        <div class="scene-board" data-scene-board><span class="scene-board-title">Board · 12 sessions</span></div>
+        <div class="scene-swarm" data-scene-swarm></div>
+        <p class="scene-caption" data-scene-caption="a"><span class="scene-caption-text">Agents running everywhere.</span><span class="scene-count" data-scene-count="a"></span></p>
+        <p class="scene-caption" data-scene-caption="b"><span class="scene-caption-text">Under control.</span><span class="scene-count" data-scene-count="b"></span></p>
+      </div>
+      <p class="mark-line" data-mark-line aria-hidden="true"><span class="mark-word"><span class="mark-cap" data-mark-cap>I</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>ntegrated</span></span></span> <span class="mark-word"><span class="mark-cap" data-mark-cap>V</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>ibecoding</span></span></span> <span class="mark-word"><span class="mark-cap" data-mark-cap>E</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>nvironment</span></span></span></p>
+      <p class="sr-only">IVE, Integrated Vibecoding Environment</p>
+      <p class="mark-by" data-mark-by><a href="https://aiforgov.eu/" target="_blank" rel="noopener">made by AIFOREU<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.75 11.25l6.5-6.5M5.75 4.75h5.5v5.5"/></svg><span class="sr-only"> (opens in a new tab)</span></a></p>
+      <p class="mark-hint" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16"><path d="M3.75 6l4.25 4.25L12.25 6"/></svg></p>
+    </div>
+  </div>
+
+  <div class="hero-body">
+    <div class="wrap">
+      <div class="hero-head">
+        <h1 id="hero-title">Run your coding agents side by side.</h1>
+        <p class="lead">Claude Code, Codex and Gemini (Antigravity CLI) in one window.</p>
+        <div class="hero-cta">
+          <a class="btn btn-fill" href="https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg" data-mac-download data-install-label-narrow="Get IVE"><span data-mac-download-label>Download for Mac</span></a>
+          <div class="term" data-copy-box>
+            <pre class="term-code" data-copy-source><code><span class="term-line">curl -fsSL https://ive.dev/install.sh | bash</span></code></pre>
+            <button class="term-copy" type="button" data-copy="curl -fsSL https://ive.dev/install.sh | bash" aria-label="Copy the install command" hidden><svg class="icon icon-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.25" y="5.25" width="8" height="8" rx="1.5"/><path d="M10.75 5.25V3.75a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h1.5"/></svg><svg class="icon icon-check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.25 8.5l3 3 6.5-7"/></svg><span data-copy-label>Copy</span></button>
+            <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+          </div>
+        </div>
+        <p class="caption hero-note" data-mac-download-note>For Macs with Apple silicon and macOS 13.5 or newer.</p>
+      </div>
+
+      <figure class="frame hero-frame" data-clip>
+        <div class="frame-media">
+          <picture class="frame-poster">
+            <source media="(max-width: 719.98px)" srcset="assets/app/hero-board-m@2x.webp">
+            <img src="assets/app/hero-board.webp" srcset="assets/app/hero-board.webp 1600w, assets/app/hero-board@2x.webp 3200w" sizes="(max-width: 719.98px) 100vw, 1320px" width="1600" height="1000" alt="" decoding="async">
+          </picture>
+          <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/hero-board.mp4" data-src-small="assets/app/hero-board-s.mp4" data-src-m="assets/app/hero-board-m.mp4" aria-label="Recording of the IVE board: four sessions side by side. Two are running, one waits for permission to run npm test, one is done. Allow once is clicked on the board and all four finish."></video>
+          <div class="frame-controls">
+            <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
+            <a class="frame-btn" href="assets/app/hero-board.mp4" data-clip-expand data-caption="The IVE board. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
+          </div>
+          <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
+        </div>
+        <figcaption class="caption frame-caption">Recorded from the IVE app with a demo project. No provider ran.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · WHY IVE (3.1.2, 4.2) -->
+<section class="why" id="why" aria-labelledby="why-title" data-why>
+  <div class="why-pin" data-why-pin>
+    <p class="why-prelude" data-why-prelude aria-hidden="true">You have the agents.</p>
+    <div class="why-inner wrap">
+      <h2 class="why-question" id="why-title" data-why-question><span data-why-word>WHY</span> <span data-why-word>IVE?</span></h2>
+      <div class="why-layout" data-why-layout>
+        <div class="why-beats">
+          <article class="why-beat" data-why-beat="0">
+            <h3 class="pair"><span>Several tasks at once.</span> <span>Not one tab at a time.</span></h3>
+            <p>Give each task its own session and model. Start the next one while the first still runs.</p>
+          </article>
+          <article class="why-beat" data-why-beat="1">
+            <h3 class="pair"><span>One board.</span> <span>Who runs, who waits, who’s done.</span></h3>
+            <p>When a session needs you it is marked, and you answer it from the board.</p>
+          </article>
+          <article class="why-beat" data-why-beat="2">
+            <h3 class="pair"><span>Every change</span> <span>comes back to you.</span></h3>
+            <p>Working and staged diffs for each session, file by file, inside the app. Stage what you accept, annotate what you don’t.</p>
+          </article>
+          <article class="why-beat" data-why-beat="3">
+            <h3 class="pair"><span>Your machine.</span> <span>Your accounts.</span></h3>
+            <p>Runs on your computer with the CLI logins you already have. No IVE account. Your CLI talks to its provider as before.</p>
+          </article>
+        </div>
+        <div class="why-stage" data-why-stage>
+          <figure class="why-panel" data-why-panel aria-label="Pictures for the four reasons: the IVE board, a session waiting for your answer, the review of a change, and what runs where.">
+            <div class="why-media" data-why-media="0">
+              <picture class="why-crop why-crop-board"><img src="assets/app/hero-board.webp" srcset="assets/app/hero-board.webp 1600w, assets/app/hero-board@2x.webp 3200w" sizes="760px" width="1600" height="1000" alt="" loading="lazy" decoding="async"></picture>
+              <video class="why-crop why-crop-board why-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/hero-board.mp4" data-src-small="assets/app/hero-board-s.mp4" aria-label="Recording of the IVE board: four sessions run side by side and change state."></video>
+              <span class="why-label">IVE app · demo project</span>
+            </div>
+            <div class="why-media" data-why-media="1">
+              <picture class="why-crop why-crop-attention"><img src="assets/app/why-attention.webp" srcset="assets/app/why-attention.webp 1600w, assets/app/why-attention@2x.webp 3200w" sizes="1520px" width="1600" height="1000" alt="A board tile waiting for your answer: the session asks for permission to run npm test." loading="lazy" decoding="async"></picture>
+              <span class="why-label">IVE app · demo project</span>
+            </div>
+            <div class="why-media" data-why-media="2">
+              <picture class="why-poster"><img src="assets/app/review-why@2x.webp" width="1340" height="880" alt="" loading="lazy" decoding="async"></picture>
+              <video class="why-video" muted playsinline loop preload="none" width="1340" height="880" data-src="assets/app/review-why.mp4" aria-label="Recording of the IVE review: the changed files of a session and the first change, line by line."></video>
+              <span class="why-label">IVE app · demo project</span>
+            </div>
+            <div class="why-media why-ledger-wrap" data-why-media="3">
+              <dl class="ledger why-ledger">
+                <div><dt>Runs on</dt><dd>your computer, 127.0.0.1 by default</dd></div>
+                <div><dt>Signs in with</dt><dd>your Claude Code, Codex and Gemini (Antigravity CLI) logins</dd></div>
+                <div><dt>Account with IVE</dt><dd>none</dd></div>
+                <div><dt>Telemetry</dt><dd>off by default</dd></div>
+                <div><dt>Source</dt><dd>github.com/michael-ra/ive, Apache 2.0</dd></div>
+              </dl>
+              <span class="why-label">What runs where</span>
+            </div>
+          </figure>
+          <nav class="why-jumps" aria-label="Why IVE">
+            <button class="why-jump" type="button" data-why-jump="0">Parallel</button>
+            <button class="why-jump" type="button" data-why-jump="1">In view</button>
+            <button class="why-jump" type="button" data-why-jump="2">Review</button>
+            <button class="why-jump" type="button" data-why-jump="3">Yours</button>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · INSIDE IVE (3.1.3, 4.3) -->
+<section class="inside" id="inside" aria-labelledby="inside-title" data-inside>
+  <div class="wrap">
+    <div class="inside-head">
+      <h2 id="inside-title">Inside IVE.</h2>
+      <p class="lead">From the first sentence to the passing check.</p>
+    </div>
+    <div class="inside-live">
+      <ol class="chapters" data-chapters>
+        <li><button class="chapter-btn" type="button" data-chapter="1" aria-pressed="true" data-chapter-clip='{"src":"assets/app/start-queue.mp4","small":"assets/app/start-queue-s.mp4","m":"assets/app/start-queue-m.mp4","poster":"assets/app/start-queue.webp","poster2x":"assets/app/start-queue@2x.webp","posterM":"assets/app/start-queue-m@2x.webp","alt":"Recording: a goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it.","caption":"Start with a sentence. Recorded from the IVE app with a demo project. No provider ran."}'><span class="chapter-num">01</span><span class="chapter-name">Start</span></button></li>
+        <li><button class="chapter-btn" type="button" data-chapter="2" aria-pressed="false" data-chapter-clip='{"src":"assets/app/loop-task.mp4","small":"assets/app/loop-task-s.mp4","m":"assets/app/loop-task-m.mp4","poster":"assets/app/loop-task.webp","poster2x":"assets/app/loop-task@2x.webp","posterM":"assets/app/loop-task-m@2x.webp","alt":"Recording: the plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes.","caption":"Build, check, fix, repeat. Recorded from the IVE app with a demo project. No provider ran."}'><span class="chapter-num">02</span><span class="chapter-name">Auto-fix loop</span></button></li>
+        <li><button class="chapter-btn" type="button" data-chapter="3" aria-pressed="false" data-chapter-clip='{"src":"assets/app/loop-canvas.mp4","small":"assets/app/loop-canvas-s.mp4","m":"assets/app/loop-canvas-m.mp4","poster":"assets/app/loop-canvas.webp","poster2x":"assets/app/loop-canvas@2x.webp","posterM":"assets/app/loop-canvas-m@2x.webp","alt":"Recording: a saved pipeline runs on the canvas; the check fails, the fix stage runs, the second cycle passes.","caption":"Draw your own loop. Recorded from the IVE app with a demo project. No provider ran."}'><span class="chapter-num">03</span><span class="chapter-name">Pipelines</span></button></li>
+        <li><button class="chapter-btn" type="button" data-chapter="4" aria-pressed="false" data-chapter-clip='{"src":"assets/app/loop-detect.mp4","small":"assets/app/loop-detect-s.mp4","m":"assets/app/loop-detect-m.mp4","poster":"assets/app/loop-detect.webp","poster2x":"assets/app/loop-detect@2x.webp","posterM":"assets/app/loop-detect-m@2x.webp","alt":"Recording: an agent runs the same npm test three times; IVE shows Loop detected and the agent changes its approach.","caption":"Caught going in circles. Recorded from the IVE app with a demo project. No provider ran."}'><span class="chapter-num">04</span><span class="chapter-name">Loop detected</span></button></li>
+      </ol>
+      <figure class="frame player" data-player>
+        <div class="frame-media">
+          <img class="frame-poster" data-player-poster src="assets/app/start-queue.webp" width="1600" height="1000" alt="" loading="lazy" decoding="async">
+          <video class="frame-video" muted playsinline preload="none" width="1600" height="1000" aria-label="Recording: a goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it."></video>
+          <div class="frame-controls">
+            <button class="frame-btn" type="button" data-player-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
+            <a class="frame-btn" href="assets/app/start-queue.mp4" data-player-expand aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
+          </div>
+          <button class="frame-play" type="button" data-player-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
+        </div>
+        <figcaption class="player-captions">
+          <div class="player-caption-stack" aria-live="polite">
+            <div class="player-caption is-active" data-chapter-caption="1"><p class="cap-title">Start with a sentence.</p><p class="cap-text">Type what you want on Home and press Start. While the agent works, write the next instruction; Enter queues it.</p></div>
+            <div class="player-caption" data-chapter-caption="2"><p class="cap-title">Build, check, fix, repeat.</p><p class="cap-text">You approve the plan. A testing agent checks the work; a failed check goes back with its report, up to the limit you set.</p></div>
+            <div class="player-caption" data-chapter-caption="3"><p class="cap-title">Draw your own loop.</p><p class="cap-text">Agents, checks and conditions on one canvas. Every loop has a cycle limit and shows which round it is on.</p></div>
+            <div class="player-caption" data-chapter-caption="4"><p class="cap-title">Caught going in circles.</p><p class="cap-text">When an agent repeats the same call three times, IVE warns you and tells it to change approach. On by default.</p></div>
+          </div>
+          <p class="caption player-provenance">IVE app · demo project · no provider ran</p>
+        </figcaption>
+      </figure>
+    </div>
+    <!-- without JS: four figures in normal flow -->
+    <div class="inside-static">
+      <figure class="frame"><span class="chapter-num">01 · Start</span><div class="frame-media"><img class="frame-poster" src="assets/app/start-queue.webp" width="1600" height="1000" alt="A goal typed on Home; while the agent works, the next instruction waits in the queue." loading="lazy" decoding="async"></div><figcaption><p class="cap-title">Start with a sentence.</p><p class="cap-text">Type what you want on Home and press Start. While the agent works, write the next instruction; Enter queues it.</p></figcaption></figure>
+      <figure class="frame"><span class="chapter-num">02 · Auto-fix loop</span><div class="frame-media"><img class="frame-poster" src="assets/app/loop-task.webp" width="1600" height="1000" alt="The run details of a guided task: completed in the second cycle, every stage passed." loading="lazy" decoding="async"></div><figcaption><p class="cap-title">Build, check, fix, repeat.</p><p class="cap-text">You approve the plan. A testing agent checks the work; a failed check goes back with its report, up to the limit you set.</p></figcaption></figure>
+      <figure class="frame"><span class="chapter-num">03 · Pipelines</span><div class="frame-media"><img class="frame-poster" src="assets/app/loop-canvas.webp" width="1600" height="1000" alt="A pipeline on the canvas with a loop from the check back to the fix stage." loading="lazy" decoding="async"></div><figcaption><p class="cap-title">Draw your own loop.</p><p class="cap-text">Agents, checks and conditions on one canvas. Every loop has a cycle limit and shows which round it is on.</p></figcaption></figure>
+      <figure class="frame"><span class="chapter-num">04 · Loop detected</span><div class="frame-media"><img class="frame-poster" src="assets/app/loop-detect.webp" width="1600" height="1000" alt="A session with the warning Loop detected after the same npm test ran three times." loading="lazy" decoding="async"></div><figcaption><p class="cap-title">Caught going in circles.</p><p class="cap-text">When an agent repeats the same call three times, IVE warns you and tells it to change approach. On by default.</p></figcaption></figure>
+      <p class="caption">IVE app · demo project · no provider ran</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · GET IVE (3.1.4) -->
+<section class="get" id="install" aria-labelledby="install-title">
+  <span class="anchor-alias" id="waitlist" aria-hidden="true"></span>
+  <span class="anchor-alias" id="get-ive" aria-hidden="true"></span>
+  <div class="wrap">
+    <div class="get-head">
+      <h2 id="install-title">Open source. Two ways in.</h2>
+      <p class="lead">The Mac app on Apple silicon, or one command on Linux and Intel Macs.</p>
+    </div>
+    <div class="get-paths">
+      <div class="panel get-path">
+        <span class="label">Mac app</span>
+        <a class="btn btn-outline" href="https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg">Download for Mac</a>
+        <p class="panel-note">Apple silicon (M1 or newer), macOS 13.5 or newer. Signed by AIFOREU GmbH, notarized by Apple.</p>
+      </div>
+      <div class="panel get-path">
+        <span class="label">Terminal</span>
+        <div class="term" data-copy-box>
+          <pre class="term-code" data-copy-source><code><span class="term-line">curl -fsSL https://ive.dev/install.sh | bash</span></code></pre>
+          <button class="term-copy" type="button" data-copy="curl -fsSL https://ive.dev/install.sh | bash" aria-label="Copy the install command" hidden><svg class="icon icon-copy" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.25" y="5.25" width="8" height="8" rx="1.5"/><path d="M10.75 5.25V3.75a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h1.5"/></svg><svg class="icon icon-check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.25 8.5l3 3 6.5-7"/></svg><span data-copy-label>Copy</span></button>
+          <span class="sr-only" role="status" aria-live="polite" data-copy-status></span>
+        </div>
+        <p class="panel-note">macOS or Linux. Python 3.11+, Node.js 22.12+, Git, and a coding CLI you are signed in to.</p>
+        <p class="get-more"><a class="arrow-link" href="download.html">Then run <code>ive</code>. All steps and the clone path<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 8h10.5M9 3.75 13.25 8 9 12.25"/></svg></a></p>
+      </div>
+    </div>
+    <div class="get-links">
+      <a class="btn btn-quiet btn-line" href="https://github.com/michael-ra/ive" target="_blank" rel="noopener">View on GitHub<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.75 11.25l6.5-6.5M5.75 4.75h5.5v5.5"/></svg><span class="sr-only"> (opens in a new tab)</span></a>
+      <a class="btn btn-quiet btn-line" href="architecture.html">Read the architecture</a>
+    </div>
+    <p class="get-star">If IVE is useful to you, give it a star on GitHub.</p>
+  </div>
+</section>
+
+<!-- 5 · MAKER (3.1.5) -->
+<section class="maker" id="aiforeu" aria-labelledby="maker-title" data-madeby>
+  <div class="wrap maker-grid">
+    <figure class="maker-film">
+      <div class="maker-frame"><video playsinline preload="none" poster="assets/aiforeu/reveal-poster.webp" aria-describedby="maker-desc" data-madeby-video data-src-large="assets/aiforeu/reveal-sound-1600.mp4" data-src-small="assets/aiforeu/reveal-sound-960.mp4"></video></div>
+      <figcaption class="maker-controls">
+        <button class="maker-btn" type="button" aria-pressed="false" data-madeby-sound hidden>Sound on</button>
+        <button class="maker-btn" type="button" data-madeby-replay hidden>Replay</button>
+      </figcaption>
+      <p class="sr-only" id="maker-desc">Logo film with sound: a swarm of points flies in and settles into the AIFOREU mountain mark, the wordmark AIFOREU appears beside it, and below it the notices “Kofinanziert von der Europäischen Union” and “Europa für Niedersachsen”.</p>
+    </figure>
+    <div class="maker-text">
+      <h2 id="maker-title">Made by AIFOREU.</h2>
+      <p>AIFOREU GmbH, Osnabrück. <a class="link" href="https://aiforgov.eu/" target="_blank" rel="noopener">aiforgov.eu<svg class="icon icon-inline" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.75 11.25l6.5-6.5M5.75 4.75h5.5v5.5"/></svg><span class="sr-only"> (opens in a new tab)</span></a></p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-row">
+      <p class="footer-brand"><span class="wordmark wordmark-sm"><span class="wordmark-text">IVE</span><span class="wordmark-dot" aria-hidden="true"></span></span><a class="footer-maker" href="https://aiforgov.eu/" target="_blank" rel="noopener">from AIFOREU<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.75 11.25l6.5-6.5M5.75 4.75h5.5v5.5"/></svg><span class="sr-only"> (opens in a new tab)</span></a></p>
+      <nav aria-label="Footer">
+        <ul class="footer-links">
+          <li><a href="product.html">Product</a></li>
+          <li><a href="download.html">Download</a></li>
+          <li><a href="architecture.html">Architecture</a></li>
+          <li><a href="https://github.com/michael-ra/ive" target="_blank" rel="noopener">GitHub<span class="sr-only"> (opens in a new tab)</span></a></li>
+          <li><a href="imprint.html">Imprint</a></li>
+          <li><a href="privacy.html">Privacy</a></li>
+        </ul>
+      </nav>
+    </div>
+    <p class="footer-line">EU-based · Open source under the Apache 2.0 license</p>
+  </div>
+</footer>
+<script src="site.js?v=20261023a" defer></script>
+<script src="opening.js?v=20261023a" defer></script>
+<script src="home.js?v=20261023a" defer></script>
+<script src="madeby.js?v=20261023a" defer></script>
+</body>
+</html>

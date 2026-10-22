@@ -5,7 +5,7 @@
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { createTourFixture } from '/Users/maximilianschwarz/Projekte/AIFOREU/ive-team-worktrees/quiet-focus/frontend/tests/interactive-onboarding-fixture.mjs';
+import { createTourFixture } from '/Users/maximilianschwarz/Projekte/AIFOREU/ive-oss/frontend/tests/interactive-onboarding-fixture.mjs';
 import { launch, DIST, VIEWPORT, workspace, demoSessions, transcripts, permissionAttention, PERMISSION_SCREEN } from './lib/fixture.mjs';
 
 const OUT = process.argv[2] || join(process.cwd(), 'review/real-ui-reference');

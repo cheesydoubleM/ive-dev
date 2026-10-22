@@ -1,0 +1,421 @@
+/* ═══════════════════════════════════════════════════════════════
+   IVE.DEV · home.css — the homepage sections (brief 3.1, 4.2, 4.3).
+   Hero · Why IVE · Inside IVE · Get IVE · Maker. Loaded after site.css
+   and opening.css. Markup: design/partials/home-scenes.html.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── hero (3.1.1) ─────────────────────────────────────────────── */
+.hero { position: relative; }
+.hero-body { position: relative; z-index: 4; padding-top: 96px; padding-bottom: 96px; }
+.hero-head { max-width: 760px; }
+.hero-head .lead { margin-top: 20px; }
+.hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 32px; }
+.hero-cta .term { flex: 0 1 auto; min-width: 0; }
+.hero-cta .term-code { white-space: pre; }
+.hero-note { margin-top: 12px; }
+.hero-frame {
+  --hero-frame-w: clamp(100%, 100vw - 120px, 1320px);
+  width: var(--hero-frame-w);
+  margin-left: calc((100% - var(--hero-frame-w)) / 2);
+  margin-top: 56px;
+}
+.hero-frame .frame-caption { margin-top: 16px; }
+@media (max-width: 719.98px) {
+  .hero-body { padding-top: 72px; padding-bottom: 72px; }
+  .hero-cta .term { display: none; }
+  .hero-frame { margin-top: 40px; }
+}
+/* phones without the -m clip: the left tile column of the 3200×2000 master
+   (x 300 to 1150, y 60 to 1190) via a crop of the full recording */
+@media (max-width: 719.98px) {
+  .frame-media.crop-hero-m { aspect-ratio: 3 / 4; }
+  .crop-hero-m > .frame-poster,
+  .crop-hero-m > .frame-video {
+    --mw: 3200; --mh: 2000; --cx: 300; --cy: 60; --cw: 850;
+    inset: 0 auto auto 0;
+    width: calc(var(--mw) / var(--cw) * 100%);
+    height: auto;
+    max-width: none;
+    aspect-ratio: 16 / 10;
+    transform: translate(calc(var(--cx) / var(--mw) * -100%), calc(var(--cy) / var(--mh) * -100%));
+  }
+}
+
+/* ── Why IVE (4.2) ───────────────────────────────────────────────
+   static (no JS, reduced motion, short windows): heading, then each
+   beat in flow with its media above it. .is-pinned (≥720px): 340vh,
+   pinned 100vh, home.js drives the question and the beats. .is-flow
+   (<720px): sticky media panel, beats scroll beneath it. */
+.why { position: relative; }
+.why-pin { position: relative; }
+.why-inner { padding-block: 128px 112px; }
+.why-prelude { display: none; }
+.why-question {
+  display: flex; flex-wrap: wrap; gap: 0 0.25em;
+  margin-bottom: 48px;
+  font-family: var(--display);
+  font-weight: 800;
+  font-stretch: 125%;
+  font-size: 40px;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text-1);
+}
+.why-question > span { display: block; white-space: nowrap; }
+
+/* static layout: media above each beat, one column */
+.why-layout { display: grid; grid-template-columns: minmax(0, 1fr); max-width: 640px; }
+.why-beats, .why-stage, .why-panel { display: contents; }
+.why-media {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 640 / 440;
+  margin-top: 64px;
+  border-radius: var(--r-panel);
+  background: var(--bg-raised);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.why-media[data-why-media="0"] { grid-row: 1; margin-top: 0; }
+.why-beat[data-why-beat="0"] { grid-row: 2; }
+.why-media[data-why-media="1"] { grid-row: 3; }
+.why-beat[data-why-beat="1"] { grid-row: 4; }
+.why-media[data-why-media="2"] { grid-row: 5; }
+.why-beat[data-why-beat="2"] { grid-row: 6; }
+.why-media[data-why-media="3"] { grid-row: 7; }
+.why-beat[data-why-beat="3"] { grid-row: 8; }
+.why-beat { margin-top: 24px; }
+.why-beat p { margin-top: 14px; font-size: 16px; line-height: 1.55; color: var(--text-2); max-width: 46ch; }
+.why-jumps { display: none; }
+.why-poster, .why-poster img, .why-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: 0 0;
+}
+.why-video { z-index: 1; opacity: 0; transition: opacity var(--t-med) ease; }
+.why-video.is-ready { opacity: 1; }
+.why-label {
+  position: absolute; left: 12px; bottom: 12px; z-index: 2;
+  padding: 3px 7px;
+  border-radius: var(--r-chip);
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-3);
+}
+.why-ledger-wrap { display: flex; flex-direction: column; justify-content: center; padding: 28px 32px 52px; }
+.why-ledger dt { font-size: 13px; }
+.why-ledger dd { font-size: 15px; }
+
+/* crops from the 3200×2000 masters (brief 3.1.2), shown inside the 640×440 panel */
+.why-crop {
+  --mw: 3200; --mh: 2000;
+  position: absolute; inset: 0 auto auto 0;
+  width: calc(var(--mw) / var(--cw) * 100%);
+  height: auto;
+  max-width: none;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  transform: translate(calc(var(--cx) / var(--mw) * -100%), calc(var(--cy) / var(--mh) * -100%));
+}
+.why-crop img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* the Why pictures are not part of the first load: they wait until the section is one
+   viewport away (home.js sets .is-near); without JS (html.no-js) they load lazily as usual */
+html:not(.no-js) .why:not(.is-near) .why-media img { display: none; }
+.why-crop-board { --cx: 480; --cy: 90; --cw: 2720; }
+.why-crop-attention { --cx: 490; --cy: 1050; --cw: 1350; }
+.why-crop-review { --cx: 60; --cy: 120; --cw: 1280; }
+/* the attention still is its own image when it exists: no master crop */
+.why-still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 0 0; }
+@media (max-width: 719.98px) {
+  .why-media { aspect-ratio: 4 / 3; margin-top: 48px; }
+  .why-crop-board { --cx: 480; --cy: 90; --cw: 1400; }
+  .why-crop-review { --cx: 60; --cy: 120; --cw: 1000; }
+  .why-ledger-wrap { padding: 16px 18px 44px; }
+  .why-ledger > div { padding: 8px 0; grid-template-columns: minmax(96px, 0.45fr) 1fr; gap: 10px; }
+  .why-ledger dt { font-size: 12px; }
+  .why-ledger dd { font-size: 14px; }
+}
+
+/* pinned (≥720px) */
+.why.is-pinned { height: 340vh; height: 340svh; }
+.why.is-pinned .why-pin {
+  position: sticky; top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: clip;
+}
+.why.is-pinned .why-inner {
+  display: flex; flex-direction: column; justify-content: center;
+  height: 100%;
+  padding-block: calc(var(--header-h) + 24px) 32px;
+}
+.why.is-pinned .why-prelude {
+  display: block;
+  position: absolute; left: 0; right: 0; top: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--text-3);
+  pointer-events: none;
+}
+.why.is-pinned .why-question { position: relative; display: block; flex: none; margin-bottom: 40px; }
+.why.is-pinned .why-question > span { position: absolute; left: 0; top: 0; }
+.why.is-measuring .why-question { width: max-content !important; height: auto !important; display: flex; }
+.why.is-measuring .why-question > span { position: static; font-size: inherit !important; }
+.why.is-pinned .why-layout {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: 1fr auto;
+  column-gap: var(--col-gap);
+  max-width: none;
+  opacity: 0;
+}
+.why.is-pinned .why-beats { display: block; position: relative; grid-column: 1 / 6; grid-row: 1; max-width: 520px; }
+.why.is-pinned .why-beat {
+  position: absolute; left: 0; right: 0; top: 0;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity var(--t-med) ease, transform var(--t-med) ease;
+  pointer-events: none;
+}
+.why.is-pinned .why-beat.is-active { opacity: 1; transform: none; pointer-events: auto; }
+.why.is-pinned .why-panel {
+  display: block;
+  position: relative;
+  grid-column: 6 / 13; grid-row: 1 / 3;
+  justify-self: end;
+  width: 100%;
+  max-width: 640px;
+  aspect-ratio: 640 / 440;
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: var(--bg-raised);
+  box-shadow: 0 0 0 1px var(--line), var(--frame-shadow);
+}
+.why.is-pinned .why-media,
+.why.is-flow .why-media {
+  position: absolute; inset: 0;
+  margin: 0;
+  aspect-ratio: auto;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 200ms ease, visibility 0s linear 200ms;
+}
+.why.is-pinned .why-media.is-active,
+.why.is-flow .why-media.is-active { opacity: 1; visibility: visible; transition: opacity 200ms ease, visibility 0s; }
+.why.is-pinned .why-jumps { display: grid; grid-column: 1 / 6; grid-row: 2; align-self: end; max-width: 520px; }
+.why-jumps { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.why-jump {
+  position: relative;
+  height: 40px;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--line-strong);
+  text-align: left;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--text-3);
+  white-space: nowrap;
+  transition: color var(--t-fast);
+}
+.why-jump::before {
+  content: '';
+  position: absolute; left: 0; right: 0; top: -1px;
+  height: 1px;
+  background: var(--accent);
+  transform: scaleX(var(--fill, 0));
+  transform-origin: 0 50%;
+}
+.why-jump:hover { color: var(--text-1); }
+.why-jump[aria-current="true"] { color: var(--text-1); }
+@media (max-width: 1023.98px) and (min-width: 720px) {
+  .why.is-pinned .why-beats, .why.is-pinned .why-jumps { grid-column: 1 / 6; }
+  .why.is-pinned .why-panel { grid-column: 6 / 13; }
+  .why.is-pinned .pair { font-size: 26px; }
+}
+
+/* flow (<720px): sticky panel, beats beneath it */
+.why.is-flow .why-inner { padding-block: 96px 64px; }
+.why.is-flow .why-question { display: block; margin-bottom: 32px; }
+.why.is-flow .why-layout { display: flex; flex-direction: column; max-width: none; }
+.why.is-flow .why-stage {
+  display: block;
+  order: -1;
+  position: sticky; top: var(--header-h); z-index: 3;
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 8px var(--gutter) 12px;
+  background: var(--bg);
+}
+.why.is-flow .why-panel {
+  display: block;
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: var(--bg-raised);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.why.is-flow .why-jumps { display: grid; margin-top: 12px; }
+.why.is-flow .why-jump { font-size: 13px; padding-top: 10px; height: 36px; }
+.why.is-flow .why-beats { display: block; }
+.why.is-flow .why-beat { min-height: 52vh; margin: 0; padding-top: 32px; }
+
+/* ── Inside IVE (4.3) ─────────────────────────────────────────── */
+.inside { padding-block: 128px 112px; }
+.inside-head { max-width: 640px; }
+.inside-head .lead { margin-top: 16px; }
+.inside-live { display: none; }
+.inside.is-live .inside-live { display: block; }
+.inside.is-live .inside-static { display: none; }
+.chapters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: 40px;
+  border-bottom: 1px solid var(--line);
+}
+.chapters > li { min-width: 0; }
+.chapters > li + li { border-left: 1px solid var(--line); }
+.chapter-btn {
+  position: relative;
+  display: flex; align-items: baseline; gap: 10px;
+  width: 100%;
+  padding: 14px 16px 16px;
+  text-align: left;
+  color: var(--text-3);
+  transition: color var(--t-fast), background-color var(--t-fast);
+}
+.chapters > li:first-child .chapter-btn { padding-left: 0; }
+.chapter-btn:hover { color: var(--text-1); }
+.chapter-btn[aria-pressed="true"] { color: var(--text-1); }
+.chapter-num { font-family: var(--mono); font-weight: 500; font-size: 12px; line-height: 1.4; color: var(--text-4); }
+.chapter-btn[aria-pressed="true"] .chapter-num { color: var(--accent); }
+.chapter-name { font-family: var(--sans); font-weight: 500; font-size: 14px; line-height: 1.3; white-space: nowrap; }
+.chapter-btn::after {
+  content: '';
+  position: absolute; left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  background: var(--accent);
+  transform: scaleX(var(--p, 0));
+  transform-origin: 0 50%;
+}
+.chapters > li:first-child .chapter-btn::after { left: 0; }
+.player { margin-top: 16px; }
+.player .frame-media { background: var(--bg-inset); }
+.player-captions {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  align-items: start;
+  margin-top: 20px;
+}
+.player-caption-stack { grid-column: 1 / 8; display: grid; }
+.player-caption {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--t-med) ease, visibility 0s linear var(--t-med);
+}
+.player-caption.is-active { opacity: 1; visibility: visible; transition: opacity var(--t-med) ease, visibility 0s; }
+.player-provenance { grid-column: 9 / 13; text-align: right; padding-top: 4px; }
+/* no JS: four figures in normal flow */
+.inside-static { display: grid; gap: 48px; margin-top: 40px; }
+.inside-static figure { margin: 0; }
+.inside-static .frame-media { margin-bottom: 16px; }
+.inside-static .chapter-num { display: block; margin-bottom: 6px; }
+@media (max-width: 1023.98px) {
+  .chapters {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+    border-bottom: 0;
+  }
+  .chapters::-webkit-scrollbar { display: none; }
+  .chapters > li { flex: 0 0 auto; scroll-snap-align: start; border-bottom: 1px solid var(--line); }
+  .chapter-btn { padding-right: 20px; }
+}
+@media (max-width: 719.98px) {
+  .inside { padding-block: 88px 72px; }
+  .chapters { margin-top: 28px; }
+  .player-captions { display: block; }
+  .player-provenance { text-align: left; margin-top: 16px; }
+  .cap-title { font-size: 17px; }
+}
+
+/* ── Get IVE (3.1.4) ──────────────────────────────────────────── */
+.get { padding-block: 160px 96px; text-align: center; scroll-margin-top: var(--header-h); }
+.get-head { max-width: 800px; margin-inline: auto; }
+.get-head .lead { margin: 16px auto 0; }
+.get-paths {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 380px));
+  justify-content: center;
+  gap: 40px;
+  margin-top: 48px;
+  text-align: left;
+}
+.get-path { display: flex; flex-direction: column; align-items: flex-start; }
+.get-path > .label { margin-bottom: 16px; }
+.get-path .term { align-self: stretch; flex-wrap: wrap; padding: 10px 10px 10px 14px; }
+.get-path .term-code { flex-basis: 100%; }
+.get-path .term-copy { margin-left: auto; }
+.get-path .panel-note { margin-top: 14px; }
+.get-more { margin-top: 14px; font-size: 14px; }
+.get-more .arrow-link { font-size: 14px; }
+.get-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 40px; }
+.get-star { margin-top: 20px; font-size: 14px; color: var(--text-4); }
+.anchor-alias { display: block; height: 0; overflow: hidden; }
+@media (max-width: 719.98px) {
+  .get { padding-block: 96px 72px; }
+  .get-paths { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}
+
+/* ── Maker (3.1.5) ────────────────────────────────────────────── */
+.maker { border-top: 1px solid var(--line); padding-block: 72px 96px; }
+.maker-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--col-gap); align-items: center; }
+.maker-film { grid-column: 1 / 7; margin: 0; }
+.maker-frame {
+  position: relative;
+  width: 440px; max-width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: #EDEFEF;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.maker-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.maker-controls { display: flex; gap: 8px; min-height: 36px; margin-top: 12px; }
+.maker-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 36px; padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-btn);
+  font: 500 14px/1 var(--sans);
+  color: var(--text-2);
+  transition: color var(--t-fast), border-color var(--t-fast), background-color var(--t-fast);
+}
+.maker-btn:hover { color: var(--text-1); border-color: var(--line-strong); background: var(--bg-raised); }
+.maker-text { grid-column: 7 / 13; }
+.maker-text h2 { font-size: 28px; line-height: 1.15; }
+.maker-text p { margin-top: 10px; font-size: 16px; color: var(--text-3); }
+.maker-text .link { white-space: nowrap; }
+@media (max-width: 719.98px) {
+  .maker { padding-block: 56px 72px; }
+  .maker-grid { row-gap: 28px; }
+  .maker-film, .maker-text { grid-column: 1 / -1; }
+  .maker-frame { width: 100%; }
+  .maker-text h2 { font-size: 26px; }
+}

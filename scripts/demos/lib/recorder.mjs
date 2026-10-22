@@ -8,15 +8,22 @@ import { join, dirname } from 'node:path';
 
 const CURSOR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30"><path d="M3 2.5 3 23.2 8.3 18.4 11.6 26.6 15.7 24.9 12.4 16.8 19.4 16.6Z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 
-export async function createRecorder(page, context, { fps = 30, framesDir, name = 'clip' } = {}) {
+export async function createRecorder(page, context, { fps = 30, framesDir, name = 'clip', park = [1500, 800] } = {}) {
   if (!framesDir) throw new Error('framesDir required');
   rmSync(framesDir, { recursive: true, force: true });
   mkdirSync(framesDir, { recursive: true });
   const frameMs = 1000 / fps;
   let index = 0;
   // Parked bottom right, outside the content, so posters and crops start clean.
-  let mouse = { x: 1500, y: 800 };
+  let mouse = { x: park[0], y: park[1] };
   let recording = false;
+  const snaps = {};
+  const marks = {};
+  // CDP capture with the fast PNG encoder: lossless and pixel-identical to page.screenshot()
+  // at device pixel ratio 2, about three times quicker at 3200x2000.
+  const cdp = await context.newCDPSession(page);
+  const { width: vw, height: vh } = page.viewportSize();
+  const dpr = await page.evaluate(() => window.devicePixelRatio);
 
   // Synthetic pointer: headless captures have no cursor, but a demo needs one.
   await page.evaluate((svg) => {
@@ -35,12 +42,20 @@ export async function createRecorder(page, context, { fps = 30, framesDir, name 
     if (el) { el.style.left = x + 'px'; el.style.top = y + 'px'; }
   }, mouse);
   await placeCursor();
+  const setPointerVisible = (visible) => page.evaluate((v) => {
+    for (const id of ['demo-cursor', 'demo-click']) { const el = document.getElementById(id); if (el) el.style.visibility = v ? 'visible' : 'hidden'; }
+  }, visible);
+
+  async function capture(path) {
+    const { data } = await cdp.send('Page.captureScreenshot', { format: 'png', optimizeForSpeed: true, clip: { x: 0, y: 0, width: vw, height: vh, scale: dpr } });
+    writeFileSync(path, Buffer.from(data, 'base64'));
+  }
 
   async function frame(n = 1) {
     for (let i = 0; i < n; i++) {
       if (recording) {
         await context.clock.runFor(frameMs);
-        await page.screenshot({ path: join(framesDir, `f${String(index++).padStart(5, '0')}.png`), type: 'png', caret: 'initial', animations: 'allow', timeout: 15000 });
+        await capture(join(framesDir, `f${String(index++).padStart(5, '0')}.png`));
       } else {
         await page.waitForTimeout(frameMs);
       }
@@ -49,7 +64,7 @@ export async function createRecorder(page, context, { fps = 30, framesDir, name 
   const seconds = (s) => Math.round(s * fps);
 
   const api = {
-    fps, frameMs,
+    fps, frameMs, snaps, marks,
     get frameCount() { return index; },
     async start() {
       await page.evaluate(() => document.fonts.ready);
@@ -58,11 +73,38 @@ export async function createRecorder(page, context, { fps = 30, framesDir, name 
       await context.clock.pauseAt(Date.now() + 2000);
       recording = true;
     },
-    async stop() { recording = false; await context.clock.resume().catch(() => {}); },
+    async stop() {
+      recording = false;
+      writeFileSync(join(framesDir, 'meta.json'), JSON.stringify({ fps, frames: index, snaps, marks }, null, 1));
+      await context.clock.resume().catch(() => {});
+    },
+    /** Names the next frame, e.g. where a view changes and a segmented crop switches. */
+    mark(markName) { marks[markName] = index; return index; },
     frame,
     hold: (s) => frame(seconds(s)),
+    /** Records frames until `check()` holds (the app's own loading and transitions stay on camera). */
+    async until(check, { maxSeconds = 6, label = 'condition' } = {}) {
+      for (let i = 0; i < seconds(maxSeconds); i++) {
+        if (await check()) return i;
+        await frame();
+      }
+      if (await check()) return seconds(maxSeconds);
+      throw new Error(`until: ${label} not reached within ${maxSeconds}s`);
+    },
+    /** Like `until`, for a locator becoming visible. */
+    untilVisible(locator, opts = {}) { return api.until(() => locator.first().isVisible().catch(() => false), { label: String(locator), ...opts }); },
     // Real-time wait for the fixture's network round trips (does not advance frames).
     settle: (ms = 60) => page.waitForTimeout(ms),
+    /** A pointer-free capture of the current state (posters, stills, crop sources). */
+    async snap(snapName) {
+      await setPointerVisible(false);
+      const path = join(framesDir, `snap-${snapName}.png`);
+      await capture(path);
+      await setPointerVisible(true);
+      snaps[snapName] = { path, frame: index };
+      return path;
+    },
+    pointer: setPointerVisible,
     async moveTo(target, { duration = 0.5, offset } = {}) {
       const to = await resolvePoint(page, target, offset);
       const from = { ...mouse };
@@ -110,8 +152,7 @@ export async function createRecorder(page, context, { fps = 30, framesDir, name 
         await frame();
       }
     },
-    // Mark the loop point so the encoder can dissolve back to the first frame.
-    encode: (outBase, opts) => encode(framesDir, outBase, { fps, ...opts }),
+    encode: (outBase, opts) => encode(framesDir, outBase, { fps, snaps, marks, ...opts }),
   };
   return api;
 }
@@ -127,13 +168,20 @@ async function resolvePoint(page, target, offset) {
   throw new Error('Unknown target');
 }
 
+const frameFile = (framesDir, n) => join(framesDir, `f${String(n).padStart(5, '0')}.png`);
+
 /**
- * PNG frames -> MP4 (H.264, 3200x2000 and a 1600x1000 rendition) + lossless WebP posters.
- * The loop dissolves from the last frame back into the first. `stills` exports extra
- * frames as posters: [{ name, frame }].
+ * PNG frames -> MP4 (H.264, BT.709 tagged, 3200x2000 master and a 1600x1000 `-s`) + lossless WebP posters.
+ *  loopFade   seconds of dissolve from the last frame back into the first (0: the clip ends on its last frame)
+ *  poster     snap name, frame number, or 'first' (default) for `<name>@2x.webp` / `<name>.webp`
+ *  crops      [{ suffix: '-m', x, y, w, h, scale?: [w, h], poster? }] master-pixel crops, e.g. the 3:4 phone cut;
+ *             with `segments: [{ from: 0 | markName, x, y, w, h }, …]` the crop switches where a view changes;
+ *             with `trimFrom: markName` the cut starts at that mark and ends on the last frame
+ *  stills     [{ name, snap | frame, crop?: { x, y, w, h } }] extra posters (full frame unless cropped)
  */
-export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, stills = [] } = {}) {
-  const count = (() => { let n = 0; while (existsSync(join(framesDir, `f${String(n).padStart(5, '0')}.png`))) n++; return n; })();
+export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, poster = 'first', crops = [], stills = [], snaps = {}, marks = {}, crf = 24, crfSmall = 24, crfCrop = 23 } = {}) {
+  let count = 0;
+  while (existsSync(frameFile(framesDir, count))) count++;
   if (!count) throw new Error('No frames');
   const dur = count / fps;
   const run = (bin, args) => {
@@ -141,21 +189,77 @@ export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, stills = 
     if (r.status !== 0) throw new Error(`${bin} failed: ${args.join(' ')}`);
   };
   const ff = (args) => run('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', ...args]);
-  const first = join(framesDir, 'f00000.png');
   const seq = ['-framerate', String(fps), '-i', join(framesDir, 'f%05d.png')];
-  const tail = ['-loop', '1', '-framerate', String(fps), '-t', String(loopFade), '-i', first];
-  const fade = `[0:v][1:v]xfade=transition=fade:duration=${loopFade}:offset=${(dur - loopFade).toFixed(3)}`;
-  const h264 = ['-c:v', 'libx264', '-preset', 'slow', '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', '-an'];
-  ff([...seq, ...tail, '-filter_complex', `${fade},format=yuv420p[v]`, '-map', '[v]', ...h264, '-crf', '19', `${outBase}.mp4`]);
-  ff([...seq, ...tail, '-filter_complex', `${fade},scale=1600:-2:flags=lanczos,format=yuv420p[v]`, '-map', '[v]', ...h264, '-crf', '20', `${outBase}-s.mp4`]);
-  const poster = (png, base) => {
-    run('cwebp', ['-quiet', '-lossless', '-z', '9', png, '-o', `${base}@2x.webp`]);
-    const small = `${base}.small.png`;
-    ff(['-i', png, '-vf', 'scale=1600:-1:flags=lanczos', small]);
-    run('cwebp', ['-quiet', '-lossless', '-z', '9', small, '-o', `${base}.webp`]);
-    rmSync(small, { force: true });
+  const loop = loopFade > 0;
+  const tail = loop ? ['-loop', '1', '-framerate', String(fps), '-t', String(loopFade), '-i', frameFile(framesDir, 0)] : [];
+  const head = loop ? `[0:v][1:v]xfade=transition=fade:duration=${loopFade}:offset=${(dur - loopFade).toFixed(3)}` : '[0:v]null';
+  // RGB frames -> BT.709 limited-range YUV, tagged, so browsers decode the colours as captured.
+  const yuv = (scale = '') => `scale=${scale ? scale + ':' : ''}flags=lanczos:out_color_matrix=bt709:out_range=tv,format=yuv420p,setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv`;
+  const h264 = ['-c:v', 'libx264', '-preset', 'slow', '-profile:v', 'high', '-tune', 'animation', '-pix_fmt', 'yuv420p',
+    '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-movflags', '+faststart', '-an'];
+  const outputs = [];
+  ff([...seq, ...tail, '-filter_complex', `${head},${yuv()}[v]`, '-map', '[v]', ...h264, '-crf', String(crf), `${outBase}.mp4`]);
+  outputs.push(`${outBase}.mp4`);
+  ff([...seq, ...tail, '-filter_complex', `${head},${yuv('1600:-2')}[v]`, '-map', '[v]', ...h264, '-crf', String(crfSmall), `${outBase}-s.mp4`]);
+  outputs.push(`${outBase}-s.mp4`);
+
+  const pick = (ref) => {
+    if (ref === 'first' || ref == null) return frameFile(framesDir, 0);
+    if (ref === 'last') return frameFile(framesDir, count - 1);
+    if (typeof ref === 'number') return frameFile(framesDir, Math.min(ref, count - 1));
+    if (snaps[ref]) return snaps[ref].path;
+    throw new Error(`Unknown still source ${ref}`);
   };
-  poster(first, outBase);
-  for (const still of stills) poster(join(framesDir, `f${String(Math.min(still.frame, count - 1)).padStart(5, '0')}.png`), join(dirname(outBase), still.name));
-  return { frames: count, seconds: dur };
+  const webp = (png, out, { crop, scale } = {}) => {
+    let src = png;
+    if (crop || scale) {
+      src = `${out}.tmp.png`;
+      const vf = [crop && `crop=${crop.w}:${crop.h}:${crop.x}:${crop.y}`, scale && `scale=${scale}:flags=lanczos`].filter(Boolean).join(',');
+      ff(['-i', png, '-vf', vf, src]);
+    }
+    run('cwebp', ['-quiet', '-lossless', '-z', '9', src, '-o', out]);
+    if (src !== png) rmSync(src, { force: true });
+    outputs.push(out);
+  };
+  const posterPng = pick(poster);
+  webp(posterPng, `${outBase}@2x.webp`);
+  webp(posterPng, `${outBase}.webp`, { scale: '1600:-1' });
+
+  const at = (ref) => (typeof ref === 'number' ? ref : ref in marks ? marks[ref] : ref in snaps ? snaps[ref].frame : (() => { throw new Error(`Unknown mark ${ref}`); })());
+  const cropChain = (c, scale) => `crop=${c.w}:${c.h}:${c.x}:${c.y}${scale ? `,scale=${scale[0]}:${scale[1]}:flags=lanczos` : ''}`;
+  for (const c of crops) {
+    const segs = (c.segments || [{ from: 0, x: c.x, y: c.y, w: c.w, h: c.h }]).map((g) => ({ ...g, from: at(g.from) })).sort((a, b) => a.from - b.from);
+    let graph;
+    if (c.trimFrom != null) {
+      // A cut-down clip from a mark on (no dissolve back to frame 1, which shows another view).
+      const start = at(c.trimFrom);
+      graph = `[0:v]trim=start_frame=${start},setpts=PTS-STARTPTS,${cropChain(segs[0], c.scale)},${yuv()}[v]`;
+      ff(['-framerate', String(fps), '-i', join(framesDir, 'f%05d.png'), '-filter_complex', graph, '-map', '[v]', ...h264, '-crf', String(c.crf ?? crfCrop), `${outBase}${c.suffix}.mp4`]);
+      outputs.push(`${outBase}${c.suffix}.mp4`);
+      webp(pick(c.poster ?? poster), `${outBase}${c.suffix}@2x.webp`, { crop: segs[0], scale: c.scale && `${c.scale[0]}:${c.scale[1]}` });
+      continue;
+    }
+    if (segs.length === 1) graph = `${head},${cropChain(segs[0], c.scale)},${yuv()}[v]`;
+    else {
+      graph = `${head},split=${segs.length}${segs.map((_, i) => `[s${i}]`).join('')}`;
+      segs.forEach((g, i) => {
+        const end = i + 1 < segs.length ? `:end_frame=${segs[i + 1].from}` : '';
+        graph += `;[s${i}]trim=start_frame=${g.from}${end},setpts=PTS-STARTPTS,${cropChain(g, c.scale)}[c${i}]`;
+      });
+      graph += `;${segs.map((_, i) => `[c${i}]`).join('')}concat=n=${segs.length}:v=1:a=0,${yuv()}[v]`;
+    }
+    ff([...seq, ...tail, '-filter_complex', graph, '-map', '[v]', ...h264, '-crf', String(c.crf ?? crfCrop), `${outBase}${c.suffix}.mp4`]);
+    outputs.push(`${outBase}${c.suffix}.mp4`);
+    const posterRef = c.poster ?? poster;
+    const posterFrame = posterRef === 'first' || posterRef == null ? 0 : posterRef === 'last' ? count - 1 : at(posterRef);
+    const seg = segs.filter((g) => g.from <= posterFrame).at(-1) || segs[0];
+    webp(pick(posterRef), `${outBase}${c.suffix}@2x.webp`, { crop: seg, scale: c.scale && `${c.scale[0]}:${c.scale[1]}` });
+  }
+  for (const still of stills) {
+    const png = pick(still.snap ?? still.frame);
+    const base = join(dirname(outBase), still.name);
+    webp(png, `${base}@2x.webp`, { crop: still.crop });
+    if (still.small !== false && !still.crop) webp(png, `${base}.webp`, { scale: '1600:-1' });
+  }
+  return { frames: count, seconds: dur, outputs };
 }

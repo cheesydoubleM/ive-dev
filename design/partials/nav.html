@@ -1,0 +1,25 @@
+<!-- Canonical header for every page (brief 2.2). Copy verbatim, directly after the skip link.
+     The only per-page edits (USAGE.md, "Per-page edits"):
+     - the current page's .nav-link gets aria-current="page" (product.html, download.html, architecture.html)
+     - index.html: the wordmark href becomes "#top"
+     - privacy.html: the German strings listed in USAGE.md -->
+<header class="site-header" data-header>
+  <div class="site-header-inner">
+    <a class="wordmark" href="index.html" aria-label="IVE, home"><span class="wordmark-text">IVE</span><span class="wordmark-dot" aria-hidden="true"></span></a>
+    <div class="site-menu" id="site-menu">
+      <nav aria-label="Main">
+        <ul class="nav-links">
+          <li><a class="nav-link" href="product.html">Product</a></li>
+          <li><a class="nav-link" href="download.html">Download</a></li>
+          <li><a class="nav-link" href="architecture.html">Architecture</a></li>
+        </ul>
+      </nav>
+      <div class="nav-tools">
+        <button class="tool" type="button" data-theme-toggle aria-label="Switch to light theme"><span class="tool-icon"><svg class="icon theme-icon-sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.75"/><path d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5M3.58 3.58l1.06 1.06M11.36 11.36l1.06 1.06M3.58 12.42l1.06-1.06M11.36 4.64l1.06-1.06"/></svg><svg class="icon theme-icon-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.25 9.9A5.5 5.5 0 0 1 6.1 2.75a5.5 5.5 0 1 0 7.15 7.15Z"/></svg></span><span class="tool-name">Theme</span></button>
+        <a class="tool" href="https://github.com/michael-ra/ive" target="_blank" rel="noopener" aria-label="IVE on GitHub (opens in a new tab)"><span class="tool-icon"><svg class="icon icon-fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg></span><span class="tool-name">GitHub</span></a>
+      </div>
+    </div>
+    <a class="btn btn-outline btn-sm nav-cta" href="https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg" data-mac-download><span data-mac-download-label>Download for Mac</span></a>
+    <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-controls="site-menu" aria-expanded="false" aria-label="Menu"><svg class="icon menu-icon-open" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 5.5h10.5M2.75 10.5h10.5"/></svg><svg class="icon menu-icon-close" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  </div>
+</header>

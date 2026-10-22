@@ -1,13 +1,19 @@
-// Demo workspace for the site recordings: the real IVE frontend (installed app build)
-// on the isolated test transport. All project, session and conversation data below is
-// a labelled demonstration; no provider runs and nothing is written to a real IVE.
+// Demo workspace for the site recordings: the real IVE frontend (1.0.17 build) on the
+// app's own isolated test transport. All project, session, task and conversation data
+// below is a labelled demonstration (project "Orbit"); no provider runs and nothing is
+// written to a real IVE. Provenance line for every clip: IVE app · demo project · no provider ran.
+import { readFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { chromium } from '/Users/maximilianschwarz/Projekte/AIFOREU/ive-team/frontend/node_modules/playwright/index.mjs';
-import { createTourFixture } from '/Users/maximilianschwarz/Projekte/AIFOREU/ive-team-worktrees/quiet-focus/frontend/tests/interactive-onboarding-fixture.mjs';
+import { createTourFixture } from '/Users/maximilianschwarz/Projekte/AIFOREU/ive-oss/frontend/tests/interactive-onboarding-fixture.mjs';
 
-export const DIST = '/Applications/IVE.app/Contents/Resources/backend/_internal/frontend/dist';
+// The IVE 1.0.17 frontend, built in the open-source checkout. `checkDist()` verifies it.
+export const IVE_OSS = '/Users/maximilianschwarz/Projekte/AIFOREU/ive-oss';
+export const DIST = process.env.IVE_DIST || `${IVE_OSS}/frontend/dist`;
 export const VIEWPORT = { width: 1600, height: 1000 };
 
-const ago = (min) => new Date(Date.now() - min * 60000).toISOString();
+const ago = (min = 0) => new Date(Date.now() - min * 60000).toISOString();
+export const iso = ago;
 export const workspace = { id: 'orbit', name: 'Orbit', path: '/Projects/orbit', created_at: ago(300) };
 
 export const PERMISSION_SCREEN = [
@@ -25,11 +31,13 @@ export const blocks = (arr) => JSON.stringify(arr);
 let seq = 0;
 export const msg = (sid, role, content, minAgo = 0, extra = {}) => ({ id: `${sid}-${role}-${++seq}`, session_id: sid, role, content, created_at: ago(minAgo), ...extra });
 
-// The four sessions of the Orbit project, as the stills and clips use them.
+// The four sessions of the Orbit project. Model labels are the CLI profiles' real values:
+// Claude Code sonnet/opus, Codex "default" (the CLI's own default model). Gemini CLI is
+// not used: its profile is deprecated and inactive in 1.0.17 (backend/cli_profiles.py).
 export function demoSessions() {
   return [
     session('interface', 'Build the workspace', 'claude', 'sonnet', 'idle'),
-    session('api', 'Connect the API', 'codex', 'gpt-6-astra', 'idle'),
+    session('api', 'Connect the API', 'codex', 'default', 'idle'),
     session('checks', 'Check the sign-in flow', 'claude', 'sonnet', 'idle'),
     session('review', 'Review the changes', 'claude', 'opus', 'idle'),
   ];
@@ -72,10 +80,19 @@ export const transcripts = {
     msg('review', 'assistant', blocks([
       { type: 'tool_use', id: 'r1', name: 'Bash', input: { command: 'git diff --stat', description: 'List the changed files' } },
       { type: 'tool_result', tool_use_id: 'r1', content: ' src/components/layout/Sidebar.jsx | 20 ++-\n src/lib/api.js | 30 +++-\n 2 files changed' },
-      { type: 'text', text: '### Review\n\n- **Sidebar.jsx** — the toggle reuses `useTheme`; the footer keeps its height. Fine.\n- **api.js** — `listSessions()` pages with a cursor, but the WebSocket reconnect still resets to page one. Worth another look.\n\nThe final decision stays with you.' },
+      { type: 'text', text: '### Review\n\n- **Sidebar.jsx**: the toggle reuses `useTheme`; the footer keeps its height. Fine.\n- **api.js**: `listSessions()` pages with a cursor, but the WebSocket reconnect still resets to page one. Worth another look.\n\nThe final decision stays with you.' },
     ]), 11),
   ],
 };
+
+/** Confirms that DIST is the 1.0.17 frontend (package version and build profile) and returns a summary. */
+export async function checkDist() {
+  const pkg = JSON.parse(await readFile(`${IVE_OSS}/frontend/package.json`, 'utf8'));
+  const profile = JSON.parse(await readFile(join(DIST, 'ive-build-profile.json'), 'utf8'));
+  if (pkg.version !== '1.0.17') throw new Error(`frontend package is ${pkg.version}, expected 1.0.17`);
+  if (profile.edition !== 'integrated-dev') throw new Error(`unexpected build profile ${JSON.stringify(profile)}`);
+  return { version: pkg.version, edition: profile.edition, extensions: profile.extensions, dist: DIST };
+}
 
 export async function launch() {
   const browser = await chromium.launch({ headless: true });
@@ -88,23 +105,42 @@ export async function launch() {
   return { browser, wrapped };
 }
 
+// 1.0.17 shows one German label in the guided task window ("Run abbrechen", TaskFlow.jsx:279).
+// The English label ships in ive-oss 951a002. When DIST is a build without it (for example the
+// installed 1.0.17 app), the recorder replaces exactly that label and its tooltip in flight.
+const TASKFLOW_LABEL_PATCH = [
+  ['>Run abbrechen<', '>Cancel run<'], ['"Run abbrechen"', '"Cancel run"'],
+  ['Beendet diesen Ablauf und unterbricht seine aktive Arbeit.', 'Stops this run and interrupts its active work.'],
+];
+export const labelPatchLog = [];
+
 /**
  * Opens the real frontend with the demo workspace. `outputScreens` maps a session id to
  * the terminal screen its prompt snapshot should show (a Claude Code permission dialog
  * makes the Allow/Don't allow card appear).
  */
-export async function openDemo(wrapped, { sessions = demoSessions(), messages = transcripts, storage = {}, outputScreens = {}, diff = '', gitStatus = null, workspacePatch = {} } = {}) {
+export async function openDemo(wrapped, { sessions = demoSessions(), messages = transcripts, storage = {}, outputScreens = {}, diff = '', stagedDiff = '', gitStatus = null, workspacePatch = {}, theme = 'dark', tasks = [], runs = [], pipelines = [] } = {}) {
   const f = await createTourFixture(wrapped, {
-    dist: DIST, viewport: VIEWPORT,
+    dist: DIST, viewport: VIEWPORT, theme,
     settings: { product_tour_version: '2', language: 'en' },
     storage: { 'ive.onboarding.v2.owner': 'done', ...storage },
-    workspaces: [{ ...workspace, ...workspacePatch }], sessions, messages, diff,
+    workspaces: [{ ...workspace, ...workspacePatch }], sessions, messages, diff, stagedDiff, tasks, runs, pipelines,
   });
   const screens = { ...outputScreens };
   await f.context.route('**/api/sessions/*/output**', (route) => {
     const sid = new URL(route.request().url()).pathname.split('/')[3];
     const screen = screens[sid] || '❯ ';
     route.fulfill({ json: { text: screen, output: screen, screen, startup_blocker: null, pty_alive: true, permission_view_state: null } });
+  });
+  // Run details reads a session export; the transport has none, the real backend sends markdown.
+  await f.context.route('**/api/sessions/*/export**', (route) => route.fulfill({ status: 200, contentType: 'text/markdown', body: '' }));
+  await f.context.route('**/assets/TaskFlow-*.js', async (route) => {
+    const file = join(DIST, decodeURIComponent(new URL(route.request().url()).pathname));
+    let body = await readFile(file, 'utf8');
+    let replaced = 0;
+    for (const [from, to] of TASKFLOW_LABEL_PATCH) { const n = body.split(from).length - 1; if (n) { body = body.split(from).join(to); replaced += n; } }
+    labelPatchLog.push({ file, replaced });
+    return route.fulfill({ status: 200, contentType: 'text/javascript', body });
   });
   if (gitStatus) await f.context.route('**/api/workspaces/*/git/status**', (route) => route.fulfill({ json: gitStatus }));
   // Session edits the fixture does not cover (model, agent mode): merge and announce like the backend.
@@ -156,4 +192,26 @@ export function pushAssistant(f, sid, blockList, { done = false } = {}) {
     f.controls.broadcast({ type: 'session_idle', session_id: sid });
   }
   return m;
+}
+
+/** A session the backend creates (pipeline stages): stored, then announced like `session_created`. */
+export function addSession(f, item) {
+  f.data.sessions.push(item);
+  f.data.messages[item.id] ||= [];
+  f.controls.broadcast({ type: 'session_created', session: item });
+  return item;
+}
+
+/**
+ * Advances the app's fake clock off camera (no frames) until `condition()` holds.
+ * Used for the app's own polling intervals (guided task 3.5 s, attention list 15 s).
+ */
+export async function advanceUntil(f, condition, { stepMs = 250, maxMs = 30000, settleMs = 40 } = {}) {
+  for (let t = 0; t <= maxMs; t += stepMs) {
+    if (await condition()) return true;
+    await f.context.clock.runFor(stepMs);
+    await f.page.waitForTimeout(settleMs);
+  }
+  if (await condition()) return true;
+  throw new Error('advanceUntil: condition never held');
 }

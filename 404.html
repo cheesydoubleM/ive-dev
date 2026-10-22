@@ -1,159 +1,432 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-QLg2LeqhtSr4kFxwZADVkEKHHeorPMQtFQYLITDmKxE=' 'sha256-W9mCACDkY4X44pMfG3KYpKpixlRP+/yqTrSPpDh/GBs='; style-src 'self' 'sha256-ktPRiZJNTV0WpF8t5BtKP18HknfWcMBOu07fj3xDzbI='; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-qFS7eZILz935x6ekROjFtuQlrwNUlvdxFi6sW9J7f30=' 'sha256-P84/ainHxRYwzNUl+2vFJoqV5vmyYCatgx5WhUYq3Sc='; style-src 'self' 'sha256-+JmVixLpmtyeIFZUkQi2Z840NbvIrdhOjiRrVPIJ2N8='; img-src 'self' data:; font-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<script>(function(){try{var t=localStorage.getItem('ive-theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();</script>
-<meta name="color-scheme" content="light dark">
-<meta name="theme-color" content="#F4F5F6">
-<title>404 — IVE</title>
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0E1014">
+<script>(function(){var d=document.documentElement,t='dark';d.classList.remove('no-js');try{var s=localStorage.getItem('ive-theme');if(s==='light'||s==='dark')t=s;}catch(e){}d.setAttribute('data-theme',t);if(t==='light'){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#F6F7F8');}})();</script>
+<title>Not found · IVE</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/fonts.css?v=20260908f">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/fonts.css?v=20261023a">
 <style>
-  :root {
-    color-scheme: light;
-    --bg: #F4F5F6;
-    --bg-raised: #FFFFFF;
-    --bg-inset: #EBEDEF;
-    --bg-glass: rgba(244, 245, 246, 0.82);
-    --on-accent: #15171A;
-    --line: #DDE0E3;
-    --line-strong: #BFC4C9;
-    --text: #15171A;
-    --text-dim: #4A4F55;
-    --text-faint: #6B7178;
-    --running: #FFB000;
-    --running-ink: #8A5200;
-    --complete: #087A4B;
-    --complete-ink: #066B41;
-    --waiting: #98A0A8;
-    --waiting-ink: #5A6067;
-    --attention: #C83B24;
-    --attention-ink: #A82F1B;
-    --route: #1647FF;
-    --route-ink: #0E36C7;
-    --focus: #1647FF;
-    --invert-bg: #15171A;
-    --invert-raised: #1E2125;
-    --invert-text: #F4F5F6;
-    --invert-dim: #A6ADB4;
-    --invert-line: #2B2F34;
-    --r-chip: 4px;
-    --maxw: 1480px;
+/* Self-contained 404 (brief 3.6). GitHub Pages serves this file for any missing
+   path, also nested ones, so every URL here is root-absolute and the page does
+   not depend on site.css or site.js. The rules mirror site.css v20261023a
+   (tokens, reset, type, buttons, header, footer, 404 helpers); keep them in step. */
+:root {
+  color-scheme: dark;
+  --bg: #0E1014;
+  --bg-raised: #15181D;
+  --bg-glass: rgba(14, 16, 20, 0.82);
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --text-1: #F2F3F5;
+  --text-2: #C6CAD1;
+  --text-3: #8B919B;
+  --text-4: #7C828C;
+  --accent: #5B8CFF;
+  --display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --sans: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --maxw: 1200px;
+  --gutter: 48px;
+  --header-h: 64px;
+  --r-btn: 6px;
+  --t-fast: 120ms;
+  --t-med: 220ms;
+}
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #F6F7F8;
+  --bg-raised: #FFFFFF;
+  --bg-glass: rgba(246, 247, 248, 0.84);
+  --line: rgba(16, 18, 22, 0.10);
+  --line-strong: rgba(16, 18, 22, 0.18);
+  --text-1: #15171A;
+  --text-2: #3E434A;
+  --text-3: #646A73;
+  --text-4: #686E77;
+  --accent: #1647FF;
+}
+@media (max-width: 1023.98px) {
+  :root { --gutter: 32px; }
+}
+@media (max-width: 719.98px) {
+  :root { --gutter: 20px; --header-h: 56px; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; padding: 0; }
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--bg);
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--text-2);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+svg { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+ul { list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
+::selection { background: color-mix(in srgb, var(--accent) 35%, transparent); color: var(--text-1); }
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.skip-link {
+  position: fixed; left: 12px; top: -80px; z-index: 300;
+  padding: 10px 16px;
+  border-radius: var(--r-btn);
+  background: var(--text-1); color: var(--bg);
+  font: 500 14px/1.2 var(--sans);
+}
+.skip-link:focus, .skip-link:focus-visible { top: 12px; }
+.icon {
+  width: 16px; height: 16px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.icon-fill { fill: currentColor; stroke: none; }
+
+h1 {
+  color: var(--text-1);
+  font-family: var(--display);
+  font-weight: 700;
+  font-stretch: 110%;
+  font-size: 56px;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.lead {
+  font-size: 20px;
+  line-height: 1.45;
+  color: var(--text-2);
+  max-width: 64ch;
+}
+.wrap {
+  width: 100%;
+  max-width: calc(var(--maxw) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: var(--r-btn);
+  font-family: var(--display);
+  font-weight: 650;
+  font-stretch: 100%;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--text-1);
+  white-space: nowrap;
+  transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) ease;
+}
+.btn:active { transform: scale(0.98); }
+.btn-outline { border-color: var(--line-strong); background: transparent; }
+.btn-outline:hover { background: var(--bg-raised); border-color: var(--text-4); }
+.btn-quiet {
+  height: 40px;
+  padding: 0 14px;
+  font-family: var(--sans);
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-2);
+}
+.btn-quiet:hover { color: var(--text-1); border-color: var(--line-strong); }
+.btn-sm { height: 36px; padding: 0 14px; }
+.icon-btn {
+  display: inline-grid; place-items: center;
+  width: 36px; height: 36px;
+  flex: none;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-btn);
+  color: var(--text-1);
+  transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease, transform var(--t-fast) ease;
+}
+.icon-btn:hover { background: var(--bg-raised); border-color: var(--text-4); }
+.icon-btn:active { transform: scale(0.98); }
+
+.site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 200;
+  height: var(--header-h);
+  border-bottom: 1px solid transparent;
+  color: var(--text-1);
+  transition: background-color var(--t-med) ease, border-color var(--t-med) ease;
+}
+.site-header.is-scrolled {
+  background: var(--bg-glass);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom-color: var(--line);
+}
+.site-header-inner {
+  display: flex; align-items: center; gap: 8px;
+  height: 100%;
+  max-width: calc(var(--maxw) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.wordmark {
+  display: inline-flex; align-items: baseline; gap: 5px;
+  padding: 8px 0;
+  margin-right: auto;
+  color: var(--text-1);
+}
+.wordmark-text {
+  font-family: var(--display);
+  font-weight: 800;
+  font-stretch: 112%;
+  font-size: 22px;
+  line-height: 22px;
+  letter-spacing: 0.01em;
+}
+.wordmark-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.site-menu, .nav-links, .nav-tools { display: flex; align-items: center; gap: 8px; }
+.nav-link {
+  display: inline-flex; align-items: center;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: var(--r-btn);
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text-2);
+  white-space: nowrap;
+  transition: background-color var(--t-fast) ease, color var(--t-fast) ease, border-color var(--t-fast) ease;
+}
+.nav-link:hover, .nav-link:focus-visible { color: var(--text-1); background: var(--bg-raised); }
+.tool {
+  display: inline-flex; align-items: center; gap: 12px;
+  color: var(--text-1);
+  border-radius: var(--r-btn);
+}
+.tool-icon {
+  display: inline-grid; place-items: center;
+  width: 36px; height: 36px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-btn);
+  transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease, transform var(--t-fast) ease;
+}
+.tool:hover .tool-icon { background: var(--bg-raised); border-color: var(--text-4); }
+.tool:active .tool-icon { transform: scale(0.98); }
+.tool-name { display: none; font: 500 16px/1 var(--sans); color: var(--text-2); }
+.theme-icon-moon { display: none; }
+html[data-theme="light"] .theme-icon-sun { display: none; }
+html[data-theme="light"] .theme-icon-moon { display: block; }
+html.no-js [data-theme-toggle] { display: none; }
+.nav-cta { flex: none; }
+.menu-btn, .menu-btn .menu-icon-close { display: none; }
+.site-header.is-open .menu-btn .menu-icon-open { display: none; }
+.site-header.is-open .menu-btn .menu-icon-close { display: block; }
+
+.nf-main {
+  flex: 1 0 auto;
+  display: flex; align-items: center;
+  padding-block: calc(var(--header-h) + 48px) 96px;
+}
+.nf-main .lead { margin-top: 16px; }
+.nf-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 32px; }
+
+.site-footer { border-top: 1px solid var(--line); padding-block: 48px; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.footer-links a {
+  display: inline-block;
+  padding: 4px 0;
+  font-size: 14px;
+  color: var(--text-3);
+  transition: color var(--t-fast);
+}
+.footer-links a:hover { color: var(--text-1); }
+.footer-line {
+  margin-top: 20px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-4);
+}
+
+@media (max-width: 719.98px) {
+  h1 { font-size: 40px; }
+  .lead { font-size: 18px; }
+  .nf-main { padding-block: calc(var(--header-h) + 40px) 64px; }
+  .menu-btn { display: inline-grid; }
+  .site-menu {
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    display: none;
+    padding: 4px var(--gutter) 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
   }
-  :root[data-theme="dark"] {
-    color-scheme: dark;
-    --bg: #101012;
-    --bg-raised: #17171A;
-    --bg-inset: #0B0B0D;
-    --bg-glass: rgba(16, 16, 18, 0.82);
-    --on-accent: #0B0B0D;
-    --line: #26262B;
-    --line-strong: #34343B;
-    --text: #EDEDE9;
-    --text-dim: #A3A39E;
-    --text-faint: #85857F;
-    --running: #FFB454;
-    --running-ink: #FFB454;
-    --complete: #7DCE82;
-    --complete-ink: #7DCE82;
-    --waiting: #8A8A93;
-    --waiting-ink: #8A8A93;
-    --attention: #F2545B;
-    --attention-ink: #F2545B;
-    --route: #6BB6C9;
-    --route-ink: #6BB6C9;
-    --focus: #FFB454;
-    --invert-bg: #F4F3EF;
-    --invert-raised: #FFFFFF;
-    --invert-text: #1A1A18;
-    --invert-dim: #5C5C56;
-    --invert-line: #D9D8D2;
+  .site-header.is-open .site-menu { display: block; }
+  .site-menu nav { width: 100%; }
+  .nav-links { flex-direction: column; align-items: stretch; gap: 0; }
+  .nav-link {
+    width: 100%;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    border-radius: 0;
+    font-size: 16px;
+    color: var(--text-1);
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  button { font: inherit; color: inherit; background: none; cursor: pointer; }
-  body {
-    background: var(--bg); color: var(--text);
-    font-family: 'Source Sans 3', system-ui, sans-serif;
-    min-height: 100vh; display: flex; align-items: center; justify-content: center;
-    padding: 76px 24px 24px;
-  }
-  .theme-toggle {
-    position: fixed; top: 20px; right: 20px;
-    inline-size: 84px; padding: 7px 8px;
-    border: 1px solid var(--line); border-radius: var(--r-chip);
-    font-family: 'IBM Plex Mono', ui-monospace, monospace;
-    font-size: 11px; font-weight: 500; line-height: 1.2;
-    letter-spacing: 0.07em; text-align: center; white-space: nowrap;
-  }
-  .theme-toggle:hover { border-color: var(--line-strong); background: var(--bg-raised); }
-  .box { max-width: min(560px, var(--maxw)); width: 100%; }
-  .error-code {
-    font-family: 'IBM Plex Mono', ui-monospace, monospace;
-    color: var(--text-faint); font-size: 13px; letter-spacing: 0.08em;
-  }
-  h1 {
-    font-family: 'Archivo', system-ui, sans-serif;
-    font-stretch: 125%;
-    font-weight: 620; font-size: clamp(32px, 3.6vw, 46px);
-    letter-spacing: -0.04em; line-height: 1.04; text-wrap: balance; margin: 18px 0 10px;
-  }
-  p.sub { color: var(--text-dim); font-size: 16px; }
-  a.back {
-    display: inline-block; margin-top: 26px;
-    background: var(--invert-bg); color: var(--invert-text);
-    font-weight: 600; font-size: 15px; text-decoration: none;
-    padding: 11px 20px; border-radius: 6px;
-  }
-  a.back:hover { background: var(--invert-raised); }
-  a.gh { color: var(--text-dim); font-size: 14px; margin-left: 18px; }
-  :focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: 2px; }
+  .nav-link:hover, .nav-link:focus-visible { background: transparent; color: var(--accent); }
+  .nav-tools { gap: 28px; padding-top: 16px; }
+  .tool-name { display: inline; }
+  .footer-links { display: grid; grid-template-columns: repeat(2, minmax(0, max-content)); gap: 4px 40px; }
+  /* without JS the panel is a plain list below the header */
+  html.no-js .site-header { position: relative; height: auto; }
+  html.no-js .site-header-inner { flex-wrap: wrap; height: auto; min-height: var(--header-h); }
+  html.no-js .site-menu { position: static; display: block; order: 10; flex-basis: 100%; padding-inline: 0; border-bottom: 0; background: transparent; }
+  html.no-js .menu-btn { display: none; }
+  html.no-js .nf-main { padding-top: 40px; }
+}
+@media (max-width: 359.98px) {
+  .site-header-inner { gap: 6px; }
+  .nav-cta { padding: 0 10px; font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
+}
+@media print {
+  :root, html[data-theme="light"] { --bg: #FFFFFF; --text-1: #000000; --text-2: #222222; --text-3: #444444; --text-4: #555555; --line: #CCCCCC; }
+  .site-header, .skip-link { display: none !important; }
+}
 </style>
 </head>
 <body>
-  <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme" data-theme-toggle>Light</button>
-  <main class="box">
-    <p class="error-code">404</p>
-    <h1>Page not found.</h1>
-    <p class="sub">The address may be incorrect, or the page may have moved.</p>
-    <a class="back" href="index.html">Back to IVE</a>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header" data-header>
+  <div class="site-header-inner">
+    <a class="wordmark" href="/" aria-label="IVE, home"><span class="wordmark-text">IVE</span><span class="wordmark-dot" aria-hidden="true"></span></a>
+    <div class="site-menu" id="site-menu">
+      <nav aria-label="Main">
+        <ul class="nav-links">
+          <li><a class="nav-link" href="/product.html">Product</a></li>
+          <li><a class="nav-link" href="/download.html">Download</a></li>
+          <li><a class="nav-link" href="/architecture.html">Architecture</a></li>
+        </ul>
+      </nav>
+      <div class="nav-tools">
+        <button class="tool" type="button" data-theme-toggle aria-label="Switch to light theme"><span class="tool-icon"><svg class="icon theme-icon-sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="2.75"/><path d="M8 1.75v1.5M8 12.75v1.5M1.75 8h1.5M12.75 8h1.5M3.58 3.58l1.06 1.06M11.36 11.36l1.06 1.06M3.58 12.42l1.06-1.06M11.36 4.64l1.06-1.06"/></svg><svg class="icon theme-icon-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.25 9.9A5.5 5.5 0 0 1 6.1 2.75a5.5 5.5 0 1 0 7.15 7.15Z"/></svg></span><span class="tool-name">Theme</span></button>
+        <a class="tool" href="https://github.com/michael-ra/ive" target="_blank" rel="noopener" aria-label="IVE on GitHub (opens in a new tab)"><span class="tool-icon"><svg class="icon icon-fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"/></svg></span><span class="tool-name">GitHub</span></a>
+      </div>
+    </div>
+    <a class="btn btn-outline btn-sm nav-cta" href="https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg" data-mac-download><span data-mac-download-label>Download for Mac</span></a>
+    <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-controls="site-menu" aria-expanded="false" aria-label="Menu"><svg class="icon menu-icon-open" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 5.5h10.5M2.75 10.5h10.5"/></svg><svg class="icon menu-icon-close" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+  </div>
+</header>
+<main id="main" class="wrap nf-main"><div><h1>Not found.</h1><p class="lead">This page does not exist. The homepage has everything that does.</p><div class="nf-actions"><a class="btn btn-outline" href="/">Go to the homepage</a><a class="btn btn-quiet" href="/download.html">Download IVE</a></div></div></main>
+<footer class="site-footer is-reduced"><div class="wrap"><div class="footer-row"><nav aria-label="Footer"><ul class="footer-links"><li><a href="/imprint.html">Imprint</a></li><li><a href="/privacy.html">Privacy</a></li></ul></nav></div><p class="footer-line">EU-based · Open source under the Apache 2.0 license</p></div></footer>
+<script>
+(function () {
+  'use strict';
+  /* theme (6.1), header and phone menu (2.2), download logic (6.2); mirrors site.js with root-absolute targets */
+  var root = document.documentElement;
+  var narrow = window.matchMedia('(max-width: 719.98px)');
+  var themeMeta = document.querySelector('meta[name="theme-color"]');
+  var toggles = document.querySelectorAll('[data-theme-toggle]');
+  var COLOR = { dark: '#0E1014', light: '#F6F7F8' };
+  function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+  function current() { return root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'; }
+  function applyTheme(theme, persist) {
+    root.setAttribute('data-theme', theme);
+    if (themeMeta) themeMeta.setAttribute('content', COLOR[theme]);
+    var label = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+    each(toggles, function (t) { t.setAttribute('aria-label', label); });
+    if (persist) {
+      try { localStorage.setItem('ive-theme', theme); } catch (e) {}
+    }
+  }
+  applyTheme(current(), false);
+  each(toggles, function (t) {
+    t.addEventListener('click', function () { applyTheme(current() === 'dark' ? 'light' : 'dark', true); });
+  });
+  window.addEventListener('storage', function (e) {
+    if (e.key === 'ive-theme' && (e.newValue === 'light' || e.newValue === 'dark')) applyTheme(e.newValue, false);
+  });
 
-    <a class="gh" href="index.html#install">Install IVE →</a>
-  </main>
-  <script>
-    (function () {
-      var themeMeta = document.querySelector('meta[name="theme-color"]');
-      var themeToggle = document.querySelector('[data-theme-toggle]');
-
-      function readTheme() {
-        try {
-          var storedTheme = localStorage.getItem('ive-theme');
-          if (storedTheme === 'dark' || storedTheme === 'light') return storedTheme;
-        } catch (e) {}
-        return 'light';
-      }
-
-      function applyTheme(theme, persist) {
-        var isDark = theme === 'dark';
-        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-        themeToggle.textContent = isDark ? 'Dark' : 'Light';
-        themeToggle.setAttribute('aria-pressed', isDark ? 'true' : 'false');
-        themeToggle.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-        themeMeta.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg').trim());
-        if (persist) {
-          try { localStorage.setItem('ive-theme', isDark ? 'dark' : 'light'); } catch (e) {}
-        }
-      }
-
-      applyTheme(readTheme(), false);
-      themeToggle.addEventListener('click', function () {
-        applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
+  var header = document.querySelector('[data-header]');
+  if (header) {
+    var onScroll = function () { header.classList.toggle('is-scrolled', window.scrollY > 8); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    var menuBtn = header.querySelector('[data-menu-toggle]');
+    var menu = menuBtn ? document.getElementById(menuBtn.getAttribute('aria-controls')) : null;
+    if (menuBtn && menu) {
+      var setMenu = function (open, returnFocus) {
+        header.classList.toggle('is-open', open);
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (!open && returnFocus) menuBtn.focus();
+      };
+      menuBtn.addEventListener('click', function () { setMenu(!header.classList.contains('is-open'), false); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && header.classList.contains('is-open')) setMenu(false, true);
       });
+      document.addEventListener('click', function (e) {
+        if (header.classList.contains('is-open') && !header.contains(e.target)) setMenu(false, false);
+      });
+      each(menu.querySelectorAll('a'), function (a) { a.addEventListener('click', function () { setMenu(false, false); }); });
+      var onWide = function (e) { if (!e.matches) setMenu(false, false); };
+      if (narrow.addEventListener) narrow.addEventListener('change', onWide);
+      else if (narrow.addListener) narrow.addListener(onWide);
+    }
+  }
 
-    })();
-  </script>
+  var macButtons = document.querySelectorAll('[data-mac-download]');
+  if (macButtons.length) {
+    var converted = false;
+    var toInstall = function () {
+      if (converted) return;
+      converted = true;
+      each(macButtons, function (b) {
+        b.setAttribute('href', '/download.html#terminal');
+        var slot = b.querySelector('[data-mac-download-label]');
+        if (slot) slot.textContent = 'Install IVE';
+        b.setAttribute('data-mac-download', 'install');
+      });
+    };
+    var uaData = navigator.userAgentData;
+    var platform = (uaData && uaData.platform) || navigator.platform || '';
+    if (!/mac/i.test(platform) || navigator.maxTouchPoints > 1) {
+      toInstall();
+    } else if (uaData && uaData.getHighEntropyValues) {
+      uaData.getHighEntropyValues(['architecture']).then(function (v) {
+        if (v && v.architecture === 'x86') toInstall();
+      }).catch(function () {});
+    }
+  }
+})();
+</script>
 </body>
 </html>

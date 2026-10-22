@@ -1,19 +1,35 @@
 #!/usr/bin/env node
-// Records the site's app demos from the real IVE frontend.
-//   node scripts/demos/record.mjs session board home review setup
+// Records the site's app demos from the real IVE frontend (1.0.17 build, isolated test transport).
+//   node scripts/demos/record.mjs hero-board start-queue loop-task loop-canvas loop-detect review
 //   DEMO_OUT=/path/for/output DEMO_FRAMES=/path/for/frames
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { launch } from './lib/fixture.mjs';
-import { createRecorder } from './lib/recorder.mjs';
+import { launch, checkDist, labelPatchLog } from './lib/fixture.mjs';
+import { createRecorder, encode } from './lib/recorder.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const OUT = process.env.DEMO_OUT || join(here, '../../assets/app');
 const FRAMES = process.env.DEMO_FRAMES || join(process.env.TMPDIR || '/tmp', 'ive-demo-frames');
-const names = process.argv.slice(2);
-if (!names.length) { console.error('usage: record.mjs <clip> [clip…]'); process.exit(2); }
+const args = process.argv.slice(2);
+// --encode-only: re-encode the frames of an earlier capture (crops, CRF) without recording again.
+const encodeOnly = args.includes('--encode-only');
+const names = args.filter((a) => !a.startsWith('--'));
+if (!names.length) { console.error('usage: record.mjs [--encode-only] <clip> [clip…]'); process.exit(2); }
 mkdirSync(OUT, { recursive: true });
+console.log('frontend', JSON.stringify(await checkDist()));
+
+if (encodeOnly) {
+  for (const name of names) {
+    const clip = await import(`./clips/${name}.mjs`);
+    const framesDir = join(FRAMES, name);
+    const meta = JSON.parse(readFileSync(join(framesDir, 'meta.json'), 'utf8'));
+    const dyn = existsSync(join(framesDir, 'encoding.json')) ? JSON.parse(readFileSync(join(framesDir, 'encoding.json'), 'utf8')) : {};
+    const result = encode(framesDir, join(OUT, name), { fps: meta.fps, snaps: meta.snaps, marks: meta.marks, ...(clip.encoding || {}), ...dyn });
+    console.log(`[${name}] re-encoded ${result.seconds.toFixed(1)}s → ${result.outputs.map((o) => o.split('/').pop()).join(' ')}`);
+  }
+  process.exit(0);
+}
 
 const { browser, wrapped } = await launch();
 try {
@@ -22,22 +38,26 @@ try {
     const clip = await import(`./clips/${name}.mjs`);
     const framesDir = join(FRAMES, name);
     const t0 = Date.now();
-    let recorder, fixture;
+    let recorder, fixture, encoding, lastPage;
     try {
-      ({ fixture } = await clip.record(wrapped, async (page, context) => {
-        recorder = await createRecorder(page, context, { fps: 30, framesDir, name });
+      ({ fixture, encoding } = await clip.record(wrapped, async (page, context, opts = {}) => {
+        lastPage = page;
+        recorder = await createRecorder(page, context, { fps: 30, framesDir, name, ...opts });
         return recorder;
       }));
       const captured = ((Date.now() - t0) / 1000).toFixed(0);
-      console.log(`[${name}] ${recorder.frameCount} frames captured in ${captured}s; errors=${JSON.stringify(fixture.errors)} unexpected=${fixture.unexpected.map((u) => u.path).join(',') || 'none'}`);
+      console.log(`[${name}] ${recorder.frameCount} frames captured in ${captured}s; errors=${JSON.stringify(fixture.errors)} unexpected writes=${fixture.unexpected.filter((u) => u.method && u.method !== 'GET').map((u) => `${u.method} ${u.path}`).join(',') || 'none'}`);
+      if (labelPatchLog.length) console.log(`[${name}] guided-task label patch: ${JSON.stringify(labelPatchLog.splice(0))}`);
       await fixture.context.close();
-      const result = recorder.encode(join(OUT, name), { stills: clip.stills || [] });
-      console.log(`[${name}] encoded ${result.seconds.toFixed(1)}s → ${join(OUT, name)}.{mp4,-s.mp4,@2x.webp,webp}`);
+      if (encoding) writeFileSync(join(framesDir, 'encoding.json'), JSON.stringify(encoding, null, 1));
+      const result = recorder.encode(join(OUT, name), { ...(clip.encoding || {}), ...(encoding || {}) });
+      console.log(`[${name}] encoded ${result.seconds.toFixed(1)}s → ${result.outputs.map((o) => o.split('/').pop()).join(' ')}`);
     } catch (error) {
       failed++;
       console.error(`[${name}] FAILED after ${recorder?.frameCount ?? 0} frames: ${error?.message?.split('\n').slice(0, 6).join(' | ')}`);
-      if (fixture?.page) { try { await fixture.page.screenshot({ path: join(FRAMES, `${name}-failure.png`) }); } catch { /* ignore */ } }
-      try { await fixture?.context.close(); } catch { /* ignore */ }
+      const page = fixture?.page || lastPage;
+      if (page) { try { await page.screenshot({ path: join(FRAMES, `${name}-failure.png`) }); } catch { /* ignore */ } }
+      try { await (fixture?.context || page?.context())?.close(); } catch { /* ignore */ }
     }
   }
   if (failed) process.exitCode = 1;
