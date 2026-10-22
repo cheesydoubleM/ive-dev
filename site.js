@@ -308,6 +308,22 @@
     pauseAll(v);
   }, true);
 
+  /* Defer the homepage recordings until the opening's sticky travel ends.
+     Cache the unpin position; ordinary scroll/play checks only read scrollY. */
+  var opening = document.querySelector('[data-mark]');
+  var openingPin = opening && opening.querySelector('[data-mark-pin]');
+  var openingEnd = null;
+  function openingIsPinned() {
+    if (!opening || !openingPin || !root.classList.contains('mark-live') || motionQuery.matches) {
+      openingEnd = null;
+      return false;
+    }
+    // Lazy measurement also handles opening.js activating after this script.
+    if (openingEnd === null) openingEnd = opening.getBoundingClientRect().bottom + window.scrollY - openingPin.offsetHeight;
+    return window.scrollY < openingEnd - 0.5;
+  }
+  IVE.openingIsPinned = openingIsPinned;
+
   /* ── recorded clips: [data-clip] frames (6.4) ── */
   var clips = [];
   var TEXT = isGerman
@@ -318,7 +334,7 @@
     var video = frame.querySelector('video');
     if (!video) return null;
     var clip = {
-      frame: frame, video: video,
+      frame: frame, video: video, afterOpening: frame.classList.contains('hero-frame'),
       ratio: 0, near: false, loaded: false,
       userPaused: false, userStarted: false, blocked: false
     };
@@ -327,6 +343,8 @@
     var media = frame.querySelector('.frame-media');
 
     clip.load = function () {
+      if (clip.afterOpening && openingIsPinned()) return;
+      video.preload = 'auto';
       if (clip.loaded) return;
       var srcs = {
         src: video.getAttribute('data-src'),
@@ -341,7 +359,7 @@
       video.src = src;
     };
     clip.wantsPlay = function () {
-      if (document.hidden || clip.userPaused) return false;
+      if (document.hidden || clip.userPaused || (clip.afterOpening && openingIsPinned())) return false;
       if (motionQuery.matches && !clip.userStarted) return false;
       return clip.ratio >= 0.5 || (clip.userStarted && clip.ratio > 0);
     };
@@ -420,8 +438,11 @@
     if ('IntersectionObserver' in window) {
       var nearIO = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
-          if (!e.isIntersecting) return;
-          clips.forEach(function (c) { if (c.frame === e.target && !motionQuery.matches) c.load(); });
+          clips.forEach(function (c) {
+            if (c.frame !== e.target) return;
+            c.near = e.isIntersecting;
+            if (c.near && !motionQuery.matches) c.load();
+          });
         });
       }, { rootMargin: '100% 0px' });
       var viewIO = new IntersectionObserver(function (entries) {
@@ -439,6 +460,35 @@
       clips.forEach(function (c) { c.userStarted = false; c.render(); });
       syncClips();
     });
+  }
+
+  if (opening && openingPin) {
+    var openingWasPinned = openingIsPinned(), openingFrame = 0;
+    function syncOpeningGate() {
+      openingFrame = 0;
+      var pinned = openingIsPinned();
+      if (pinned === openingWasPinned) return;
+      openingWasPinned = pinned;
+      clips.forEach(function (c) {
+        if (!c.afterOpening) return;
+        if (pinned) { c.pause(); c.video.preload = 'none'; }
+        else if (c.near && !motionQuery.matches) c.load();
+      });
+      syncInline();
+      document.dispatchEvent(new Event('ive:openingchange'));
+    }
+    function scheduleOpeningGate() {
+      if (!openingFrame) openingFrame = window.requestAnimationFrame(syncOpeningGate);
+    }
+    function invalidateOpeningGate() {
+      openingEnd = null;
+      scheduleOpeningGate();
+    }
+    window.addEventListener('scroll', scheduleOpeningGate, { passive: true });
+    window.addEventListener('resize', invalidateOpeningGate);
+    window.addEventListener('load', invalidateOpeningGate);
+    onChange(motionQuery, invalidateOpeningGate);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(invalidateOpeningGate);
   }
 
   document.addEventListener('visibilitychange', function () {

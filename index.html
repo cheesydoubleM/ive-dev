@@ -28,7 +28,7 @@
 <link rel="preload" href="assets/fonts/source-sans-3-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/fonts.css?v=20261023a">
 <link rel="stylesheet" href="site.css?v=20261023a">
-<link rel="stylesheet" href="opening.css?v=20261023b">
+<link rel="stylesheet" href="opening.css?v=20261023c">
 <link rel="stylesheet" href="home.css?v=20261023b">
 </head>
 <body>
@@ -59,31 +59,38 @@
 
 <!-- 0 + 1 · OPENING (4.1) AND HERO (3.1.1) -->
 <section class="hero" id="hero" aria-labelledby="hero-title">
-  <div class="mark" id="top" data-mark>
-    <div class="mark-pin" data-mark-pin>
-      <div class="scene" data-scene aria-hidden="true">
-        <div class="scene-cam" data-scene-cam>
-          <div class="scene-space">
-            <div class="scene-wall wall-floor" data-wall="floor"></div>
-            <div class="scene-wall wall-ceil" data-wall="ceil"></div>
-            <div class="scene-wall wall-left" data-wall="left"></div>
-            <div class="scene-wall wall-right" data-wall="right"></div>
-          </div>
-          <div class="scene-rings" data-scene-rings></div>
-          <div class="scene-vignette" data-scene-vignette></div>
-          <div class="scene-board" data-scene-board><span class="scene-board-title">Board · 12 sessions</span></div>
-          <div class="scene-swarm" data-scene-swarm></div>
+<!-- opening:start -->
+<!-- 02 · MARK: INSIDE THE MACHINE, AGENTS SWARM, COME UNDER CONTROL, THEN IVE UNFOLDS INTO ITS NAME -->
+<section class="mark" id="mark" aria-label="IVE — Integrated Vibecoding Environment" data-mark>
+  <div class="mark-pin" data-mark-pin>
+    <div class="scene" aria-hidden="true" data-scene>
+      <div class="scene-cam" data-scene-cam>
+        <div class="scene-space">
+          <div class="scene-wall wall-floor" data-wall="floor"></div>
+          <div class="scene-wall wall-ceil" data-wall="ceil"></div>
+          <div class="scene-wall wall-left" data-wall="left"></div>
+          <div class="scene-wall wall-right" data-wall="right"></div>
         </div>
-        <p class="scene-caption" data-scene-caption="a"><span class="scene-caption-text">Agents running everywhere.</span><span class="scene-count" data-scene-count="a"></span></p>
-        <p class="scene-caption" data-scene-caption="b"><span class="scene-caption-text">Under control.</span><span class="scene-count" data-scene-count="b"></span></p>
-        <div class="scene-scan" data-scene-scan></div>
+        <div class="scene-rings" data-scene-rings></div>
+        <div class="scene-vignette" data-scene-vignette></div>
+        <div class="scene-board" data-scene-board><span class="sb-title">MISSION CONTROL</span><span class="sb-count">12 sessions</span></div>
+        <div class="scene-swarm" data-scene-swarm></div>
       </div>
-      <p class="mark-line" data-mark-line aria-hidden="true"><span class="mark-word"><span class="mark-cap" data-mark-cap>I</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>ntegrated</span></span></span> <span class="mark-word"><span class="mark-cap" data-mark-cap>V</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>ibecoding</span></span></span> <span class="mark-word"><span class="mark-cap" data-mark-cap>E</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>nvironment</span></span></span></p>
-      <p class="sr-only">IVE, Integrated Vibecoding Environment</p>
-      <p class="mark-by" data-mark-by><a href="https://aiforgov.eu/" target="_blank" rel="noopener">made by AIFOREU<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.75 11.25l6.5-6.5M5.75 4.75h5.5v5.5"/></svg><span class="sr-only"> (opens in a new tab)</span></a></p>
-      <p class="mark-hint" aria-hidden="true"><svg class="icon" viewBox="0 0 16 16"><path d="M3.75 6l4.25 4.25L12.25 6"/></svg></p>
+      <p class="scene-caption mono" data-scene-caption="a">Agents running everywhere.<span class="sc-count" data-scene-count="a"></span></p>
+      <p class="scene-caption mono" data-scene-caption="b">Under control.<span class="sc-count" data-scene-count="b"></span></p>
+      <div class="scene-scan"></div>
     </div>
+    <p class="mark-line" aria-hidden="true" data-mark-line>
+      <span class="mark-word"><span class="mark-cap" data-mark-cap>I</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>ntegrated</span></span></span>
+      <span class="mark-word"><span class="mark-cap" data-mark-cap>V</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>ibecoding</span></span></span>
+      <span class="mark-word"><span class="mark-cap" data-mark-cap>E</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>nvironment</span></span></span>
+    </p>
+    <p class="sr-only">IVE — Integrated Vibecoding Environment</p>
+    <p class="mark-by mono" data-mark-by><a href="https://aiforgov.eu/" target="_blank" rel="noopener">made by AIFOREU ↗</a></p>
+    <p class="mark-hint mono" aria-hidden="true"><span class="mark-hint-word">Scroll</span><span class="mark-hint-line"></span></p>
   </div>
+</section>
+<!-- opening:end -->
 
   <div class="hero-body">
     <div class="wrap">
@@ -302,9 +309,9 @@
     <p class="footer-line">EU-based · Open source under the Apache 2.0 license</p>
   </div>
 </footer>
-<script src="site.js?v=20261023b" defer></script>
-<script src="opening.js?v=20261023b" defer></script>
-<script src="home.js?v=20261023b" defer></script>
+<script src="site.js?v=20261023c" defer></script>
+<script src="opening.js?v=20261023c" defer></script>
+<script src="home.js?v=20261023c" defer></script>
 <script src="madeby.js?v=20261023a" defer></script>
 </body>
 </html>

@@ -46,7 +46,9 @@
 
   /* sources: attached when the section is within one viewport */
   function loadVideo(v) {
-    if (!v || v.getAttribute('src')) return;
+    if (!v || (IVE.openingIsPinned && IVE.openingIsPinned())) return;
+    v.preload = 'auto';
+    if (v.getAttribute('src')) return;
     var srcs = { src: v.getAttribute('data-src'), small: v.getAttribute('data-src-small') };
     var pick = IVE.pickSource ? IVE.pickSource((IVE.mediaWidth ? IVE.mediaWidth(v) : v.offsetWidth), srcs) : (srcs.small || srcs.src);
     if (!pick) return;
@@ -64,7 +66,8 @@
     IVE.registerInline({
       video: v, element: media[i],
       wantsPlay: function () {
-        return mode !== 'static' && i === active && inView && !layout.inert && !motion.matches;
+        return mode !== 'static' && i === active && inView && !layout.inert && !motion.matches &&
+          !(IVE.openingIsPinned && IVE.openingIsPinned());
       },
       play: function () {
         loadVideo(v);
@@ -72,6 +75,17 @@
         if (p && p.catch) p.catch(function () {});
       }
     });
+  });
+
+  function loadNearbyVideos() {
+    if (!near || motion.matches) return;
+    videos.forEach(function (v, i) { if (v && (i === 0 || mode !== 'static')) loadVideo(v); });
+  }
+  document.addEventListener('ive:openingchange', function () {
+    if (IVE.openingIsPinned && IVE.openingIsPinned()) {
+      videos.forEach(function (v) { if (v) { v.pause(); v.preload = 'none'; } });
+    } else loadNearbyVideos();
+    syncVideos();
   });
 
   function syncVideos() {
@@ -216,10 +230,7 @@
     new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         near = e.isIntersecting;
-        if (near && !motion.matches) {
-          // poster images are lazy; the clips load once the section is one viewport away
-          videos.forEach(function (v, i) { if (v && (i === 0 || mode !== 'static')) loadVideo(v); });
-        }
+        loadNearbyVideos();
       });
     }, { rootMargin: '100% 0px' }).observe(section);
   }

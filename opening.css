@@ -1,44 +1,76 @@
 /* ═══════════════════════════════════════════════════════════════
-   IVE.DEV · opening.css — the opening scene (brief 4.1), index only.
-   Replaces the .mark block of styles.css and the .au card subset of
-   app-ui*.css. [data-mark] carries the dark token set (site.css), so the
-   cards use site tokens. The grid corridor of the 0d2d27a opening is back
-   (owner, 2026-10-22): same planes, rings, drift, vignette and scanlines,
-   with its brightness, on its black ground until the letters light up;
-   after that the ground is #0E1014 in both themes.
-   Static (no JS, reduced motion): the full name on a 100vh dark block.
-   Live (html.mark-live): 300vh section, 100vh sticky pin; opening.js
-   drives the custom properties from scroll progress.
+   IVE.DEV · opening.css — the opening scene, index only.
+   The opening of 0d2d27a, taken over as it was (owner, 2026-10-23:
+   "mache es einfach so wie es vorher war"): the .mark block of
+   styles.css, the .au rules of app-ui.css the swarm cards use and
+   region:mark of app-ui-blocks.css, copied line by line in their old
+   order. New here: the old tokens these rules read, scoped to .mark;
+   the app faces of the cards; the old nav token set on the new header.
+   Not taken over: the two rules for the old hero (padding after the
+   mark, paused entrance); the new hero keeps its own spacing.
+   Static state (no JS, reduced motion): the full name on the page
+   ground. Live state (html.mark-live): 520vh (460vh on phones), a
+   100vh pin; opening.js drives the custom properties from scroll.
    ═══════════════════════════════════════════════════════════════ */
 
+/* the app's own faces (assets/fonts.css of 0d2d27a), used only by the swarm cards */
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 400; font-display: swap; src: url('assets/fonts/inter-latin-400.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 500; font-display: swap; src: url('assets/fonts/inter-latin-500.woff2') format('woff2'); }
+@font-face { font-family: 'Inter'; font-style: normal; font-weight: 600; font-display: swap; src: url('assets/fonts/inter-latin-600.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 400; font-display: swap; src: url('assets/fonts/jetbrains-mono-latin-400.woff2') format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-style: normal; font-weight: 500; font-display: swap; src: url('assets/fonts/jetbrains-mono-latin-500.woff2') format('woff2'); }
+
+/* tokens of 0d2d27a that the rules below read, kept inside the section.
+   site.css names its tokens differently (--text-1 …) and has another
+   --maxw, so these do not reach the rest of the page. The new site is
+   dark by default, so the old dark values are the default here and the
+   old light values apply under html[data-theme="light"]. line-height is
+   the old body value the captions, the hint and the signature inherit. */
 .mark {
-  --mark-size: clamp(32px, 5.2vw, 96px);
+  --pad: clamp(20px, 4vw, 48px);
+  --maxw: 1480px;
+  --fast: 0.16s;
+  --text: #EDEDE9;
+  --text-dim: #A3A39E;
+  --text-faint: #85857F;
+  --au-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --au-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --au-r: 6px;
+  --au-r-card: 10px;
+  line-height: 1.6;
+}
+html[data-theme="light"] .mark {
+  --text: #15171A;
+  --text-dim: #4A4F55;
+  --text-faint: #6B7178;
+}
+/* the old .mono: the face only, the rules below set size and weight
+   (site.css .mono adds 12px, 500 and line-height 1.4) */
+:where(.mark) .mono { font-family: var(--mono); font-size: 0.86em; font-weight: inherit; line-height: inherit; }
+
+/* ── mark: IVE unfolds into its name on scroll ─────────── */
+/* Static state (no JS or reduced motion): the full name, one block.
+   Live state (html.mark-live): a 100vh pin; opening.js drives the
+   custom properties from scroll progress. The type size always follows
+   the room the letters plus the revealed word remainders need, so the
+   line never leaves the viewport while it is being pulled apart. */
+.mark {
+  --mark-size: clamp(28px, 4.4vw, 108px);
   --mark-gap: 0.24em;
   --mark-reveal: 1;
   --mark-slide: 0em;
   --mark-alpha: 1;
   --mark-hint: 0;
-  --mark-line-alpha: 1;
-  --mark-by: 1;
-  --mark-rise: 0px;
-  --mark-pop: 1;
   position: relative;
-  color: var(--text-1);
 }
 .mark-pin {
   position: relative;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 100vh;
-  min-height: 100svh;
-  padding: calc(var(--header-h) + 48px) var(--gutter) 96px;
+  min-height: 58vh;
+  padding: clamp(132px, 17vh, 200px) var(--pad) clamp(40px, 7vh, 88px);
   overflow: clip;
-  background: #0E1014;
-  background: color-mix(in srgb, var(--page-bg) calc(var(--ground-mix, 0) * 100%), #0E1014);
 }
-
-/* the name line: I V E, the remainders slide out from behind the caps */
 .mark-line {
-  position: relative; z-index: 2;
   margin: 0;
   display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
   gap: 0.1em var(--mark-gap);
@@ -49,47 +81,44 @@
   font-size: var(--mark-size);
   line-height: 0.92;
   letter-spacing: -0.035em;
-  color: var(--text-1);
+  color: var(--text);
   text-align: center;
   font-kerning: normal;
 }
 .mark-word { display: inline-flex; align-items: baseline; white-space: nowrap; }
 .mark-cap { display: inline-block; }
 .mark-rest { display: inline-block; overflow: hidden; }
-.mark-rest-text { display: inline-block; color: var(--text-2); }
-
-/* the maker's signature under the line */
-.mark-by {
-  position: relative; z-index: 2;
-  margin: 32px 0 0;
-  font-family: var(--mono);
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 1.4;
-  text-align: center;
-}
-.mark-by a {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 6px 2px;
-  color: var(--text-3);
-  transition: color var(--t-fast);
-}
-.mark-by a:hover, .mark-by a:focus-visible { color: var(--text-1); }
-.mark-by .icon { width: 12px; height: 12px; }
-
-/* one chevron as the scroll cue */
+.mark-rest-text { display: inline-block; color: var(--text-dim); }
 .mark-hint {
-  position: absolute; left: 50%; bottom: clamp(20px, 4vh, 36px); z-index: 3;
+  position: absolute; left: 0; right: 0; bottom: clamp(20px, 4.5vh, 40px);
   margin: 0;
-  transform: translateX(-50%);
-  color: var(--text-3);
-  opacity: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-faint);
+  text-align: center;
+  opacity: var(--mark-hint);
   pointer-events: none;
 }
-.mark-hint .icon { width: 16px; height: 16px; animation: mark-hint-bob 2.2s ease-in-out infinite; }
-@keyframes mark-hint-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+.mark-hint-line { position: relative; width: 1px; height: 48px; overflow: hidden; background: color-mix(in srgb, currentColor 30%, transparent); }
+.mark-hint-line::after {
+  content: ''; position: absolute; left: 0; top: 0; width: 1px; height: 100%;
+  background: currentColor;
+  animation: mark-hint-run 1.7s cubic-bezier(0.45, 0, 0.2, 1) infinite;
+}
+@keyframes mark-hint-run { 0% { transform: translateY(-100%); } 55%, 100% { transform: translateY(100%); } }
+/* the maker's signature: appears once the name stands */
+.mark-by {
+  position: absolute; left: 0; right: 0; bottom: clamp(24px, 6vh, 56px);
+  margin: 0;
+  text-align: center;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+}
+.mark-by a { color: var(--text-faint); text-decoration: none; transition: color var(--fast); }
+.mark-by a:hover, .mark-by a:focus-visible { color: var(--text); }
+.mark-live .mark .mark-by { opacity: var(--mark-by, 0); pointer-events: none; }
+.mark-live .mark.has-by .mark-by { pointer-events: auto; }
+.mark-live .mark:not(.is-lit) .mark-by { visibility: hidden; }
 
-/* ── live: pinned, scroll-driven ── */
 .mark-live .mark {
   --mark-size: min(50vw, 56vh);
   --mark-gap: 0.02em;
@@ -98,291 +127,241 @@
   --mark-fade: 0.35em;
   --mark-alpha: 0;
   --mark-hint: 1;
-  --mark-line-alpha: 0;
-  --mark-by: 0;
-  height: 441vh;
+  --mark-pop: 1;
+  height: 520vh;
+}
+/* scene: inside the machine. A grid corridor rushes past, coding agents swarm
+   as session cards around the viewer, come under control onto one Mission
+   Control board, then light takes the ground and the mark stands. Time drives
+   the swarm, scroll drives the story. */
+.scene { display: none; position: absolute; inset: 0; overflow: hidden; background: #000; }
+.mark-live .mark:not(.is-lit) .scene { display: block; }
+.mark-live .mark:not(.is-lit) .mark-pin { background: #000; }
+.mark-live .mark:not(.is-lit) .mark-line { visibility: hidden; }
+.mark-live .mark:not(.is-lit) .mark-line { color: #000; }
+.mark-live .mark:not(.is-lit) .mark-rest-text { color: #000; }
+.mark-live .mark:not(.is-lit) .mark-hint { color: #C2C7CC; }
+.mark-live .mark-line { position: relative; z-index: 1; }
+.scene-cam { position: absolute; inset: 0; will-change: transform; }
+.scene-space { position: absolute; inset: 0; perspective: 720px; perspective-origin: 50% 50%; }
+.scene-wall {
+  position: absolute;
+  background-image:
+    linear-gradient(rgba(244, 245, 246, 0.27) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 245, 246, 0.27) 1px, transparent 1px);
+  background-size: 120px 120px;
+  opacity: var(--scene-lines, 0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+.wall-floor { left: 0; width: 100%; top: 100%; height: 2640px; transform-origin: 50% 0; transform: rotateX(-90deg); -webkit-mask-image: linear-gradient(to bottom, #000 0, transparent 78%); mask-image: linear-gradient(to bottom, #000 0, transparent 78%); }
+.wall-ceil { left: 0; width: 100%; bottom: 100%; height: 2640px; transform-origin: 50% 100%; transform: rotateX(90deg); -webkit-mask-image: linear-gradient(to top, #000 0, transparent 78%); mask-image: linear-gradient(to top, #000 0, transparent 78%); }
+.wall-left { top: 0; height: 100%; left: 0; width: 2640px; transform-origin: 0 50%; transform: rotateY(90deg); -webkit-mask-image: linear-gradient(to right, #000 0, transparent 78%); mask-image: linear-gradient(to right, #000 0, transparent 78%); }
+.wall-right { top: 0; height: 100%; right: 0; width: 2640px; transform-origin: 100% 50%; transform: rotateY(-90deg); -webkit-mask-image: linear-gradient(to left, #000 0, transparent 78%); mask-image: linear-gradient(to left, #000 0, transparent 78%); }
+.scene-rings { position: absolute; inset: 0; }
+.scene-ring {
+  position: absolute; left: 50%; top: 50%;
+  width: 100%; height: 100%;
+  border: 2px solid #F4F5F6;
+  border-radius: clamp(10px, 2.4vmin, 28px);
+  transform: translate(-50%, -50%) scale(0.1);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.scene-vignette {
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: var(--scene-vig, 1);
+  background: radial-gradient(ellipse at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.72) 100%);
+}
+.scene-board {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%) translateY(-14px);
+  border: 1px solid #34343B; border-radius: 8px;
+  background: rgba(16, 16, 18, 0.72);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  padding: 8px 14px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #85857F;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.scene-board .sb-count { color: #5B8CFF; }
+.scene-swarm { position: absolute; inset: 0; }
+/* the swarm's session cards (.scene-agent) are the tops of app board tiles: see the end of this file */
+.scene-caption {
+  position: absolute; left: var(--pad); right: var(--pad); top: 15%;
+  margin: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #C2C7CC;
+  text-align: center;
+  opacity: 0;
+}
+.scene-caption .sc-count { font-size: 11px; letter-spacing: 0.12em; color: #85857F; min-height: 1em; }
+.scene-scan {
+  position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 3px);
+  opacity: var(--scene-scan, 0);
+}
+@media (max-width: 720px) {
+  .scene-caption { top: 12%; }
+}
+/* the header over the black scene: the old html.mark-dark .nav token set,
+   on the new header's token names (site.css also keeps the header without
+   a ground and its wordmark hidden while html.mark-dark is set). The old
+   --bg: #000 is left out: the old nav never painted with it, the new phone
+   menu panel does and would sink into the black scene. */
+html.mark-dark .site-header {
+  --text-1: #F4F5F6; --text-2: #A6ADB4; --text-3: #85857F;
+  --line: #2B2F34; --line-strong: #34343B;
+  --bg-raised: #17171A; --bg-glass: rgba(0, 0, 0, 0.82);
 }
 .mark-live .mark-pin {
   position: sticky; top: 0;
-  height: 100vh;
-  height: 100svh;
+  height: 100vh; height: 100svh;
   min-height: 0;
-  padding: 0 var(--gutter);
+  padding: 0 var(--pad);
   contain: layout paint;
 }
-/* the corridor runs on pure black in both themes, as in 0d2d27a; the ground turns
-   #0E1014 when the letters light up (the first lit frame is the V's stroke) */
-.mark-live .mark:not(.is-lit) .mark-pin { background: #000; }
-.mark-live .mark-line {
-  flex-wrap: nowrap;
-  white-space: nowrap;
-  max-width: none;
-  opacity: var(--mark-line-alpha);
-  transform: translate(var(--mark-shift-x, 0px), var(--mark-rise, 0px)) scale(var(--mark-pop));
-  transform-origin: var(--mark-origin-x, 50%) 50%;
-}
+.mark-live .mark-line { flex-wrap: nowrap; white-space: nowrap; max-width: none; will-change: font-size; transform: translate(var(--mark-shift-x, 0px), var(--mark-shift-y, 0px)) scale(var(--mark-pop)); transform-origin: var(--mark-origin-x, 50%) 50%; }
 .mark-live .mark-rest {
   width: calc(var(--rest-em, 0) * 1em * var(--mark-reveal));
   -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - var(--mark-fade, 0em)), transparent 100%);
   mask-image: linear-gradient(90deg, #000 calc(100% - var(--mark-fade, 0em)), transparent 100%);
 }
 .mark-live .mark-rest-text { transform: translateX(var(--mark-slide)); opacity: var(--mark-alpha); }
-.mark-live .mark-by { opacity: var(--mark-by); pointer-events: none; }
-.mark-live .mark.has-by .mark-by { pointer-events: auto; }
-.mark-live .mark:not(.is-lit) .mark-by { visibility: hidden; }
-.mark-live .mark-hint { opacity: var(--mark-hint); }
 .mark.is-measuring { --mark-reveal: 1; --mark-gap: 0.24em; }
 .mark.is-measuring .mark-line { font-size: 100px !important; transform: none !important; visibility: hidden; }
 .mark.is-measuring .mark-rest { width: auto !important; }
 
-/* ── the scene: inside the machine ──
-   A grid corridor (four perspective planes) flows past, ring ribs rush by,
-   the camera drifts; the agents swarm in it, glide onto one board, and the
-   corridor fades to black at the cut. opening.js drives only transform
-   and opacity of these layers. Line colours and weights are the 0d2d27a
-   values, not tokens (owner, 2026-10-22: the corridor as before): 1px grid
-   in near white at 27 %, 2px ribs in near white that peak at opacity 0.5
-   (opening.js), no accent. */
-.scene {
-  --scene-grid: rgba(244, 245, 246, 0.27);
-  --scene-ring: #F4F5F6;
-  display: none;
-  position: absolute; inset: 0; z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-.mark-live .scene { display: block; }
-.mark-live .mark.scene-off .scene { visibility: hidden; }
-.scene-cam { position: absolute; inset: 0; will-change: transform; }
-.scene-space { position: absolute; inset: 0; perspective: 720px; perspective-origin: 50% 50%; }
-/* each plane starts at an edge of the view and runs 2040px into depth (17 grid
-   cells of 120px, GRID in opening.js), the mask fades it out toward the far end.
-   0d2d27a drew 2640px and faded out at 78 % (2059px); the rest was invisible but
-   still rasterized, so the planes now end where the fade does, cells aligned.
-   backface-visibility: hidden as in 0d2d27a. Through the parent's perspective
-   floor and ceiling face away from the camera, so Chrome and WebKit cull them
-   and the grid shows on the two side walls only: that is the look the owner
-   approved. backface-visibility: visible on .wall-floor and .wall-ceil would
-   draw all four planes. */
-.scene-wall {
-  position: absolute;
-  background-image:
-    linear-gradient(var(--scene-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--scene-grid) 1px, transparent 1px);
-  background-size: 120px 120px;
-  opacity: 0;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  will-change: transform, opacity;
-}
-.wall-floor {
-  left: 0; top: 100%; width: 100%; height: 2040px;
-  transform-origin: 50% 0;
-  transform: rotateX(-90deg);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0, transparent 100%);
-}
-.wall-ceil {
-  left: 0; bottom: 100%; width: 100%; height: 2040px;
-  transform-origin: 50% 100%;
-  transform: rotateX(90deg);
-  -webkit-mask-image: linear-gradient(to top, #000 0, transparent 100%);
-  mask-image: linear-gradient(to top, #000 0, transparent 100%);
-}
-.wall-left {
-  top: 0; left: 0; height: 100%; width: 2040px;
-  transform-origin: 0 50%;
-  transform: rotateY(90deg);
-  -webkit-mask-image: linear-gradient(to right, #000 0, transparent 100%);
-  mask-image: linear-gradient(to right, #000 0, transparent 100%);
-}
-.wall-right {
-  top: 0; right: 0; height: 100%; width: 2040px;
-  transform-origin: 100% 50%;
-  transform: rotateY(-90deg);
-  -webkit-mask-image: linear-gradient(to left, #000 0, transparent 100%);
-  mask-image: linear-gradient(to left, #000 0, transparent 100%);
-}
-/* ring ribs: frames the size of the view, scaled by depth (built by opening.js) */
-.scene-rings { position: absolute; inset: 0; }
-.scene-ring {
-  position: absolute; left: 50%; top: 50%;
-  width: 100%; height: 100%;
-  border: 2px solid var(--scene-ring);
-  border-radius: clamp(10px, 2.4vmin, 28px);
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0.1);
-  will-change: transform, opacity;
-}
-/* the vignette sits in the camera and covers the view, as in 0d2d27a (an overhang
-   would stretch the gradient and weaken it in the view). Where the drift bares an
-   edge strip (16px at most), the strip shows the black ground. */
-.scene-vignette {
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.72) 100%);
-}
-/* scanlines over everything in the scene, very faint */
-.scene-scan {
-  position: absolute; inset: 0; z-index: 4;
-  background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--text-1) 4.5%, transparent) 0 1px, transparent 1px 3px);
-  opacity: 0;
-}
-.scene-swarm { position: absolute; inset: 0; z-index: 2; }
-.scene-board {
-  position: absolute; left: 50%; top: 50%; z-index: 1;
-  border-radius: var(--r-panel);
-  background: var(--bg-raised);
-  box-shadow: 0 0 0 1px var(--line), 0 24px 64px rgba(0, 0, 0, 0.45);
-  opacity: 0;
-  transform: translate(-50%, -50%);
-}
-.scene-board-title {
-  position: absolute; left: 14px; top: 10px;
-  font-family: var(--mono);
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 1.4;
-  color: var(--text-3);
-}
-/* the captions, top centre under the header as in 0d2d27a: mono, uppercase, tracked,
-   the live counter below in a smaller size */
-.scene-caption {
-  position: absolute; z-index: 3;
-  left: var(--gutter); right: var(--gutter); top: 15%;
-  margin: 0;
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  font-family: var(--mono);
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 1.6;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  text-align: center;
-  color: var(--text-2);
-  opacity: 0;
-}
-.scene-count { min-height: 1em; font-size: 11px; letter-spacing: 0.12em; color: var(--text-3); }
-
-/* a session card: title, model, state word. In the swarm it hangs in space: opening.js
-   sets its depth size --s (0.33 far to 2.4 at the viewer, 1 on the board) and turns it
-   with perspective(700px) rotateY/rotateX/rotate. Every size follows --s (real font
-   sizes), outline and shadow too, as they grew with the old scale(). */
-.swarm-card {
-  --card-w: 236px;
-  --card-f: 12px;
-  position: absolute; left: 50%; top: 50%;
-  width: calc(var(--card-w) * var(--s, 1));
-  padding: 0.8em 0.95em 0.85em;
-  border-radius: 0.5em;
-  background: var(--bg-raised);
-  box-shadow: 0 0 0 calc(1px * var(--s, 1)) var(--line-strong), 0 calc(12px * var(--s, 1)) calc(32px * var(--s, 1)) rgba(0, 0, 0, 0.4);
-  color: var(--text-1);
-  font-family: var(--sans);
-  font-size: calc(var(--card-f) * var(--s, 1));
-  line-height: 1.3;
-  opacity: 0;
-  transform: translate(-50%, -50%);
-}
-.sc-top { display: flex; align-items: baseline; gap: 0.8em; min-width: 0; }
-.sc-title {
-  flex: 1; min-width: 0;
-  font-weight: 600;
-  font-size: 1.1em;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.sc-model { flex: none; font-family: var(--mono); font-weight: 500; font-size: 0.92em; color: var(--text-3); }
-.sc-pill {
-  display: inline-flex; align-items: center; gap: 0.5em;
-  margin-top: 0.45em;
-  font-family: var(--mono);
-  font-weight: 500;
-  font-size: 0.92em;
-  color: var(--accent);
-}
-.sc-pill i { width: 0.55em; height: 0.55em; border-radius: 50%; background: currentColor; }
-.swarm-card[data-st="wait"] { box-shadow: 0 0 0 calc(1px * var(--s, 1)) var(--waiting), 0 calc(12px * var(--s, 1)) calc(32px * var(--s, 1)) rgba(0, 0, 0, 0.4); }
-.swarm-card[data-st="wait"] .sc-pill { color: var(--waiting); }
-.swarm-card[data-st="done"] .sc-pill { color: var(--done); }
-.swarm-card[data-st="done"] .sc-pill i {
-  width: 0.35em; height: 0.65em;
-  border-radius: 0;
-  background: transparent;
-  border: solid currentColor;
-  border-width: 0 0.14em 0.14em 0;
-  transform: translateY(-0.1em) rotate(42deg);
-  margin: 0 0.1em;
-}
-
-@media (max-width: 1023.98px) {
-  .swarm-card { --card-w: 208px; --card-f: 11px; }
-}
-
-/* ── phones: the letters stack and unfold to the right ── */
-@media (max-width: 719.98px) {
+@media (max-width: 720px) {
   .mark { --mark-size: clamp(38px, 11.5vw, 64px); }
-  .mark-live .mark { --mark-size: min(56vw, 19vh); height: 386vh; }
+  .mark-live .mark { --mark-size: min(56vw, 19vh); height: 460vh; }
   .mark-pin { align-items: flex-start; }
   .mark-line {
     flex-direction: column; align-items: flex-start; justify-content: center;
     gap: 0.06em 0 !important;
     text-align: left;
   }
-  .mark-by { text-align: left; }
-  .swarm-card { --card-w: 150px; --card-f: 10.5px; }
-  .scene-caption { top: 12%; }
 }
-
-/* Original app tile composition (0d2d27a), scoped to the tunnel only.
-   These rules do not change the active 3D transform, corridor or caption. */
-.scene .swarm-card {
-  --card-w: 284px;
-  --card-f: 12px;
-  width: calc(var(--card-w) * var(--s, 1));
-  padding: 0;
-  display: flex; flex-direction: column; min-width: 0;
-  border: 1px solid #262a33; border-radius: 6px;
-  background: #0e1014; overflow: hidden;
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
-  color: #f4f6fa;
-  font-size: calc(var(--card-f) * var(--s, 1)); line-height: 1.4;
-}
-.scene .sc-top {
-  display: flex; align-items: center; gap: 0.6em;
-  padding: 0.55em 0.8em; border-bottom: 1px solid #262a33;
-  background: #16181d;
-}
-.scene .sc-title { font-weight: 600; font-size: 1.08em; }
-.scene .sc-model { flex-shrink: 0; font-size: 0.9em; color: #9aa3b2; }
-.scene .sc-pill {
-  margin-top: 0; display: inline-flex; align-items: center; gap: 0.4em;
-  font-family: var(--sans); font-size: 1em; font-weight: 500; white-space: nowrap;
-  color: #7a97ff;
-}
-.scene .sc-pill i { width: 0.62em; height: 0.62em; background: #4d74ff; box-shadow: 0 0 0 0.2em rgba(77, 116, 255, 0.18); }
-.scene .sc-status { display: flex; flex-direction: column; gap: 0.15em; padding: 0.55em 0.8em; background: #16181d; }
-.scene .sc-state { display: inline-flex; align-items: center; gap: 0.45em; font-weight: 600; white-space: nowrap; min-width: 0; }
-.scene .sc-state::before { content: ''; flex: none; width: 0.5em; height: 0.5em; border-radius: 50%; background: #4d74ff; }
-.scene .sc-state::after { content: '⌄'; color: #9aa3b2; font-weight: 400; margin-left: 0.1em; position: relative; top: -0.15em; }
-.scene .swarm-card[data-st="wait"] { border-color: #f59e0b; box-shadow: 0 0 0 1px #f59e0b, 0 14px 34px rgba(0, 0, 0, 0.55); }
-.scene .swarm-card[data-st="wait"] .sc-pill { color: #f59e0b; }
-.scene .swarm-card[data-st="wait"] .sc-pill i, .scene .swarm-card[data-st="wait"] .sc-state::before { background: #f59e0b; box-shadow: none; }
-.scene .swarm-card[data-st="done"] .sc-pill { color: #22c55e; }
-.scene .swarm-card[data-st="done"] .sc-pill i { width: 0.4em; height: 0.72em; border-radius: 0; background: transparent; border: solid #22c55e; border-width: 0 2px 2px 0; transform: translateY(-0.12em) rotate(42deg); margin-right: 0.15em; box-shadow: none; }
-.scene .swarm-card[data-st="done"] .sc-state::before { background: #6b7280; }
-@media (max-width: 1080px) {
-  .scene .swarm-card { --card-w: min(262px, calc((100vw - 72px) / 3)); --card-f: 11px; }
-}
-@media (max-width: 719.98px) {
-  .scene .swarm-card { --card-w: min(160px, calc((100vw - 58px) / 2)); --card-f: 10px; }
-  .scene .sc-top .sc-pill, .scene .sc-top .sc-model { display: none; }
-  .scene .sc-state { overflow: hidden; text-overflow: ellipsis; display: block; }
-  .scene .sc-state::before { display: inline-block; vertical-align: 0.1em; margin-right: 0.45em; }
-}
-
-/* ── the hero follows the opening: it rises underneath the last 40vh ── */
-.mark-live .hero-body { margin-top: -40vh; }
 
 @media (prefers-reduced-motion: reduce) {
-  .mark-hint .icon { animation: none; }
+  .mark-hint-line::after { animation: none; transform: none; }
   .scene { display: none !important; }
+}
+
+/* ── app-ui.css of 0d2d27a: the rules the swarm cards use ──────── */
+.au {
+  font-family: var(--au-sans);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--au-ink);
+  background: var(--au-bg);
+  -webkit-font-smoothing: antialiased;
+  text-align: left;
+  letter-spacing: 0;
+}
+.au *, .au *::before, .au *::after { box-sizing: border-box; }
+
+/* ── status pill: the tile header's words ───────────────────── */
+.au-pill { display: inline-flex; align-items: center; gap: 0.4em; font-weight: 500; white-space: nowrap; }
+.au-pill::before { content: ''; width: 0.62em; height: 0.62em; border-radius: 50%; background: var(--au-faint); }
+.au-pill.is-running { color: var(--au-accent-ink); }
+.au-pill.is-running::before { background: var(--au-accent); box-shadow: 0 0 0 0.2em color-mix(in srgb, var(--au-accent) 18%, transparent); }
+.au-pill.is-waiting { color: var(--au-waiting); }
+.au-pill.is-waiting::before { background: var(--au-waiting); }
+.au-pill.is-done { color: var(--au-good); }
+.au-pill.is-done::before { content: ''; width: 0.4em; height: 0.72em; border-radius: 0; background: transparent; border: solid var(--au-good); border-width: 0 2px 2px 0; transform: translateY(-0.12em) rotate(42deg); margin-right: 0.15em; }
+.au-pill.is-failed { color: var(--au-failed); }
+.au-pill.is-failed::before { background: var(--au-failed); }
+
+/* ── board tile / session view ──────────────────────────────── */
+.au-tile {
+  display: flex; flex-direction: column; min-width: 0;
+  border: 1px solid var(--au-line); border-radius: var(--au-r);
+  background: var(--au-bg); overflow: hidden;
+}
+.au-tile.is-waiting { border-color: var(--au-waiting); box-shadow: 0 0 0 1px var(--au-waiting); }
+.au-tile-head {
+  display: flex; align-items: center; gap: 0.7em;
+  padding: 0.55em 0.8em; border-bottom: 1px solid var(--au-line);
+  background: var(--au-surface);
+}
+.au-tile-head .au-title { font-weight: 600; font-size: 1.08em; min-width: 0; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.au-tile-head .au-model { font-family: var(--au-mono); font-size: 0.9em; color: var(--au-ink-2); }
+.au-tile-status {
+  display: flex; flex-direction: column; gap: 0.15em;
+  padding: 0.55em 0.8em; border-bottom: 1px solid var(--au-line);
+  background: var(--au-surface);
+}
+.au-tile-status .au-state { display: inline-flex; align-items: center; gap: 0.45em; font-weight: 600; }
+.au-tile-status .au-state::before { content: ''; width: 0.5em; height: 0.5em; border-radius: 50%; background: var(--au-accent); }
+.au-tile-status .au-state::after { content: '⌄'; color: var(--au-ink-2); font-weight: 400; margin-left: 0.1em; position: relative; top: -0.15em; }
+.au-tile-status.is-waiting .au-state::before { background: var(--au-waiting); }
+.au-tile-status.is-done .au-state::before { background: var(--au-faint); }
+
+/* ── mark (#mark): the swarm's session cards, drawn from app-ui ───
+   Each coding agent in the corridor is one session as the board shows
+   it in dark theme: the top of a board tile, i.e. the tile header
+   (title, status pill "Running" / "Waiting" / "Done", model id in mono)
+   and the status line below it ("Working on your request" / "Your
+   answer is needed" / "Reply ready"). opening.js builds the cards,
+   moves them every frame and sets data-st, the pill and the state
+   words; the scene is black in both site themes, so the card carries
+   the app's dark tokens itself. A waiting tile gets the app's amber
+   outline. The card keeps a fixed width and one title line (the title
+   ellipsises like the app's), so the board slots — measure() in
+   opening.js takes the pitch from the card's real size — never shift.
+   On phones the header drops the pill and the model id; the status
+   line carries the state. */
+.scene-agent {
+  --au-bg: #0e1014;
+  --au-surface: #16181d;
+  --au-surface-2: #1d2027;
+  --au-hover: #1d2027;
+  --au-ink: #f4f6fa;
+  --au-ink-2: #9aa3b2;
+  --au-muted: #9aa3b2;
+  --au-faint: #6b7280;
+  --au-line: #262a33;
+  --au-line-strong: #3a3f4b;
+  --au-line-subtle: #1b1e25;
+  --au-accent: #4d74ff;
+  --au-accent-ink: #7a97ff;
+  --au-tint: #1a2550;
+  --au-tint-line: #2d3f85;
+  --au-good: #22c55e;
+  --au-good-soft: #0f2e1a;
+  --au-waiting: #f59e0b;
+  --au-waiting-soft: #3a2a0e;
+  --au-failed: #ef4444;
+  --au-failed-soft: #3a1414;
+  --au-bubble: #1d2027;
+  --au-code: #1d2027;
+  --au-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --au-shadow-3: 0 4px 16px rgba(0, 0, 0, 0.4);
+  position: absolute; left: 50%; top: 50%;
+  width: 284px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  will-change: transform, opacity;
+}
+.scene-agent.au { font-size: 12px; }
+.scene-agent .au-tile-head { gap: 0.6em; }
+.scene-agent .au-tile-head .au-model { flex-shrink: 0; }
+.scene-agent .au-tile-status { border-bottom: 0; }
+.scene-agent .au-tile-status .au-state { white-space: nowrap; min-width: 0; }
+.scene-agent.is-waiting { box-shadow: 0 0 0 1px var(--au-waiting), 0 14px 34px rgba(0, 0, 0, 0.55); }
+@media (max-width: 1080px) {
+  .scene-agent { width: 262px; }
+  .scene-agent.au { font-size: 11px; }
+}
+@media (max-width: 720px) {
+  .scene-agent { width: 160px; }
+  .scene-agent.au { font-size: 10px; }
+  .scene-agent .au-tile-head .au-pill, .scene-agent .au-tile-head .au-model { display: none; }
+  .scene-agent .au-tile-status .au-state { overflow: hidden; text-overflow: ellipsis; display: block; }
+  .scene-agent .au-tile-status .au-state::before { display: inline-block; vertical-align: 0.1em; margin-right: 0.45em; }
 }
