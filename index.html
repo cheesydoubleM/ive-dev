@@ -814,13 +814,14 @@ Received: previous session</pre></div>
         <pre class="term-body install-cmd" data-copy-source><code><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>curl -fsSL https://ive.dev/install.sh | bash</span></code></pre>
       </div>
       <p class="install-then">Then start IVE with: <code>ive</code></p>
+      <p class="install-note">IVE runs in the background and opens in your browser. You can close the terminal. <code>ive stop</code> stops it.</p>
       <p class="install-note">The installer puts the code in <code>~/.ive</code>, installs its dependencies, builds the app, and adds the <code>ive</code> command to <code>~/.local/bin</code>. <a href="https://github.com/michael-ra/ive/blob/main/get.sh" target="_blank" rel="noopener">Read the script first on GitHub</a></p>
       <p class="install-req"><span class="install-req-label mono">Requirements</span> macOS or Linux, Python 3.11+, Node.js 22.12+ with npm, Git, and at least one coding CLI you already use: Claude Code · Codex · Gemini CLI.</p>
       <details class="install-alt">
         <summary>Prefer to clone it yourself?<span aria-hidden="true">+</span></summary>
         <div class="term install-term">
-          <div class="term-head"><span class="install-term-label mono">From source</span><button class="copy-btn" type="button" data-copy="git clone https://github.com/michael-ra/ive.git&#10;cd ive&#10;bash install.sh&#10;bash start.sh" aria-label="Copy the four setup commands" hidden>Copy</button></div>
-          <pre class="term-body install-cmd install-cmd-alt" data-copy-source><code><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>git clone https://github.com/michael-ra/ive.git</span><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>cd ive</span><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>bash install.sh</span><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>bash start.sh</span></code></pre>
+          <div class="term-head"><span class="install-term-label mono">From source</span><button class="copy-btn" type="button" data-copy="git clone https://github.com/michael-ra/ive.git&#10;cd ive&#10;bash install.sh&#10;bin/ive" aria-label="Copy the four setup commands" hidden>Copy</button></div>
+          <pre class="term-body install-cmd install-cmd-alt" data-copy-source><code><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>git clone https://github.com/michael-ra/ive.git</span><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>cd ive</span><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>bash install.sh</span><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>bin/ive</span></code></pre>
         </div>
       </details>
       <p class="sr-only" role="status" aria-live="polite" data-copy-status></p>
