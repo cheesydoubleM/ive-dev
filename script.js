@@ -615,7 +615,7 @@
   document.querySelectorAll('[data-copy]').forEach(function (btn) {
     var label = btn.textContent;
     var timer = 0;
-    var term = btn.closest('.term');
+    var term = btn.closest('.term, [data-copy-box]');
     var source = term && term.querySelector('[data-copy-source]');
     function show(text, ok, announce) {
       btn.textContent = text;
