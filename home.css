@@ -23,15 +23,30 @@
 .hero-frame-footer > p { max-width: 58ch; }
 html.no-js .hero-frame [data-clip-toggle] { display: none; }
 .hero-frame-footer .frame-controls { position: static; flex: none; opacity: 1; gap: 6px; }
-/* Dedicated real two-session recording; its native composition needs no CSS crop. */
-.hero-frame.hero-frame--focus-native .frame-media { aspect-ratio: 1600 / 720; }
+/* Interim focus cut of the real board: two top sessions, no project sidebar.
+   This class is removed when the dedicated light hero-focus footage is ready. */
+.hero-frame--board-crop .frame-media { aspect-ratio: 2704 / 936; }
+.hero-frame--board-crop .frame-media > .frame-poster,
+.hero-frame--board-crop .frame-media > .frame-video {
+  inset: auto;
+  left: calc(-488 / 2704 * 100%);
+  top: calc(-96 / 936 * 100%);
+  width: calc(3200 / 2704 * 100%);
+  height: calc(2000 / 936 * 100%);
+  max-width: none;
+}
 @media (max-width: 719.98px) {
   .hero-body { padding-top: 72px; padding-bottom: 72px; }
   .hero-cta .term { display: none; }
   .hero-frame { margin-top: 32px; }
   .hero-frame-footer { gap: 12px; }
-  /* Dedicated phone recording: one complete session/action. */
-  .hero-frame.hero-frame--focus-native .frame-media { aspect-ratio: 1056 / 1432; }
+  /* One working session on a phone; the same master is available on expand. */
+  .hero-frame--board-crop .frame-media { aspect-ratio: 1348 / 936; }
+  .hero-frame--board-crop .frame-media > .frame-poster,
+  .hero-frame--board-crop .frame-media > .frame-video {
+    left: calc(-488 / 1348 * 100%);
+    width: calc(3200 / 1348 * 100%);
+  }
 }
 
 /* ── Why IVE (4.2) ───────────────────────────────────────────────
