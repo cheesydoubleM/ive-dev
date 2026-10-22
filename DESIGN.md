@@ -337,7 +337,7 @@ Grammar: **Branch → Execute → Verify → Proof.**
 IVE is open source under the MIT license (owner decision, 2026-10-22). The
 site offers the one-line installer `install.sh` (served at
 https://ive.dev/install.sh) and the source path from
-https://github.com/evostorednew/ive. Do not publish app bundles or release
+https://github.com/michael-ra/ive. Do not publish app bundles or release
 binaries here, and do not promise a Mac app download, signed builds, Windows
 support, a community, stars, or contributors.
 
