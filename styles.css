@@ -364,18 +364,14 @@ h3 { letter-spacing: -0.02em; line-height: 1.15; }
 .nav-cta:hover { color: var(--text); background: var(--bg-raised); border-color: var(--text-dim); }
 /* GitHub star link, the way open-source sites put it next to the main CTA. */
 .nav-gh {
-  display: inline-flex; align-items: center; gap: 8px; flex-shrink: 0;
-  min-height: 44px; padding: 8px 14px;
+  display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+  width: 44px; height: 44px;
   border: 1px solid var(--line-strong); border-radius: var(--r-btn);
   color: var(--text); text-decoration: none;
-  font-size: 15px; font-weight: 600; white-space: nowrap;
   transition: background var(--fast) ease, border-color var(--fast) ease;
 }
 .nav-gh:hover { background: var(--bg-raised); border-color: var(--text-dim); }
-.gh-mark, .gh-star { width: 16px; height: 16px; fill: currentColor; flex: none; }
-.nav-gh .gh-star { width: 14px; height: 14px; color: var(--text-dim); transition: color var(--fast) ease; }
-.nav-gh:hover .gh-star { color: var(--text); }
-.btn-star .gh-star { width: 15px; height: 15px; }
+.gh-mark { width: 18px; height: 18px; fill: currentColor; flex: none; }
 
 /* ── hero ──────────────────────────────────────────────────── */
 .hero { padding: 148px 0 80px; }
@@ -2215,6 +2211,9 @@ html.no-js .merge-copy, .merge.is-static .merge-copy { position: relative; top: 
 .install-note a { color: var(--route-ink); text-underline-offset: 3px; white-space: nowrap; }
 .install-note a:hover { color: var(--route); }
 .install-copy > p.install-star { max-width: none; margin-top: 14px; font-size: 17px; color: var(--text-dim); }
+.install-star a { color: var(--text); font-weight: 600; text-underline-offset: 3px; }
+.install-star a:hover { color: var(--route-ink); }
+
 .install-req { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 15px; line-height: 1.6; color: var(--text-dim); }
 .install-req-label { display: block; margin-bottom: 6px; font-size: 11px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--text-faint); }
 .install-alt { margin-top: 18px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -2262,8 +2261,6 @@ html.no-js .merge-copy, .merge.is-static .merge-copy { position: relative; top: 
   .nav .wordmark-main { white-space: nowrap; }
   .nav .theme-toggle { inline-size: 64px; flex-basis: 64px; font-size: 12px; padding-inline: 6px; }
   .nav .nav-cta { font-size: 15px; padding-inline: 10px; }
-  .nav-gh { padding-inline: 13px; }
-  .nav-gh-label, .nav-gh .gh-star { display: none; }
 }
 
 /* ── confirm page: target of the double opt-in link ─────────── */

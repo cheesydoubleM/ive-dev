@@ -211,6 +211,8 @@ The homepage contains exactly these blocks, in order:
     JavaScript; without it the commands stay selectable. On mobile the
     terminal comes before the buttons. The beta waitlist form was retired on
     2026-10-22; its backend and data remain (see README).
+    Below the command, one line asks for a GitHub star; it is the only
+    star ask on the site. The header carries a GitHub logo link on every page.
 
 Architecture, implementation totals, and the deeper security surface belong on
 the dedicated Architecture page or in the repository documentation.
@@ -340,6 +342,7 @@ https://ive.dev/install.sh) and the source path from
 https://github.com/michael-ra/ive. Do not publish app bundles or release
 binaries here, and do not promise a Mac app download, signed builds, Windows
 support, a community, stars, or contributors.
+Asking for a GitHub star is fine; never show a star count that is not current.
 
 - Supported systems for the install: macOS or Linux. Requirements: Python
   3.11+, Node.js 22.12+ with npm, Git, and at least one supported coding CLI.
