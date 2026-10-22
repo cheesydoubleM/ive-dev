@@ -1507,6 +1507,8 @@ h3, .stat-n, .merge-ready { font-family: var(--display); }
   .hero-ctas { display: grid; }
   .hero-ctas .btn { justify-content: center; }
   .hero-install { white-space: normal; overflow-x: visible; }
+  .hero-install .dim { display: block; }
+  .hero-install .sep { display: none; }
   .proof-stats { grid-template-columns: repeat(2, 1fr); }
   .proof-stats .stat, .proof-stats .stat:nth-child(6) { border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
   .proof-stats .stat:nth-child(odd) { border-left: 0; }
