@@ -214,13 +214,15 @@ The homepage contains exactly these blocks, in order:
     Below the command, one line asks for a GitHub star; it is the only
     star ask on the site. The header carries a GitHub logo link on every page.
 16. Behind all this (`#aiforeu`): who makes IVE. The approved AIFOREU logo
-    reveal (`assets/aiforeu/`, 0.6–5.9 s of the master, no sound, keyframe
-    every 5 frames so seeking stays smooth) is pinned and follows the scroll in
-    both directions; it never plays on its own and holds the finished logo with
-    the EU co-funding notice for the last part of the pin. The film has a fixed
+    film (`assets/aiforeu/`, first 5.9 s of the master with its sound, which
+    fades out at the end) plays once when it comes into view, on the owner's
+    request (2026-10-22). It asks for sound first; browsers allow that only
+    after the visitor has clicked or typed on the page, otherwise it plays
+    muted and offers "Sound on". It pauses when scrolled away, stops on the
+    finished logo with the EU co-funding notice and offers "Replay". Reduced
+    motion starts nothing on its own ("Play with sound"). The film has a fixed
     light ground, so the section keeps the light palette in both themes.
-    Reduced motion, no JavaScript and short windows show the poster (the
-    finished logo) in normal flow. Logic in `madeby.js`.
+    Logic in `madeby.js`.
 
 Architecture, implementation totals, and the deeper security surface belong on
 the dedicated Architecture page or in the repository documentation.
@@ -378,7 +380,8 @@ Asking for a GitHub star is fine; never show a star count that is not current.
 - Generic node graphs, neural imagery, robot/AI-head illustrations.
 - Character, avatar, robot, employee, personality, or workforce metaphors.
 - Fake macOS chrome, fake customers, fake numbers, fake code.
-- Custom cursors, WebGL, animation libraries, autoplay video.
+- Custom cursors, WebGL, animation libraries, autoplay video. Only exception:
+  the AIFOREU logo film in Behind all this (owner request, 2026-10-22).
 - Warm-cream + serif + terracotta; black + acid-green; broadsheet templates.
 - Looking like Cursor, Linear, Zed, Raycast, or Warp.
 - Retired brand line: “One brain. Infinite&#32;hands.”

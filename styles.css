@@ -2214,37 +2214,33 @@ html.no-js .merge-copy, .merge.is-static .merge-copy { position: relative; top: 
 .install-star a { color: var(--text); font-weight: 600; text-underline-offset: 3px; }
 .install-star a:hover { color: var(--route-ink); }
 
-/* ── behind all this: the AIFOREU reveal, played by scrolling ─────────
+/* ── behind all this: the AIFOREU logo film ───────────────────
    The film has a fixed light ground, so the section keeps the light
    palette in both themes and its ground matches the film's edges. */
 .madeby {
   --bg: #EDEFEF;
   --text: #15171A;
   --text-dim: #4A4F55;
+  --line-strong: #BFC4C9;
+  --bg-raised: #FFFFFF;
   --route: #1647FF;
   --route-ink: #0E36C7;
   --focus: #1647FF;
-  position: relative;
-  height: 300vh;
   background: var(--bg);
   color: var(--text);
-}
-.madeby-stage {
-  position: sticky; top: 0;
-  height: 100vh; height: 100svh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: clamp(8px, 2vh, 24px);
-  padding: 96px var(--pad) clamp(16px, 4vh, 40px);
   overflow: hidden;
 }
-.madeby-head { width: 100%; max-width: var(--maxw); }
+.madeby-stage {
+  max-width: var(--maxw); margin: 0 auto;
+  padding: clamp(90px, 12vh, 150px) var(--pad) clamp(60px, 8vh, 100px);
+}
 .madeby-head h2 { margin: 14px 0 10px; }
 .madeby-link { color: var(--text); font-weight: 600; text-underline-offset: 3px; white-space: nowrap; }
 .madeby-link:hover { color: var(--route-ink); }
-.madeby-frame { position: relative; display: flex; justify-content: center; width: 100%; min-height: 0; }
+.madeby-frame { margin: clamp(16px, 4vh, 40px) 0 0; display: flex; flex-direction: column; align-items: center; }
 .madeby-video {
-  display: block; flex: none;
-  width: min(100%, calc((100svh - 330px) * 16 / 9));
+  display: block;
+  width: min(100%, 1200px);
   aspect-ratio: 16 / 9;
   background: var(--bg);
   /* Soften the film's vignette into the section ground. */
@@ -2253,16 +2249,19 @@ html.no-js .merge-copy, .merge.is-static .merge-copy { position: relative; top: 
   mask-image: linear-gradient(to right, transparent, #000 7%, #000 93%, transparent), linear-gradient(to bottom, transparent, #000 9%, #000 91%, transparent);
   mask-composite: intersect;
 }
-/* Reduced motion, no JavaScript or a short window: the finished logo in normal flow. */
-.madeby.is-static { height: auto; }
-.madeby.is-static .madeby-stage { position: static; height: auto; padding-block: clamp(90px, 12vh, 150px); }
-.madeby.is-static .madeby-video { width: min(100%, 1100px); }
+.madeby-controls { display: flex; gap: 8px; justify-content: center; min-height: 36px; margin-top: 4px; }
+.madeby-btn {
+  min-height: 36px; padding: 7px 14px;
+  font-family: var(--mono); font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--text); background: var(--bg-raised);
+  border: 1px solid var(--line-strong); border-radius: var(--r-btn);
+  transition: border-color var(--fast) ease;
+}
+.madeby-btn:hover { border-color: var(--text-dim); }
+.madeby-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 @media (max-width: 760px) {
-  .madeby { height: 260vh; }
-  .madeby-stage { padding-top: 104px; justify-content: flex-start; gap: 20px; }
   /* Crop the film's empty sides so the logo reads at phone width. */
-  .madeby-video, .madeby.is-static .madeby-video { width: 136vw; max-width: none; }
-  .madeby-frame { flex: 1; align-items: center; }
+  .madeby-video { width: 136vw; max-width: none; }
 }
 .install-req { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); font-size: 15px; line-height: 1.6; color: var(--text-dim); }
 .install-req-label { display: block; margin-bottom: 6px; font-size: 11px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--text-faint); }

@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://ive.dev/assets/og.png?v=20261022oss">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts.css?v=20260908f">
-<link rel="stylesheet" href="styles.css?v=20261022madeb">
+<link rel="stylesheet" href="styles.css?v=20261022film">
 <link rel="stylesheet" href="showcase.css?v=20261019c">
 <link rel="stylesheet" href="app-ui.css?v=20261019c">
 <link rel="stylesheet" href="app-ui-blocks.css?v=20261019c">
@@ -829,18 +829,22 @@ Received: previous session</pre></div>
   </div>
 </section>
 
-<!-- 16 · BEHIND ALL THIS: THE AIFOREU LOGO REVEAL, PLAYED BY SCROLLING -->
-<section class="madeby is-static" id="aiforeu" aria-labelledby="madeby-title" data-madeby>
+<!-- 16 · BEHIND ALL THIS: THE AIFOREU LOGO REVEAL, PLAYS ONCE WHEN IT COMES INTO VIEW -->
+<section class="madeby" id="aiforeu" aria-labelledby="madeby-title" data-madeby>
   <div class="madeby-stage">
     <div class="chapter-head madeby-head">
       <p class="kicker">BEHIND ALL THIS</p>
       <h2 id="madeby-title">Made by AIFOREU.</h2>
-      <p class="chapter-lede">IVE is built by AIFOREU GmbH in Osnabrück, Germany. <a class="madeby-link" href="https://aiforgov.eu/" target="_blank" rel="noopener">aiforgov.eu&nbsp;<span aria-hidden="true">↗</span></a></p>
+      <p class="chapter-lede">IVE is built by AIFOREU GmbH. <a class="madeby-link" href="https://aiforgov.eu/" target="_blank" rel="noopener">aiforgov.eu&nbsp;<span aria-hidden="true">↗</span></a></p>
     </div>
-    <div class="madeby-frame">
-      <video class="madeby-video" muted playsinline preload="none" poster="assets/aiforeu/reveal-poster.webp" aria-hidden="true" tabindex="-1" data-madeby-video data-src-large="assets/aiforeu/reveal-1600.mp4" data-src-small="assets/aiforeu/reveal-960.mp4"></video>
-      <p class="sr-only">Animation: a swarm of points flies in and settles into the AIFOREU mountain mark, the wordmark AIFOREU appears beside it, and below it the notices “Kofinanziert von der Europäischen Union” and “Europa für Niedersachsen”.</p>
-    </div>
+    <figure class="madeby-frame">
+      <video class="madeby-video" playsinline preload="none" poster="assets/aiforeu/reveal-poster.webp" aria-describedby="madeby-desc" data-madeby-video data-src-large="assets/aiforeu/reveal-sound-1600.mp4" data-src-small="assets/aiforeu/reveal-sound-960.mp4"></video>
+      <figcaption class="madeby-controls">
+        <button class="madeby-btn" type="button" aria-pressed="false" data-madeby-sound hidden>Sound on</button>
+        <button class="madeby-btn" type="button" data-madeby-replay hidden>Replay</button>
+      </figcaption>
+      <p class="sr-only" id="madeby-desc">Logo film with sound: a swarm of points flies in and settles into the AIFOREU mountain mark, the wordmark AIFOREU appears beside it, and below it the notices “Kofinanziert von der Europäischen Union” and “Europa für Niedersachsen”.</p>
+    </figure>
   </div>
 </section>
 
@@ -853,6 +857,6 @@ Received: previous session</pre></div>
 <script src="script.js?v=20261022cmd" defer></script>
 <script src="showcase.js?v=20261019c" defer></script>
 <script src="behind.js?v=20261019f" defer></script>
-<script src="madeby.js?v=20261022a" defer></script>
+<script src="madeby.js?v=20261022b" defer></script>
 </body>
 </html>

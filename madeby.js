@@ -1,78 +1,95 @@
-/* Behind all this: the AIFOREU logo reveal follows the scroll in both
-   directions. Nothing plays on its own; only scroll and resize move it.
-   Reduced motion, no JavaScript and short windows keep the poster. */
+/* Behind all this: the AIFOREU logo film plays once when it comes into view.
+   It asks for sound first; browsers allow that only after the visitor has
+   clicked or typed on the page, otherwise it plays muted with "Sound on".
+   Reduced motion starts nothing on its own; the button plays the film. */
 (function () {
   'use strict';
   var section = document.querySelector('[data-madeby]');
   if (!section) return;
   var video = section.querySelector('[data-madeby-video]');
-  var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var room = window.matchMedia('(min-height: 560px)');
+  var soundBtn = section.querySelector('[data-madeby-sound]');
+  var replayBtn = section.querySelector('[data-madeby-replay]');
+  if (!video || !soundBtn || !replayBtn) return;
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var small = window.matchMedia('(max-width: 760px)');
-  // The film ends on the finished logo; hold it for the last part of the pin.
-  var PLAY_UNTIL = 0.82;
-  var live = false, loaded = false, frame = 0, wanted = 0;
-
-  function progress() {
-    var rect = section.getBoundingClientRect();
-    var travel = rect.height - window.innerHeight;
-    if (travel <= 0) return 1;
-    return Math.min(1, Math.max(0, -rect.top / travel));
-  }
-
-  function seek() {
-    frame = 0;
-    if (!live || !video.duration) return;
-    wanted = Math.min(1, progress() / PLAY_UNTIL) * (video.duration - 0.04);
-    // Let a running seek finish; 'seeked' picks up the latest position.
-    if (!video.seeking && Math.abs(video.currentTime - wanted) > 0.015) video.currentTime = wanted;
-  }
-
-  function request() {
-    if (!frame) frame = window.requestAnimationFrame(seek);
-  }
+  var loaded = false, started = false, pausedByScroll = false;
+  var POSTER = video.getAttribute('poster');
 
   function load() {
     if (loaded) return;
     loaded = true;
-    video.removeAttribute('poster');
     video.src = small.matches ? video.getAttribute('data-src-small') : video.getAttribute('data-src-large');
     video.preload = 'auto';
     video.load();
-    // Safari paints frames for currentTime only after the first play().
-    var started = video.play();
-    if (started && started.then) started.then(function () { video.pause(); request(); }, function () {});
   }
 
-  function setMode() {
-    var shouldLive = !motion.matches && room.matches;
-    if (shouldLive === live) return;
-    live = shouldLive;
-    section.classList.toggle('is-static', !live);
-    if (live) request();
-    else if (loaded && video.duration) video.currentTime = video.duration - 0.04;
+  function render() {
+    // After the end only "Replay" is left; it always plays with sound.
+    soundBtn.hidden = video.ended;
+    replayBtn.hidden = !video.ended;
+    replayBtn.textContent = video.muted ? 'Replay with sound' : 'Replay';
+    if (!started) {
+      soundBtn.textContent = 'Play with sound';
+      soundBtn.setAttribute('aria-pressed', 'false');
+    } else {
+      soundBtn.textContent = video.muted ? 'Sound on' : 'Sound off';
+      soundBtn.setAttribute('aria-pressed', video.muted ? 'false' : 'true');
+    }
   }
 
-  if (!video) return;
-  video.addEventListener('loadedmetadata', request);
-  video.addEventListener('seeked', function () {
-    if (live && Math.abs(video.currentTime - wanted) > 0.015) request();
-  });
-  setMode();
-  if (motion.addEventListener) {
-    motion.addEventListener('change', setMode);
-    room.addEventListener('change', setMode);
-  }
-
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting && live) load();
-      });
-    }, { rootMargin: '150% 0px' }).observe(section);
-  } else {
+  function play(fromStart, withSound) {
     load();
+    started = true;
+    pausedByScroll = false;
+    if (fromStart) video.currentTime = 0;
+    video.muted = !withSound;
+    var attempt = video.play();
+    if (attempt && attempt.catch) {
+      attempt.catch(function () {
+        // No sound without an earlier click or key press: play muted instead.
+        if (!withSound) { render(); return; }
+        video.muted = true;
+        var muted = video.play();
+        if (muted && muted.catch) {
+          muted.catch(function () {
+            // Autoplay is off altogether (for example in a power saving mode).
+            started = false;
+            video.poster = POSTER;
+            render();
+          });
+        }
+        render();
+      });
+    }
+    render();
   }
-  window.addEventListener('scroll', request, { passive: true });
-  window.addEventListener('resize', request);
+
+  soundBtn.addEventListener('click', function () {
+    if (!started || video.muted) play(true, true);
+    else { video.muted = true; render(); }
+  });
+  replayBtn.addEventListener('click', function () { play(true, true); });
+  ['play', 'pause', 'ended', 'volumechange'].forEach(function (name) { video.addEventListener(name, render); });
+
+  // The poster shows the finished logo; when the film starts on its own it
+  // would jump back to the empty first frame, so drop it for autoplay.
+  if (!reduceMotion) video.removeAttribute('poster');
+  render();
+
+  if (!('IntersectionObserver' in window)) return;
+  new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        if (!started && !reduceMotion) play(true, true);
+        else if (pausedByScroll && video.paused && !video.ended) { pausedByScroll = false; video.play().catch(function () {}); }
+      } else if (started && !video.paused && !video.ended) {
+        pausedByScroll = true;
+        video.pause();
+      }
+    });
+  }, { threshold: 0.6 }).observe(video);
+  // Fetch the file a little before the film is reached.
+  new IntersectionObserver(function (entries) {
+    if (entries.some(function (entry) { return entry.isIntersecting; }) && !reduceMotion) load();
+  }, { rootMargin: '100% 0px' }).observe(section);
 })();
