@@ -23,6 +23,7 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts.css?v=20261023a">
 <link rel="stylesheet" href="site.css?v=20261023a">
+<link rel="stylesheet" href="product.css?v=20261023b">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -57,6 +58,7 @@
   </div>
 </header>
 
+<div class="p-flow">
 <div class="wrap rows">
   <section class="row" id="home" aria-labelledby="row-home">
     <div class="row-text">
@@ -98,46 +100,55 @@
       </div>
     </figure>
   </section>
-  <section class="row" id="loop" aria-labelledby="row-loop">
-    <div class="row-text">
-      <h2 id="row-loop">Auto-fix loop</h2>
-      <p>Implement, verify, fix, verify again. Every check runs in a fresh testing session, and the fix goes to the session that wrote the code. One counter limits plan revisions and fix rounds. The guided task ends with your acceptance.</p>
-    </div>
-    <figure class="frame row-media" data-clip>
-      <div class="frame-media">
-        <picture class="frame-poster">
-          <source media="(max-width: 719.98px)" srcset="assets/app/loop-task-m@2x.webp">
-          <img src="assets/app/loop-task.webp" srcset="assets/app/loop-task.webp 1600w, assets/app/loop-task@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
-        </picture>
-        <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/loop-task.mp4" data-src-small="assets/app/loop-task-s.mp4" data-src-m="assets/app/loop-task-m.mp4" aria-label="Recording of the Auto-fix loop on a guided task: the plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes and the result is accepted."></video>
-        <div class="frame-controls">
-          <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
-          <a class="frame-btn" href="assets/app/loop-task.mp4" data-clip-expand data-caption="Auto-fix loop. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
+</div>
+
+<section class="wrap loops" id="loops" aria-labelledby="loops-title">
+  <h2 class="t-h2-sm" id="loops-title">Loops.</h2>
+  <div class="loops-pair">
+    <section class="loops-item" id="loop" aria-labelledby="row-loop">
+      <figure class="frame loops-media" data-clip>
+        <div class="frame-media">
+          <picture class="frame-poster">
+            <source media="(max-width: 719.98px)" srcset="assets/app/loop-task-m@2x.webp">
+            <img src="assets/app/loop-task.webp" srcset="assets/app/loop-task.webp 1600w, assets/app/loop-task@2x.webp 3200w" sizes="(max-width: 1023.98px) 80vw, 588px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
+          </picture>
+          <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/loop-task.mp4" data-src-small="assets/app/loop-task-s.mp4" data-src-m="assets/app/loop-task-m.mp4" aria-label="Recording of the Auto-fix loop on a guided task: the plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes and the result is accepted."></video>
+          <div class="frame-controls">
+            <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
+            <a class="frame-btn" href="assets/app/loop-task.mp4" data-clip-expand data-caption="Auto-fix loop. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
+          </div>
+          <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
         </div>
-        <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
+      </figure>
+      <div class="loops-text">
+        <h3 id="row-loop">Auto-fix loop</h3>
+        <p>Implement, verify, fix, verify again. Every check runs in a fresh testing session, and the fix goes to the session that wrote the code. One counter limits plan revisions and fix rounds. The guided task ends with your acceptance.</p>
       </div>
-    </figure>
-  </section>
-  <section class="row is-flipped" id="pipelines" aria-labelledby="row-pipelines">
-    <div class="row-text">
-      <h2 id="row-pipelines">Pipelines</h2>
-      <p>Connect stages with arrows: agents, commands, conditions. An arrow back to a finished stage makes a loop. Command stages go through the safety check by default. Runs keep going when you close the window.</p>
-    </div>
-    <figure class="frame row-media" data-clip>
-      <div class="frame-media">
-        <picture class="frame-poster">
-          <source media="(max-width: 719.98px)" srcset="assets/app/loop-canvas-m@2x.webp">
-          <img src="assets/app/loop-canvas.webp" srcset="assets/app/loop-canvas.webp 1600w, assets/app/loop-canvas@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
-        </picture>
-        <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/loop-canvas.mp4" data-src-small="assets/app/loop-canvas-s.mp4" data-src-m="assets/app/loop-canvas-m.mp4" aria-label="Recording of Pipelines: a saved pipeline is opened and run on the canvas; the check fails, the fix stage runs, and the second cycle passes."></video>
-        <div class="frame-controls">
-          <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
-          <a class="frame-btn" href="assets/app/loop-canvas.mp4" data-clip-expand data-caption="Pipelines. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
+    </section>
+    <section class="loops-item" id="pipelines" aria-labelledby="row-pipelines">
+      <figure class="frame loops-media" data-clip>
+        <div class="frame-media">
+          <picture class="frame-poster">
+            <source media="(max-width: 719.98px)" srcset="assets/app/loop-canvas-m@2x.webp">
+            <img src="assets/app/loop-canvas.webp" srcset="assets/app/loop-canvas.webp 1600w, assets/app/loop-canvas@2x.webp 3200w" sizes="(max-width: 1023.98px) 80vw, 588px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
+          </picture>
+          <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/loop-canvas.mp4" data-src-small="assets/app/loop-canvas-s.mp4" data-src-m="assets/app/loop-canvas-m.mp4" aria-label="Recording of Pipelines: a saved pipeline is opened and run on the canvas; the check fails, the fix stage runs, and the second cycle passes."></video>
+          <div class="frame-controls">
+            <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
+            <a class="frame-btn" href="assets/app/loop-canvas.mp4" data-clip-expand data-caption="Pipelines. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
+          </div>
+          <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
         </div>
-        <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
+      </figure>
+      <div class="loops-text">
+        <h3 id="row-pipelines">Pipelines</h3>
+        <p>Connect stages with arrows: agents, commands, conditions. An arrow back to a finished stage makes a loop. Command stages go through the safety check by default. Runs keep going when you close the window.</p>
       </div>
-    </figure>
-  </section>
+    </section>
+  </div>
+</section>
+
+<div class="wrap rows">
   <section class="row" id="review" aria-labelledby="row-review">
     <div class="row-text">
       <h2 id="row-review">Review</h2>
@@ -178,29 +189,31 @@
       </div>
     </figure>
   </section>
-  <section class="row" id="controls" aria-labelledby="row-controls">
-    <div class="row-text">
+</div>
+
+<section class="wrap" id="controls" aria-labelledby="row-controls">
+  <div class="bento">
+    <div class="bento-text">
       <h2 id="row-controls">Models, modes and keys</h2>
       <p>The model menu shows what the session’s CLI offers. Agent modes: ask for each action, approve most, plan only, accept edits, never ask. <kbd>⌘K</kbd> searches tools, sessions and projects; <kbd>?</kbd> lists the shortcuts.</p>
     </div>
-    <div class="stills row-media">
-      <figure class="still ink-dark"><img src="assets/app/still-model@2x.webp" width="256" height="154" alt="The model menu of a Claude Code session: Haiku, Sonnet (selected) and Opus." loading="lazy" decoding="async"></figure>
-      <figure class="still ink-dark"><img src="assets/app/still-mode@2x.webp" width="336" height="380" alt="The agent mode menu: Default, Auto, Plan, Accept Edits, Don’t Ask and Skip agent approvals, each with a one-line description." loading="lazy" decoding="async"></figure>
-      <figure class="still ink-dark"><img src="assets/app/still-palette@2x.webp" width="552" height="616" alt="The ⌘K palette: one search field for tools, sessions and projects, with suggested actions and their shortcuts." loading="lazy" decoding="async"></figure>
-    </div>
-  </section>
-</div>
-
-<section class="wrap mt-96" id="also" aria-labelledby="also-title">
-  <div class="section-rule">
-    <h2 class="t-h2-sm mt-96" id="also-title">Also in the app.</h2>
-    <div class="cols-3">
-      <div><span class="label">Cascades</span><p>A saved sequence of prompts, each sent after the previous turn ends. It can repeat, up to fifty rounds. <kbd>⌘Esc</kbd> stops it.</p></div>
-      <div><span class="label">Terminal</span><p><kbd>⌘J</kbd> opens a real terminal on the session’s process. Your CLI, your shell, inside the app.</p></div>
-      <div><span class="label">Safety</span><p>Hooks let IVE follow each agent and let its Safety Gate stop risky commands; your own hooks stay untouched. An optional package scanner, off by default, checks installs.</p></div>
-    </div>
+    <figure class="still ink-dark bento-model"><img src="assets/app/still-model@2x.webp" width="256" height="154" alt="The model menu of a Claude Code session: Haiku, Sonnet (selected) and Opus." loading="lazy" decoding="async"></figure>
+    <figure class="still ink-dark bento-mode"><img src="assets/app/still-mode@2x.webp" width="336" height="380" alt="The agent mode menu: Default, Auto, Plan, Accept Edits, Don’t Ask and Skip agent approvals, each with a one-line description." loading="lazy" decoding="async"></figure>
+    <figure class="still ink-dark bento-palette"><img src="assets/app/still-palette@2x.webp" width="552" height="616" alt="The ⌘K palette: one search field for tools, sessions and projects, with suggested actions and their shortcuts." loading="lazy" decoding="async"></figure>
   </div>
 </section>
+
+<section class="also" id="also" aria-labelledby="also-title">
+  <div class="wrap also-inner">
+    <h2 class="t-h2-sm" id="also-title">Also in the app.</h2>
+    <dl class="also-list">
+      <div><dt>Cascades</dt><dd>A saved sequence of prompts, each sent after the previous turn ends. It can repeat, up to fifty rounds. <kbd>⌘Esc</kbd> stops it.</dd></div>
+      <div><dt>Terminal</dt><dd><kbd>⌘J</kbd> opens a real terminal on the session’s process. Your CLI, your shell, inside the app.</dd></div>
+      <div><dt>Safety</dt><dd>Hooks let IVE follow each agent and let its Safety Gate stop risky commands; your own hooks stay untouched. An optional package scanner, off by default, checks installs.</dd></div>
+    </dl>
+  </div>
+</section>
+</div>
 
 <div class="closer"><a class="btn btn-quiet" href="download.html">Get IVE on the Download page<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 8h10.5M9 3.75 13.25 8 9 12.25"/></svg></a></div>
 </main>
@@ -223,6 +236,6 @@
     <p class="footer-line">EU-based · Open source under the Apache 2.0 license</p>
   </div>
 </footer>
-<script src="site.js?v=20261023a" defer></script>
+<script src="site.js?v=20261023b" defer></script>
 </body>
 </html>

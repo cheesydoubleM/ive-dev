@@ -3,7 +3,8 @@
 // ("UP NEXT"). IVE delivers it when the turn ends and the agent starts on it.
 // Provenance: IVE app 1.0.17 · demo project · no provider ran. Agent steps are demo data
 // pushed through the transport; the queue, its states and the delivery are the app's own.
-import { openDemo, agentStep, demoSessions, transcripts } from '../lib/fixture.mjs';
+import { openDemo, agentStep, demoSessions, transcripts, viewportFor } from '../lib/fixture.mjs';
+import { createCamera } from '../lib/camera.mjs';
 
 export const meta = { id: 'start-queue', title: 'Start with a sentence', seconds: 18 };
 export const encoding = { loopFade: 0, poster: 'poster' };
@@ -11,16 +12,20 @@ export const encoding = { loopFade: 0, poster: 'poster' };
 const GOAL = 'Add a dark theme toggle to the sidebar. Keep the existing keyboard shortcuts working.';
 const FOLLOW_UP = 'Also add ⌘⇧T as the shortcut and mention it in the README.';
 
-export async function record(wrapped, rec) {
+export async function record(wrapped, rec, { phone = false } = {}) {
   const sessions = demoSessions().filter((s) => s.id !== 'interface');
   const messages = { api: transcripts.api, checks: transcripts.checks, review: transcripts.review };
-  const f = await openDemo(wrapped, { sessions, messages });
+  const f = await openDemo(wrapped, { sessions, messages, viewport: viewportFor(phone) });
   const p = f.page;
   await p.locator('[data-home-start]').waitFor();
   await p.waitForTimeout(600);
 
   const r = await rec(p, f.context);
+  // Phone cut: the main column (496 CSS px wide in the 768 px window: goal box, conversation,
+  // queue and composer) fits the 498 px cut, so the camera stays put.
+  const cam = phone ? createCamera(p) : null;
   await r.start();
+  if (cam) { const main = await p.locator('main').first().boundingBox(); cam.to(r, main.x + 10); }
   await r.hold(0.8);
   const composer = p.locator('form:has([data-home-start]) textarea').first();
   await r.click(composer, { duration: 0.6, offset: { x: 0.2, y: 0.35 } });
@@ -69,11 +74,6 @@ export async function record(wrapped, rec) {
   await r.hold(1.6);
   await r.stop();
 
-  // Phones: 3:4 cuts of the full window height. Home: around the goal box and Start.
-  // Session: the left 750 CSS px of the conversation column, where steps, the queue and the
-  // composer are (right-aligned user bubbles are partly cut).
-  const home = { from: 0, x: 1090, y: 0, w: 1500, h: 2000 };
-  const box = await p.locator('.ive-session-composer').first().boundingBox();
-  const sessionCut = { from: 'session', x: Math.round(box.x * 2), y: 0, w: 1500, h: 2000 };
-  return { fixture: f, encoding: { crops: [{ suffix: '-m', segments: [home, sessionCut], scale: [900, 1200], poster: 'poster' }] } };
+  if (!phone) return { fixture: f };
+  return { fixture: f, encoding: { crops: [{ suffix: '-m', poster: 'poster', segments: cam.segments() }] } };
 }

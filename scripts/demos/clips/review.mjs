@@ -5,7 +5,8 @@
 // Provenance: IVE app 1.0.17 · demo project · no provider ran. The diff is demo data written to
 // match the Orbit story and the session's own `git diff --stat` (Sidebar.jsx +18 −2, api.js
 // +24 −6); the transport serves it as the working-tree diff (controls.setChanges).
-import { openDemo } from '../lib/fixture.mjs';
+import { openDemo, viewportFor } from '../lib/fixture.mjs';
+import { createCamera } from '../lib/camera.mjs';
 
 export const meta = { id: 'review', title: 'Every change comes back to you', seconds: 10 };
 export const encoding = {
@@ -18,9 +19,6 @@ export const encoding = {
   // the first hunk (CSS x 20-690, y 75-515 of the 1600x1000 window; 1340x880 device pixels).
   crops: [
     { suffix: '-why', trimFrom: 'fullscreen', x: 40, y: 150, w: 1340, h: 880, poster: 'full' },
-    // Phones (3:4): the side panel with the file tree and the diff, then the fullscreen review's
-    // "FILES CHANGED" list and the start of the diff.
-    { suffix: '-m', scale: [900, 1200], poster: 'full', segments: [{ from: 0, x: 2000, y: 0, w: 1200, h: 1600 }, { from: 'fullscreen', x: 40, y: 60, w: 1200, h: 1600 }] },
   ],
 };
 
@@ -109,8 +107,9 @@ index 7c3e9a0..b51d2f4 100644
  }
 `;
 
-export async function record(wrapped, rec) {
+export async function record(wrapped, rec, { phone = false } = {}) {
   const f = await openDemo(wrapped, {
+    viewport: viewportFor(phone),
     gitStatus: { is_git_repo: true, branch: 'main', staged: [], unstaged: FILES.map((path) => ({ path, status: 'M' })), untracked: [] },
   });
   f.controls.setChanges(DIFF, '');
@@ -120,22 +119,40 @@ export async function record(wrapped, rec) {
   await p.waitForTimeout(600);
 
   const r = await rec(p, f.context);
+  // Phone cut: the session column, the sidebar's Review entry, the side panel (right half of the
+  // 768 px window), then the fullscreen review: "FILES CHANGED" first, the diff after.
+  const cam = phone ? createCamera(p) : null;
+  const { width: vw, height: vh } = p.viewportSize();
+  const boxOf = (locator) => locator.first().boundingBox();
+  const reveal = async (target, prefer, pan = 0.7) => { if (cam) cam.to(r, cam.fit(await boxOf(target), prefer), { pan }); };
   await r.start();
+  let column = 0;
+  if (cam) { const main = await boxOf(p.locator('main')); column = main.x + 10; cam.to(r, column); }
   await r.hold(0.9);
-  await r.click(p.getByRole('button', { name: 'Review', exact: true }).first(), { duration: 0.8, after: 0 });
+  const reviewEntry = p.getByRole('button', { name: 'Review', exact: true }).first();
+  await reveal(reviewEntry, column, 0.8);
+  await r.click(reviewEntry, { duration: 0.8, after: 0 });
   await r.untilVisible(p.getByText(/Sidebar\.jsx/));
+  if (cam) cam.to(r, vw - cam.span, { pan: 0.6 });
   await r.hold(1.6);
   await r.click(p.getByRole('button', { name: 'Fullscreen', exact: true }), { duration: 0.8, after: 0 });
-  await r.untilVisible(p.getByRole('button', { name: 'Unified View', exact: true }));
+  const unified = p.getByRole('button', { name: 'Unified View', exact: true });
+  await r.untilVisible(unified);
   r.mark('fullscreen');
+  if (cam) cam.to(r, (await boxOf(p.getByText('FILES CHANGED', { exact: false }))).x - 12, { from: r.clickFrame });
   await r.hold(1.0);
-  await r.click(p.getByRole('button', { name: 'Unified View', exact: true }), { duration: 0.7, after: 0 });
+  // The diff column runs to the right edge of the window.
+  if (cam) cam.to(r, vw - cam.span - 6, { pan: 0.7 });
+  await r.click(unified, { duration: 0.7, after: 0 });
   await r.hold(0.6);
-  await r.moveTo([1180, 640], { duration: 0.5 });
+  // Over the diff (1180, 640 in the 1600x1000 window).
+  const overDiff = [Math.round(vw * 0.74), Math.round(vh * 0.64)];
+  await r.moveTo(overDiff, { duration: 0.5 });
   await r.snap('full');
   await r.hold(0.4);
-  await r.scrollBy([1180, 640], 300, { duration: 0.9 });
+  await r.scrollBy(overDiff, 300, { duration: 0.9 });
   await r.hold(2.4);
   await r.stop();
-  return { fixture: f };
+  if (!phone) return { fixture: f };
+  return { fixture: f, encoding: { crops: [{ suffix: '-m', poster: 'full', segments: cam.segments() }] } };
 }

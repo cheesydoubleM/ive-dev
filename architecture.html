@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#0E1014">
 <script>(function(){var d=document.documentElement,t='dark';d.classList.remove('no-js');try{var s=localStorage.getItem('ive-theme');if(s==='light'||s==='dark')t=s;}catch(e){}d.setAttribute('data-theme',t);if(t==='light'){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#F6F7F8');}})();</script>
 <title>Architecture · IVE</title>
-<meta name="description" content="How IVE runs local coding agents: Python, real PTY sessions, SQLite state, the event bus, isolated worktrees, access control, and an optional supply-chain scan.">
+<meta name="description" content="How IVE runs local coding agents: Python, real PTY sessions, SQLite state, the event bus, git worktrees, access control, and an optional supply-chain scan.">
 <link rel="canonical" href="https://ive.dev/architecture.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="IVE">
@@ -54,7 +54,7 @@
     <div class="arch-hero-inner">
       <p class="kicker">Architecture</p>
       <h1>What actually runs on your machine.</h1>
-      <p class="arch-lede">A local Python control plane opens real terminals, tracks every state change in SQLite, and exposes the operation to one React interface.</p>
+      <p class="arch-lede">A local Python control plane opens real terminals, keeps its state in SQLite and serves one React interface.</p>
     </div>
   </header>
 
@@ -67,11 +67,11 @@
       </div>
     </div>
 
-    <figure class="arch-process-diagram" aria-label="The local React interface connects over HTTP and WebSocket to a Python backend that forks PTY sessions for Claude Code, Codex and Gemini (Antigravity CLI) agents while persisting all state in SQLite.">
+    <figure class="arch-process-diagram" aria-label="The local React interface connects over HTTP and WebSocket to a Python backend that forks PTY sessions for Claude Code, Codex and Gemini (Antigravity CLI) agents and keeps its state in SQLite.">
       <div class="arch-node arch-node-browser">
         <span class="arch-node-label">local interface</span>
         <strong>React, in the app window or browser</strong>
-        <span class="arch-node-meta">commands · terminal input · live state</span>
+        <span class="arch-node-meta">commands&nbsp;· terminal&nbsp;input&nbsp;· live&nbsp;state</span>
       </div>
 
       <div class="arch-route arch-route-down" aria-hidden="true"><span>HTTP + WebSocket</span></div>
@@ -79,7 +79,7 @@
       <div class="arch-node arch-node-backend">
         <span class="arch-node-label">control plane</span>
         <strong>Python backend</strong>
-        <span class="arch-node-meta">session registry · event bus · access guards</span>
+        <span class="arch-node-meta">session&nbsp;registry&nbsp;· event&nbsp;bus&nbsp;· access&nbsp;guards</span>
       </div>
 
       <div class="arch-branch" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
@@ -95,7 +95,7 @@
           <span class="arch-node-label">PTY · s-02</span>
           <strong>Gemini · Antigravity</strong>
           <code>os.fork() + pty.openpty()</code>
-          <span class="status st-thinking"><span class="glyph" aria-hidden="true">◐</span> thinking</span>
+          <span class="status st-done"><span class="glyph" aria-hidden="true">✓</span> done</span>
         </div>
         <div class="arch-node arch-node-session">
           <span class="arch-node-label">PTY · s-n</span>
@@ -106,11 +106,11 @@
         <div class="arch-node arch-node-store">
           <span class="arch-node-label">state store</span>
           <strong>SQLite</strong>
-          <code>sessions · events · audit</code>
-          <span class="arch-node-meta">all durable state</span>
+          <code>sessions&nbsp;· events&nbsp;· audit</code>
+          <span class="arch-node-meta">durable app state</span>
         </div>
       </div>
-      <figcaption>Agent processes stay local. Terminal I/O remains real PTY I/O.</figcaption>
+      <figcaption>Agent sessions run locally in real PTYs.</figcaption>
     </figure>
   </section>
 
@@ -118,25 +118,25 @@
     <div class="arch-section-head">
       <p class="kicker">Event flow</p>
       <div>
-        <h2 id="events-title">Every state change is recorded once.</h2>
-        <p>The same ordered event is then sent to subscribers, the interface, and webhooks.</p>
+        <h2 id="events-title">Events are written to SQLite first.</h2>
+        <p>Then they reach the subscribers, interface and webhooks that listen.</p>
       </div>
     </div>
 
-    <figure class="arch-event-figure" aria-label="A state change persists to SQLite, notifies local subscribers, broadcasts over WebSocket, and then delivers webhooks.">
+    <figure class="arch-event-figure" aria-label="An event is written to SQLite, then passed to local subscribers, to the interface over WebSocket, and to webhooks.">
       <ol class="arch-event-path">
         <li><span class="arch-step">01</span><strong>Persist</strong><code>SQLite</code></li>
         <li><span class="arch-step">02</span><strong>Notify</strong><code>subscribers</code></li>
         <li><span class="arch-step">03</span><strong>Broadcast</strong><code>WebSocket</code></li>
         <li><span class="arch-step">04</span><strong>Deliver</strong><code>webhooks</code></li>
       </ol>
-      <figcaption>The event is recorded in SQLite before it is sent to subscribers, WebSocket clients, and webhooks.</figcaption>
+      <figcaption>Broadcast and delivery run in the background.</figcaption>
     </figure>
-    <ul class="arch-event-kinds" aria-label="Tracked event categories">
-      <li>session lifecycle</li>
-      <li>tool execution</li>
-      <li>subagent spawning</li>
-      <li>compaction</li>
+    <ul class="arch-event-kinds" aria-label="Event categories">
+      <li>task board</li>
+      <li>sessions</li>
+      <li>pipelines</li>
+      <li>access</li>
     </ul>
   </section>
 
@@ -144,21 +144,20 @@
     <div class="arch-section-head">
       <p class="kicker">Worktree isolation</p>
       <div>
-        <h2 id="isolation-title">Separate worktrees prevent overwritten files.</h2>
-        <p>Each agent starts in its own working copy.</p>
+        <h2 id="isolation-title">Separate worktrees keep edits apart.</h2>
+        <p>Off by default. Claude Code sessions can opt in.</p>
       </div>
     </div>
     <div class="arch-isolation-grid">
       <div class="arch-isolation-copy">
-        <h3>One worktree per agent.</h3>
-        <p>Each session works in its own git worktree. Branch state stays scoped to that process.</p>
-        <p>Structured CLI hooks report lifecycle and tool activity as they happen.</p>
+        <h3>Without a worktree, edits are checked.</h3>
+        <p>If another active session recently edited the same file, IVE blocks the edit and asks the agent to check the diff.</p>
       </div>
       <dl class="arch-trace">
         <div><dt>target</dt><dd><code>src/auth/session.ts</code></dd></div>
-        <div><dt>owner</dt><dd><code>s-01 · backend-auth</code></dd></div>
-        <div><dt>collision</dt><dd><span class="st-attention"><span class="glyph" aria-hidden="true">!</span> attention</span> · file lock detected</dd></div>
-        <div><dt>route</dt><dd><span class="st-done"><span class="glyph" aria-hidden="true">✓</span> complete</span> · <code>s-03</code> rerouted</dd></div>
+        <div><dt>edited by</dt><dd><code>s-01 · backend-auth</code></dd></div>
+        <div><dt>collision</dt><dd><code>s-03</code>&nbsp;edit&nbsp;· <span class="st-attention"><span class="glyph" aria-hidden="true">!</span>&nbsp;blocked</span></dd></div>
+        <div><dt>notice</dt><dd><span class="st-done"><span class="glyph" aria-hidden="true">✓</span>&nbsp;sent</span>&nbsp;· agent&nbsp;and&nbsp;you</dd></div>
       </dl>
     </div>
   </section>
@@ -168,18 +167,12 @@
       <p class="kicker">API and extensions</p>
       <div>
         <h2 id="surface-title">The backend is available outside the UI.</h2>
-        <p>Scripts, agents, hooks, and extensions can use the same local control plane.</p>
+        <p>Scripts, agents, hooks and extensions can use the same local control plane.</p>
       </div>
     </div>
-    <div class="stats-row arch-stats" aria-label="Programmable platform totals">
-      <div class="stat"><p class="stat-n">140+</p><p class="stat-l">api routes</p></div>
-      <div class="stat"><p class="stat-n">35+</p><p class="stat-l">mcp tools</p></div>
-      <div class="stat"><p class="stat-n">30+</p><p class="stat-l">event types</p></div>
-    </div>
-    <p class="source-line">Development snapshot · capabilities may change during the beta.</p>
     <dl class="arch-surface-defs">
       <div><dt>API</dt><dd>Drive sessions and read local state from code.</dd></div>
-      <div><dt>MCP tools</dt><dd>Start, assign, inspect, and route sessions from an MCP client.</dd></div>
+      <div><dt>MCP tools</dt><dd>Start sessions, assign tasks and read their output over MCP.</dd></div>
       <div><dt>Events</dt><dd>Subscribe to changes or forward them by webhook.</dd></div>
       <div><dt>Plugins</dt><dd>Install extensions from registries and attach MCP servers per session.</dd></div>
     </dl>
@@ -189,8 +182,8 @@
     <div class="arch-section-head">
       <p class="kicker">Access control</p>
       <div>
-        <h2 id="access-title">Access is enforced in three places.</h2>
-        <p>The active mode is checked by routes, CLI flags, and tool hooks.</p>
+        <h2 id="access-title">Invites come in three modes.</h2>
+        <p>Each invite has one mode and a time limit.</p>
       </div>
     </div>
     <div class="arch-access-grid">
@@ -199,7 +192,7 @@
           <caption class="sr-only">IVE access modes and their limits</caption>
           <thead><tr><th>Mode</th><th>Can access</th><th>Terminal limit</th></tr></thead>
           <tbody>
-            <tr><th scope="row">brief</th><td>tasks and notes</td><td>no raw tool output</td></tr>
+            <tr><th scope="row">brief</th><td>tasks and notes</td><td>no execution</td></tr>
             <tr><th scope="row">code</th><td>agent sessions</td><td>auto / plan · Bash allowlist</td></tr>
             <tr><th scope="row">full</th><td>owner-equivalent</td><td>TTL-bounded</td></tr>
           </tbody>
@@ -208,7 +201,7 @@
       <dl class="arch-layers">
         <div><dt>route guards</dt><dd>Reject requests outside the active mode.</dd></div>
         <div><dt>CLI flag injection</dt><dd>Constrain the agent process at launch.</dd></div>
-        <div><dt>PreToolUse hooks</dt><dd>Check tool calls before execution.</dd></div>
+        <div><dt>PreToolUse hooks</dt><dd>Block edits and commands in plan mode.</dd></div>
       </dl>
     </div>
   </section>
@@ -217,22 +210,22 @@
     <div class="arch-section-head">
       <p class="kicker">Security</p>
       <div>
-        <h2 id="security-title">Checks run before and during execution.</h2>
-        <p>Account isolation and audit records are part of the runtime. The package scan is optional.</p>
+        <h2 id="security-title">Checks run before execution.</h2>
+        <p>A hook checks each tool call against built-in deny rules.</p>
       </div>
     </div>
     <dl class="arch-security-ledger">
       <div>
         <dt><code>AVCP</code> · supply chain</dt>
-        <dd>Optional and off by default. When turned on, it intercepts <code>pip</code>, <code>npm</code>, and GitHub Actions and runs a 9&#8209;step package scan before execution.</dd>
+        <dd>Optional and off by default. When on, it checks <code>pip</code>, <code>npm</code> and other package installs before they run.</dd>
       </div>
       <div>
-        <dt><code>HOME</code> · account sandbox</dt>
-        <dd>Each OAuth account gets a separate sandboxed HOME directory. Cookies do not cross account boundaries.</dd>
+        <dt><code>HOME</code> · per account</dt>
+        <dd>Each added OAuth account signs in with its own CLI config and browser profile.</dd>
       </div>
       <div>
-        <dt><code>EVENT</code> · audit trail</dt>
-        <dd>Session, tool, subagent, and compaction changes persist to SQLite before delivery.</dd>
+        <dt><code>AUDIT</code> · request log</dt>
+        <dd>API write requests are logged in SQLite with sender, mode and IP address.</dd>
       </div>
     </dl>
   </section>

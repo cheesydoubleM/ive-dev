@@ -1,0 +1,166 @@
+/* ═══════════════════════════════════════════════════════════════
+   IVE.DEV · product.css — the Product page only (brief 3.2, round 2).
+   Four compositions in one visual language, no two neighbours alike:
+     rows    Home, Board · Review, Loop detection (site.css .rows)
+     pair    Auto-fix loop and Pipelines under one heading
+     bento   Models, modes and keys: the row text as the first tile
+     ledger  Also in the app, on an inset band
+   Tokens, frames, stills and type come from site.css; nothing here is shared.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── rhythm: hairlines inside a row group, air between compositions ── */
+.p-flow > * + * { margin-top: 128px; }
+@media (max-width: 719.98px) {
+  .p-flow > * + * { margin-top: 96px; }
+}
+
+/* A clip that is paused by the page (scrolled away, another clip took over)
+   shows its chosen poster again instead of an early frame; a clip the visitor
+   paused keeps its frame. */
+.frame.is-paused:not(.is-paused-by-user) .frame-video { opacity: 0; }
+
+/* ── pair: Auto-fix loop and Pipelines ─────────────────────────── */
+.loops-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  margin-top: 40px;
+}
+.loops-item { min-width: 0; }
+.loops-text { margin-top: 24px; max-width: 480px; }
+.loops-text p { margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--text-2); }
+/* side by side only one clip plays at a time (site.js), so the one waiting
+   keeps its play control in view */
+@media (min-width: 1024px) {
+  .loops-media.is-paused:not(.needs-play) .frame-controls { opacity: 1; }
+}
+/* below 1024px: one strip, a card per loop, the next card peeking in.
+   The frame shadow reaches 40px above the frame; the strip's top padding
+   keeps it inside the scroll box so the light theme shows no cut edge. */
+@media (max-width: 1023.98px) {
+  .loops-pair {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 80%;
+    margin-top: 8px;
+    margin-inline: calc(-1 * var(--gutter));
+    padding: 40px var(--gutter) 4px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+  }
+  .loops-item { scroll-snap-align: start; }
+  .loops-text { margin-top: 20px; max-width: none; }
+}
+@media (max-width: 1023.98px) and (pointer: coarse) {
+  .loops-pair { scrollbar-width: none; }
+  .loops-pair::-webkit-scrollbar { display: none; }
+}
+@media (max-width: 1023.98px) and (pointer: fine) {
+  .loops-pair { padding-bottom: 16px; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+}
+@media (max-width: 719.98px) {
+  .loops-pair { grid-auto-columns: 86%; margin-top: -8px; }
+}
+
+/* ── bento: Models, modes and keys ─────────────────────────────── */
+/* Desktop: the text tile above model and mode, the ⌘K palette across both
+   rows. Mode and palette show at 1:1, the model menu at about 1.2x. Each
+   still sits at the top of its tile on the ground of its own app background,
+   so a tile that grows reads as more of the same window. */
+.bento {
+  display: grid;
+  grid-template-columns: minmax(0, 310fr) minmax(0, 336fr) minmax(0, 552fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 1px;
+  overflow: hidden;
+  border-radius: var(--r-panel);
+  background: #202328; /* the dark hairline between tiles, in both themes (as .stills) */
+  box-shadow: 0 0 0 1px var(--line), var(--frame-shadow);
+}
+.bento-text {
+  grid-column: 1 / 3;
+  grid-row: 1;
+  padding: 32px;
+  background: var(--bg-raised);
+}
+.bento-text h2 { font-size: 32px; line-height: 1.15; }
+.bento-text p { margin-top: 14px; max-width: 34em; font-size: 16px; line-height: 1.55; color: var(--text-2); }
+.bento .still { background: #0E1014; }
+/* the model still's only mark below its menu is the app's 2px divider
+   (#262A33 at x 174 to 176 of 512): the tile carries it on to the bottom */
+.bento .bento-model {
+  background: linear-gradient(90deg, transparent 33.984%, #262A33 33.984%, #262A33 34.375%, transparent 34.375%) no-repeat, #0E1014;
+}
+/* the palette still's 16px side margins hold fragments of the page behind
+   the dimmed backdrop; the tile covers them with the backdrop colour */
+.bento .bento-palette { background: #050506; }
+.bento-palette::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #050506 2.62%, transparent 2.62%, transparent 97.1%, #050506 97.1%);
+  pointer-events: none;
+}
+.bento-model { grid-column: 1; grid-row: 2; }
+.bento-mode { grid-column: 2; grid-row: 2; }
+.bento-palette { grid-column: 3; grid-row: 1 / 3; }
+@media (max-width: 1023.98px) {
+  .bento {
+    grid-template-columns: minmax(0, 352fr) minmax(0, 552fr);
+    grid-template-rows: auto auto auto;
+  }
+  .bento-text { grid-column: 1 / -1; grid-row: 1; }
+  .bento-model { grid-column: 1; grid-row: 2; }
+  .bento-mode { grid-column: 1; grid-row: 3; }
+  .bento-palette { grid-column: 2; grid-row: 2 / 4; }
+}
+@media (max-width: 719.98px) {
+  .bento { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; }
+  .bento > * { grid-column: 1; grid-row: auto; }
+  .bento-text { padding: 24px 20px; }
+  .bento-text h2 { font-size: 26px; }
+}
+
+/* ── ledger: Also in the app, on an inset band ─────────────────── */
+.also {
+  padding-block: 96px;
+  background: var(--bg-inset);
+  border-block: 1px solid var(--line);
+}
+.also-inner {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: 32px;
+  align-items: start;
+}
+.also-inner > h2 { grid-column: 1 / 5; }
+.also-list { grid-column: 5 / 13; }
+/* each row sits on the page columns: label in columns 5 and 6, text from 7 */
+.also-list > div {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  align-items: baseline;
+  padding-block: 20px;
+  border-top: 1px solid var(--line);
+}
+.also-list > div:first-child { padding-top: 4px; border-top: 0; }
+.also-list > div:last-child { padding-bottom: 0; }
+.also-list dt { grid-column: 1 / 3; font: 500 13px/1.4 var(--mono); color: var(--text-4); }
+.also-list dd { grid-column: 3 / -1; max-width: 60ch; font-size: 15px; line-height: 1.55; color: var(--text-2); }
+@media (max-width: 1023.98px) {
+  .also-inner > h2, .also-list { grid-column: 1 / -1; }
+  .also-list > div { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+  .also-list dt { grid-column: 1 / 4; }
+  .also-list dd { grid-column: 4 / -1; }
+}
+@media (max-width: 719.98px) {
+  .also { padding-block: 64px; }
+  .also-inner { row-gap: 24px; }
+  .also-list > div { grid-template-columns: minmax(0, 1fr); row-gap: 6px; padding-block: 18px; }
+  .also-list dt, .also-list dd { grid-column: 1; }
+  .also-list > div:first-child { padding-top: 0; }
+}

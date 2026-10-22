@@ -2,7 +2,8 @@
 // working, one asks for permission to run `npm test`, one is done. The permission is
 // answered on the board with "Allow once" and every session finishes.
 // Provenance: IVE app 1.0.17 · demo project · no provider ran.
-import { openDemo, agentStep, demoSessions, transcripts, permissionAttention, PERMISSION_SCREEN, blocks, msg } from '../lib/fixture.mjs';
+import { openDemo, agentStep, demoSessions, transcripts, permissionAttention, PERMISSION_SCREEN, blocks, msg, VIEWPORT } from '../lib/fixture.mjs';
+import { createCamera } from '../lib/camera.mjs';
 
 export const meta = { id: 'hero-board', title: 'The board', seconds: 14 };
 // Master-pixel geometry of the 2x2 board at 1600x1000 CSS (sidebar 240 CSS px):
@@ -10,13 +11,16 @@ export const meta = { id: 'hero-board', title: 'The board', seconds: 14 };
 export const encoding = {
   loopFade: 0.5, // the hero loops; a short dissolve keeps the file small
   poster: 'poster',
-  // Phones: the left column, the running tile above the waiting tile with its permission card.
-  crops: [{ suffix: '-m', x: 484, y: 92, w: 1230, h: 1636, scale: [850, 1130], poster: 'poster' }],
   // Why IVE beat 2 crops the waiting tile out of this full frame (x 488-1836, y 1048-1992).
   stills: [{ name: 'why-attention', snap: 'attention' }],
 };
 
-export async function record(wrapped, rec) {
+// Phones: a board tile needs room for the permission card, so the phone recording uses a
+// 1220x940 window (2x2 tiles of about 482x445 CSS px) and the cut shows the left column from
+// below: the lower half of the running tile and the whole waiting tile with "Allow once".
+const PHONE_WINDOW = { width: 1220, height: 940 };
+
+export async function record(wrapped, rec, { phone = false } = {}) {
   const sessions = demoSessions();
   const state = { interface: 'running', api: 'running', checks: 'waiting', review: 'idle' };
   for (const s of sessions) { s.status = state[s.id]; s.agentState = s.status === 'running' ? 'working' : s.status === 'waiting' ? 'prompting' : 'idle'; }
@@ -44,7 +48,7 @@ export async function record(wrapped, rec) {
     checks: transcripts.checks,
     review: transcripts.review,
   };
-  const f = await openDemo(wrapped, { sessions, messages, outputScreens: { checks: PERMISSION_SCREEN }, workspacePatch: { human_oversight: 'full_auto' } });
+  const f = await openDemo(wrapped, { sessions, messages, outputScreens: { checks: PERMISSION_SCREEN }, workspacePatch: { human_oversight: 'full_auto' }, viewport: phone ? PHONE_WINDOW : VIEWPORT });
   const p = f.page;
   // Answering the permission: the backend would forward "1" to the CLI; here the dialog
   // disappears and the session continues.
@@ -67,8 +71,16 @@ export async function record(wrapped, rec) {
   await p.waitForTimeout(1500);
 
   // The pointer rests in the empty lower part of the done tile until it heads for "Allow once".
-  const r = await rec(p, f.context, { park: [1500, 800] });
+  const { width: vw, height: vh } = p.viewportSize();
+  const park = [vw - 100, vh - 200];
+  const r = await rec(p, f.context, { park });
+  const cam = phone ? createCamera(p) : null;
   await r.start();
+  if (cam) {
+    // Left edge just outside the waiting tile (20 px left of its title), bottom of the window.
+    const title = await p.locator('[data-board-screen]').getByText('Check the sign-in flow', { exact: true }).first().boundingBox();
+    cam.to(r, title.x - 20, { y: vh - cam.span * 4 / 3 });
+  }
   await r.hold(0.4);
   await r.snap('poster');
   await r.snap('attention');
@@ -88,8 +100,9 @@ export async function record(wrapped, rec) {
   await agentStep(f, 'checks', [{ type: 'tool_result', tool_use_id: 'c2', content: '3 passed, 0 failed (1.4 s)' }, { type: 'text', text: 'All three sign-in checks pass: empty state, expired session, and the return to the workspace.' }], { done: true });
   await r.hold(1.4);
   await agentStep(f, 'api', [{ type: 'tool_result', tool_use_id: 'a3', content: '210 lines. session_update carries the full session row.' }, { type: 'text', text: 'The list and the stream now share one session shape. `listSessions()` pages with a cursor and reconnects keep their page.' }], { done: true });
-  await r.moveTo([1500, 800], { duration: 0.8 });
+  await r.moveTo(park, { duration: 0.8 });
   await r.hold(2.2);
   await r.stop();
-  return { fixture: f };
+  if (!phone) return { fixture: f };
+  return { fixture: f, encoding: { crops: [{ suffix: '-m', poster: 'poster', segments: cam.segments() }] } };
 }

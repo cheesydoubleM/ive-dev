@@ -11,6 +11,15 @@ import { createTourFixture } from '/Users/maximilianschwarz/Projekte/AIFOREU/ive
 export const IVE_OSS = '/Users/maximilianschwarz/Projekte/AIFOREU/ive-oss';
 export const DIST = process.env.IVE_DIST || `${IVE_OSS}/frontend/dist`;
 export const VIEWPORT = { width: 1600, height: 1000 };
+// Phone cuts: the same story in a short browser window at the narrowest desktop layout (the app
+// switches to its phone layout below 768 CSS px, which has no board and no attention list; the
+// Mac app's own window is at least 900x600, the terminal install runs IVE in the browser).
+// The 3:4 phone cut is 498x664 CSS px (996x1328 device px), the full height of this window: app
+// text shows at 350/498 = 0.70 of its size on a 390 px phone, against 350/750 = 0.47 in round 1.
+// loop-canvas and hero-board use larger windows of their own (see their clip scripts).
+export const PHONE_VIEWPORT = { width: 768, height: 664 };
+export const PHONE_CUT = { w: 996, h: 1328 };
+export const viewportFor = (phone) => (phone ? PHONE_VIEWPORT : VIEWPORT);
 
 const ago = (min = 0) => new Date(Date.now() - min * 60000).toISOString();
 export const iso = ago;
@@ -119,9 +128,9 @@ export const labelPatchLog = [];
  * the terminal screen its prompt snapshot should show (a Claude Code permission dialog
  * makes the Allow/Don't allow card appear).
  */
-export async function openDemo(wrapped, { sessions = demoSessions(), messages = transcripts, storage = {}, outputScreens = {}, diff = '', stagedDiff = '', gitStatus = null, workspacePatch = {}, theme = 'dark', tasks = [], runs = [], pipelines = [] } = {}) {
+export async function openDemo(wrapped, { sessions = demoSessions(), messages = transcripts, storage = {}, outputScreens = {}, diff = '', stagedDiff = '', gitStatus = null, workspacePatch = {}, theme = 'dark', tasks = [], runs = [], pipelines = [], viewport = VIEWPORT } = {}) {
   const f = await createTourFixture(wrapped, {
-    dist: DIST, viewport: VIEWPORT, theme,
+    dist: DIST, viewport, theme,
     settings: { product_tour_version: '2', language: 'en' },
     storage: { 'ive.onboarding.v2.owner': 'done', ...storage },
     workspaces: [{ ...workspace, ...workspacePatch }], sessions, messages, diff, stagedDiff, tasks, runs, pipelines,

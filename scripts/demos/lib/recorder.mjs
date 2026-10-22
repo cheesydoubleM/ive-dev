@@ -8,22 +8,24 @@ import { join, dirname } from 'node:path';
 
 const CURSOR_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="30" viewBox="0 0 22 30"><path d="M3 2.5 3 23.2 8.3 18.4 11.6 26.6 15.7 24.9 12.4 16.8 19.4 16.6Z" fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 
-export async function createRecorder(page, context, { fps = 30, framesDir, name = 'clip', park = [1500, 800] } = {}) {
+export async function createRecorder(page, context, { fps = 30, framesDir, name = 'clip', park } = {}) {
   if (!framesDir) throw new Error('framesDir required');
   rmSync(framesDir, { recursive: true, force: true });
   mkdirSync(framesDir, { recursive: true });
   const frameMs = 1000 / fps;
   let index = 0;
-  // Parked bottom right, outside the content, so posters and crops start clean.
-  let mouse = { x: park[0], y: park[1] };
-  let recording = false;
-  const snaps = {};
-  const marks = {};
   // CDP capture with the fast PNG encoder: lossless and pixel-identical to page.screenshot()
   // at device pixel ratio 2, about three times quicker at 3200x2000.
   const cdp = await context.newCDPSession(page);
   const { width: vw, height: vh } = page.viewportSize();
   const dpr = await page.evaluate(() => window.devicePixelRatio);
+  // Parked bottom right, outside the content, so posters and crops start clean
+  // (1500, 800 in the 1600x1000 window).
+  const [px, py] = park || [vw - 100, vh - 200];
+  let mouse = { x: px, y: py };
+  let recording = false;
+  const snaps = {};
+  const marks = {};
 
   // Synthetic pointer: headless captures have no cursor, but a demo needs one.
   await page.evaluate((svg) => {
@@ -123,6 +125,8 @@ export async function createRecorder(page, context, { fps = 30, framesDir, name 
       await page.mouse.down();
       await frame(2);
       await page.mouse.up();
+      // The first frame after the release: where a view opened by this click first shows.
+      api.clickFrame = index;
       await frame(2);
       await page.evaluate(() => { const r = document.getElementById('demo-click'); if (r) r.style.display = 'none'; });
       await api.settle();
@@ -174,12 +178,15 @@ const frameFile = (framesDir, n) => join(framesDir, `f${String(n).padStart(5, '0
  * PNG frames -> MP4 (H.264, BT.709 tagged, 3200x2000 master and a 1600x1000 `-s`) + lossless WebP posters.
  *  loopFade   seconds of dissolve from the last frame back into the first (0: the clip ends on its last frame)
  *  poster     snap name, frame number, or 'first' (default) for `<name>@2x.webp` / `<name>.webp`
- *  crops      [{ suffix: '-m', x, y, w, h, scale?: [w, h], poster? }] master-pixel crops, e.g. the 3:4 phone cut;
- *             with `segments: [{ from: 0 | markName, x, y, w, h }, …]` the crop switches where a view changes;
- *             with `trimFrom: markName` the cut starts at that mark and ends on the last frame
+ *  crops      [{ suffix: '-m', x, y, w, h, scale?: [w, h], poster? }] device-pixel crops, e.g. the 3:4 phone cut;
+ *             with `segments: [{ from: 0 | markName | frame, x, y, w, h, pan? }, …]` the crop moves where the
+ *             action moves: a hard cut at `from`, or with `pan: seconds` an eased camera move from the previous
+ *             position (all segments of one crop share w and h; the loop dissolve crops frame 1 at the first
+ *             segment's position); with `trimFrom: markName` the cut starts at that mark and ends on the last frame
  *  stills     [{ name, snap | frame, crop?: { x, y, w, h } }] extra posters (full frame unless cropped)
+ *  main       false: only the crops (the phone recording writes `-m` and leaves the desktop files alone)
  */
-export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, poster = 'first', crops = [], stills = [], snaps = {}, marks = {}, crf = 24, crfSmall = 24, crfCrop = 23 } = {}) {
+export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, poster = 'first', crops = [], stills = [], snaps = {}, marks = {}, crf = 24, crfSmall = 24, crfCrop = 23, main = true } = {}) {
   let count = 0;
   while (existsSync(frameFile(framesDir, count))) count++;
   if (!count) throw new Error('No frames');
@@ -198,10 +205,12 @@ export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, poster = 
   const h264 = ['-c:v', 'libx264', '-preset', 'slow', '-profile:v', 'high', '-tune', 'animation', '-pix_fmt', 'yuv420p',
     '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-movflags', '+faststart', '-an'];
   const outputs = [];
-  ff([...seq, ...tail, '-filter_complex', `${head},${yuv()}[v]`, '-map', '[v]', ...h264, '-crf', String(crf), `${outBase}.mp4`]);
-  outputs.push(`${outBase}.mp4`);
-  ff([...seq, ...tail, '-filter_complex', `${head},${yuv('1600:-2')}[v]`, '-map', '[v]', ...h264, '-crf', String(crfSmall), `${outBase}-s.mp4`]);
-  outputs.push(`${outBase}-s.mp4`);
+  if (main) {
+    ff([...seq, ...tail, '-filter_complex', `${head},${yuv()}[v]`, '-map', '[v]', ...h264, '-crf', String(crf), `${outBase}.mp4`]);
+    outputs.push(`${outBase}.mp4`);
+    ff([...seq, ...tail, '-filter_complex', `${head},${yuv('1600:-2')}[v]`, '-map', '[v]', ...h264, '-crf', String(crfSmall), `${outBase}-s.mp4`]);
+    outputs.push(`${outBase}-s.mp4`);
+  }
 
   const pick = (ref) => {
     if (ref === 'first' || ref == null) return frameFile(framesDir, 0);
@@ -221,9 +230,11 @@ export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, poster = 
     if (src !== png) rmSync(src, { force: true });
     outputs.push(out);
   };
-  const posterPng = pick(poster);
-  webp(posterPng, `${outBase}@2x.webp`);
-  webp(posterPng, `${outBase}.webp`, { scale: '1600:-1' });
+  if (main) {
+    const posterPng = pick(poster);
+    webp(posterPng, `${outBase}@2x.webp`);
+    webp(posterPng, `${outBase}.webp`, { scale: '1600:-1' });
+  }
 
   const at = (ref) => (typeof ref === 'number' ? ref : ref in marks ? marks[ref] : ref in snaps ? snaps[ref].frame : (() => { throw new Error(`Unknown mark ${ref}`); })());
   const cropChain = (c, scale) => `crop=${c.w}:${c.h}:${c.x}:${c.y}${scale ? `,scale=${scale[0]}:${scale[1]}:flags=lanczos` : ''}`;
@@ -239,8 +250,15 @@ export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, poster = 
       webp(pick(c.poster ?? poster), `${outBase}${c.suffix}@2x.webp`, { crop: segs[0], scale: c.scale && `${c.scale[0]}:${c.scale[1]}` });
       continue;
     }
-    if (segs.length === 1) graph = `${head},${cropChain(segs[0], c.scale)},${yuv()}[v]`;
-    else {
+    const sameSize = segs.every((g) => g.w === segs[0].w && g.h === segs[0].h);
+    if (sameSize) {
+      // One crop whose position follows the action (hard cuts and eased pans, frame by frame).
+      const sc = c.scale ? `,scale=${c.scale[0]}:${c.scale[1]}:flags=lanczos` : '';
+      const moving = `crop=w=${segs[0].w}:h=${segs[0].h}:x='${pathExpr(segs, 'x', fps)}':y='${pathExpr(segs, 'y', fps)}'${sc}`;
+      graph = loop
+        ? `[0:v]${moving}[a];[1:v]${cropChain(segs[0], c.scale)}[b];[a][b]xfade=transition=fade:duration=${loopFade}:offset=${(dur - loopFade).toFixed(3)},${yuv()}[v]`
+        : `[0:v]${moving},${yuv()}[v]`;
+    } else {
       graph = `${head},split=${segs.length}${segs.map((_, i) => `[s${i}]`).join('')}`;
       segs.forEach((g, i) => {
         const end = i + 1 < segs.length ? `:end_frame=${segs[i + 1].from}` : '';
@@ -252,7 +270,9 @@ export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, poster = 
     outputs.push(`${outBase}${c.suffix}.mp4`);
     const posterRef = c.poster ?? poster;
     const posterFrame = posterRef === 'first' || posterRef == null ? 0 : posterRef === 'last' ? count - 1 : at(posterRef);
-    const seg = segs.filter((g) => g.from <= posterFrame).at(-1) || segs[0];
+    const seg = sameSize
+      ? { w: segs[0].w, h: segs[0].h, x: pathAt(segs, 'x', posterFrame, fps), y: pathAt(segs, 'y', posterFrame, fps) }
+      : segs.filter((g) => g.from <= posterFrame).at(-1) || segs[0];
     webp(pick(posterRef), `${outBase}${c.suffix}@2x.webp`, { crop: seg, scale: c.scale && `${c.scale[0]}:${c.scale[1]}` });
   }
   for (const still of stills) {
@@ -262,4 +282,28 @@ export function encode(framesDir, outBase, { fps = 30, loopFade = 0.7, poster = 
     if (still.small !== false && !still.crop) webp(png, `${base}.webp`, { scale: '1600:-1' });
   }
   return { frames: count, seconds: dur, outputs };
+}
+
+// Crop position along a camera path (segments sorted by `from`, in frames): a hard cut at each
+// `from`, or with `pan` seconds a smoothstep move from the previous segment's position.
+function pathExpr(segs, key, fps) {
+  const value = (i) => {
+    const g = segs[i], v = Math.round(g[key]), frames = Math.round((g.pan || 0) * fps);
+    const a = i > 0 ? Math.round(segs[i - 1][key]) : v;
+    if (!frames || a === v) return String(v);
+    const p = `((n-${g.from})/${frames})`;
+    return `if(lt(n,${g.from + frames}),${a}+(${v - a})*${p}*${p}*(3-2*${p}),${v})`;
+  };
+  let expr = value(segs.length - 1);
+  for (let i = segs.length - 2; i >= 0; i--) expr = `if(lt(n,${segs[i + 1].from}),${value(i)},${expr})`;
+  return expr;
+}
+function pathAt(segs, key, n, fps) {
+  let i = segs.length - 1;
+  while (i > 0 && n < segs[i].from) i--;
+  const g = segs[i], v = Math.round(g[key]), frames = Math.round((g.pan || 0) * fps);
+  const a = i > 0 ? Math.round(segs[i - 1][key]) : v;
+  if (!frames || n >= g.from + frames) return v;
+  const p = (n - g.from) / frames;
+  return Math.trunc(a + (v - a) * p * p * (3 - 2 * p));
 }

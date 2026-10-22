@@ -1,8 +1,10 @@
 // Clip: the Auto-fix loop in the guided task ("Turn your request into a result").
-// The plan waits for approval; after "Approve plan & start" the work is checked by a fresh
-// testing session, the failed check goes back to the implementing session with its report,
-// the fix is checked again in a second testing session, and the result is ready to accept
-// ("Accept result"). Run details then shows the completed run at "Cycle 2 of 3".
+// It opens on "Needs your attention": the plan waits for approval (since round 2 Home, which
+// the reel's first chapter opens on, stays off camera). After "Approve plan & start" the work
+// is checked by a fresh testing session, the failed check goes back to the implementing
+// session with its report, the fix is checked again in a second testing session, and the
+// result is ready to accept ("Accept result"). Run details then shows the completed run at
+// "Cycle 2 of 3".
 //
 // Provenance: IVE app 1.0.17 · demo project · no provider ran. The task, the reports and the
 // pipeline sessions are demo data. The stage graph is the one 1.0.17 generates for a guided
@@ -12,10 +14,11 @@
 // Label note: the 1.0.17 release shows the cancel button of this window in German ("Run abbrechen").
 // The frontend used here (ive-oss 951a002) ships the English label "Cancel run"; with a build that
 // still has the German label, lib/fixture.mjs replaces exactly that label in flight.
-import { openDemo, demoSessions, transcripts, session, addSession, advanceUntil, iso } from '../lib/fixture.mjs';
+import { openDemo, demoSessions, transcripts, session, addSession, advanceUntil, iso, viewportFor } from '../lib/fixture.mjs';
 import { taskExecutionGraph, pending, running, done } from '../lib/graph.mjs';
+import { createCamera } from '../lib/camera.mjs';
 
-export const meta = { id: 'loop-task', title: 'Build, check, fix, repeat', seconds: 19 };
+export const meta = { id: 'loop-task', title: 'Build, check, fix, repeat', seconds: 16 };
 export const encoding = { loopFade: 0, poster: 'poster', crf: 26 };
 
 // Pipeline sessions as the engine names them: "Pipeline <Role> (<CLI label>)".
@@ -34,7 +37,7 @@ const REPORT = {
   verify2: 'npm test: 14 passed, 0 failed.\nChecked: an expired session lands on /sign-in?return=…; signing in returns to the workspace.',
 };
 
-export async function record(wrapped, rec) {
+export async function record(wrapped, rec, { phone = false } = {}) {
   const g = taskExecutionGraph({ plan_first: true, test_with_agent: true, ralph_loop: true, require_result_review: true });
   const task = { id: 'task-redirect', workspace_id: 'orbit', title: 'Fix the expired-session redirect', description: 'After an expired session the app redirects to / instead of /sign-in. Send it to /sign-in and keep the sign-in checks passing.', acceptance_criteria: 'Expired sessions land on /sign-in.\nAll sign-in checks pass.', status: 'planning', pipeline_stage: 'awaiting_plan_approval', priority: 2, labels: 'ive-guided', pipeline: 1, plan_first: 1, ralph_loop: 1, test_with_agent: 1, pipeline_max_iterations: 3, iteration: 1, created_at: iso(20), updated_at: iso(2) };
   const pipeline = { id: 'pipe-redirect', name: `Task Execution - ${task.title}`, description: 'Generated visible task execution pipeline.', workspace_id: 'orbit', status: 'active', preset: 0, stages: g.stages, transitions: g.transitions, triggers: [] };
@@ -46,7 +49,7 @@ export async function record(wrapped, rec) {
   const run = { id: 'run-redirect', pipeline_id: pipeline.id, task_id: task.id, workspace_id: 'orbit', status: 'paused', current_stages: ['approval'], iteration: 1, max_iterations: 3, created_at: iso(6), started_at: iso(6), updated_at: iso(2), variables: { execution_context: '', require_result_review: true }, stage_history: hist, trigger_type: 'task_execute' };
   const sessions = [...demoSessions(), pipelineSession(SID.planner, 'Planner', 'opus', 'idle', 6), pipelineSession(SID.critic, 'Planner', 'opus', 'idle', 4)];
 
-  const f = await openDemo(wrapped, { sessions, messages: transcripts, tasks: [task], runs: [run], pipelines: [pipeline] });
+  const f = await openDemo(wrapped, { sessions, messages: transcripts, tasks: [task], runs: [run], pipelines: [pipeline], viewport: viewportFor(phone) });
   const p = f.page;
   const R = () => f.data.runs.find((r) => r.id === run.id);
   const H = () => structuredClone(R().stage_history);
@@ -54,23 +57,51 @@ export async function record(wrapped, rec) {
   const shows = (text) => advanceUntil(f, async () => (await p.getByText(text, { exact: true }).count()) > 0, { stepMs: 250, maxMs: 8000 });
   await p.locator('.ive-needs-you').waitFor({ timeout: 10000 });
   await p.waitForTimeout(400);
+  // The guided task window is a lazy panel: its first open in a session commits about 0.3 s after
+  // the list closes, which filmed Home in between. Open and close it once off camera, as after any
+  // earlier use; the clip's open is then immediate.
+  await p.locator('.ive-needs-you').click();
+  await p.locator('.ive-attention-item .ive-btn--primary').first().click();
+  await p.getByRole('button', { name: 'Approve plan & start' }).waitFor();
+  await p.keyboard.press('Escape');
+  await p.getByRole('button', { name: 'Approve plan & start' }).waitFor({ state: 'detached' });
+  await p.waitForTimeout(300);
+  // The clip opens on "Needs your attention" (the plan waits for approval). Home with
+  // "1 item needs your attention" in the sidebar, where chapter 1 starts too, stays off camera.
+  await p.locator('.ive-needs-you').click();
+  await p.locator('.ive-attention-item').first().waitFor();
+  await p.waitForTimeout(500);
 
   const r = await rec(p, f.context);
+  // Phone cut: the window is 728 CSS px wide, the cut 498. The camera reads on the left (steps,
+  // next step, reports) and moves right only to show what the pointer clicks.
+  const cam = phone ? createCamera(p) : null;
+  const left = phone ? (await p.getByRole('dialog').first().boundingBox()).x + 10 : 0;
+  const go = (x, opts) => cam && cam.to(r, x, opts);
+  const reveal = async (target, pan = 0.7) => { if (cam) cam.to(r, cam.fit(await target.first().boundingBox(), left), { pan }); };
+  const { width: vw, height: vh } = p.viewportSize();
+  // Wheel point for the task window (on phones "Proposed plan" scrolls out of view).
+  const windowBody = (fallback) => (phone ? [Math.round(vw / 2), Math.round(vh * 0.62)] : fallback);
   await r.start();
-  await r.hold(0.8);
-  await r.click(p.locator('.ive-needs-you'), { duration: 0.8, after: 0 });
-  await r.untilVisible(p.locator('.ive-attention-item'));
-  await r.hold(0.7);
-  await r.click(p.locator('.ive-attention-item .ive-btn--primary').first(), { duration: 0.6, after: 0 });
+  r.mark('attention');
+  go(left);
+  await r.hold(1.1);
+  const reviewButton = p.locator('.ive-attention-item .ive-btn--primary').first();
+  await reveal(reviewButton);
+  await r.click(reviewButton, { duration: 0.7, after: 0 });
   await r.untilVisible(p.getByRole('button', { name: 'Approve plan & start' }));
   r.mark('window');
+  go(left, { from: r.clickFrame });
   await r.hold(1.0);
 
   // S1: plan approved (the transport resumes the run), Implement starts in a new worker session.
-  await r.click(p.getByRole('button', { name: 'Approve plan & start' }), { duration: 0.7, after: 0.1 });
+  const approve = p.getByRole('button', { name: 'Approve plan & start' });
+  await reveal(approve);
+  await r.click(approve, { duration: 0.7, after: 0.1 });
   addSession(f, pipelineSession(SID.worker, 'Worker', 'sonnet', 'running', 0));
   { const h = H(); h.implement = running(SID.worker); f.controls.setRun(run.id, { stage_history: h }, {}); }
   await shows('Working');
+  go(left, { pan: 0.6 });
   await r.hold(0.9);
 
   // S2: the implementer reports pass; Verify runs in a fresh testing session.
@@ -85,9 +116,10 @@ export async function record(wrapped, rec) {
   f.controls.setSessionStatus(SID.worker, 'running');
   { const h = H(); h.verify = done('fail', REPORT.verify1, SID.tester1); h.verify_gate = done('fail', REPORT.verify1); h.fix = running(SID.worker); f.controls.setRun(run.id, { current_stages: ['fix'], stage_history: h }, {}); }
   await shows('Fixing issues');
-  await r.hold(0.4);
-  await r.scrollBy(p.getByText('Proposed plan', { exact: true }).first(), 520, { duration: 0.8 });
-  await r.snap('poster');
+  // Phones see the next step only until the reports scroll in.
+  await r.hold(phone ? 1.0 : 0.4);
+  // Down to "Corrections" and "Test evidence · Reported failure".
+  await r.scrollBy(windowBody(p.getByText('Proposed plan', { exact: true }).first()), phone ? 700 : 520, { duration: 0.8 });
   await r.hold(1.4);
 
   // S4: the fix reports pass and loops back: cycle 2, downstream stages reset, a second testing session.
@@ -103,20 +135,30 @@ export async function record(wrapped, rec) {
   await shows('Review the result');
   await r.hold(0.5);
   // Back to the top of the window, where the next step and its buttons are.
-  await r.scrollBy(p.getByText('Proposed plan', { exact: true }).first(), -900, { duration: 0.7 });
+  await r.scrollBy(windowBody(p.getByText('Proposed plan', { exact: true }).first()), phone ? -1400 : -900, { duration: 0.7 });
   await r.hold(0.3);
   // "Accept result" is enabled only now (completed run, passing check). Accepting would close
   // this window (it was opened from Needs your attention), so the clip points at it and then
   // opens Run details instead.
-  await r.moveTo(p.getByRole('button', { name: 'Accept result' }), { duration: 0.7 });
+  const accept = p.getByRole('button', { name: 'Accept result' });
+  await reveal(accept);
+  await r.moveTo(accept, { duration: 0.7 });
   await r.hold(0.6);
   await r.click(p.getByRole('button', { name: 'Run details' }), { duration: 0.6, after: 0 });
   await r.untilVisible(p.getByText('Pipeline Run', { exact: true }));
   r.mark('detail');
-  await r.hold(2.2);
+  // From the click on: the run's loading view and then Run details show at this position.
+  if (cam) go((await p.getByText('Pipeline Run', { exact: true }).first().boundingBox()).x - 30, { from: r.clickFrame });
+  await r.hold(0.8);
+  // Poster: the completed run, "Cycle 2 of 3", every stage that ran passed (the page's static alt text).
+  await r.snap('poster');
+  if (cam) {
+    // On phones the site's buttons cover "Cycle 2 of 3" in the top right corner of the cut:
+    // the camera moves right to show it, with the pass chips and the plan's stage summary.
+    go(cam.fit(await p.getByText(/Cycle \d of \d/).first().boundingBox(), 200), { pan: 0.7 });
+    await r.hold(1.8);
+  } else await r.hold(1.4);
   await r.stop();
-  // Phones (3:4, full window height): the attention list, then the left 750 CSS px of the task
-  // window (steps, next step, report titles and texts), then the stage list of Run details.
-  const cut = (from, x) => ({ from, x, y: 0, w: 1500, h: 2000 });
-  return { fixture: f, encoding: { crops: [{ suffix: '-m', scale: [900, 1200], poster: 'poster', segments: [cut(0, 24), cut('window', 524), cut('detail', 24)] }] } };
+  if (!phone) return { fixture: f };
+  return { fixture: f, encoding: { crops: [{ suffix: '-m', poster: 'poster', segments: cam.segments() }] } };
 }

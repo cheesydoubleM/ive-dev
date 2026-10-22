@@ -8,7 +8,8 @@
 // warning event and the corrective text are the backend's own (backend/hooks.py: the
 // `doom_loop_warning` broadcast and the W2W nudge delivered at the next idle); here the
 // transport sends them, and the agent steps are demo data.
-import { openDemo, agentStep, pushAssistant, msg } from '../lib/fixture.mjs';
+import { openDemo, agentStep, pushAssistant, msg, viewportFor } from '../lib/fixture.mjs';
+import { createCamera } from '../lib/camera.mjs';
 
 export const meta = { id: 'loop-detect', title: 'Caught going in circles', seconds: 10 };
 export const encoding = { loopFade: 0, poster: 'poster' };
@@ -20,9 +21,9 @@ const npmTest = (n) => [
   { type: 'tool_result', tool_use_id: `n${n}`, content: '13 passed, 1 failed\nFAIL tests/sign-in.spec.js › expired session keeps the return path' },
 ];
 
-export async function record(wrapped, rec) {
+export async function record(wrapped, rec, { phone = false } = {}) {
   const messages = { checks: [msg('checks', 'user', 'Make the sign-in checks pass: empty state, expired session, and the return to the workspace.', 2)] };
-  const f = await openDemo(wrapped, { messages });
+  const f = await openDemo(wrapped, { messages, viewport: viewportFor(phone) });
   const p = f.page;
   await p.getByText('Check the sign-in flow', { exact: true }).first().click();
   await p.waitForTimeout(1200);
@@ -31,11 +32,13 @@ export async function record(wrapped, rec) {
   await p.waitForTimeout(600);
 
   const r = await rec(p, f.context);
+  // Phone cut: the main column (steps, the warning, the corrective turn) fits the 498 px cut.
+  const cam = phone ? createCamera(p) : null;
   await r.start();
+  if (cam) { const main = await p.locator('main').first().boundingBox(); cam.to(r, main.x + 10); }
   await r.hold(0.6);
   // Open the running step so each identical call is visible as it lands.
   await r.click(p.getByText('Run the sign-in checks').first(), { duration: 0.6, after: 0.4 });
-  const stepsBox = await p.getByText('Run the sign-in checks').first().boundingBox();
   await agentStep(f, 'checks', npmTest(2));
   await r.hold(0.9);
   await agentStep(f, 'checks', npmTest(3));
@@ -48,7 +51,6 @@ export async function record(wrapped, rec) {
   await r.hold(0.4);
   await r.snap('poster');
   await r.hold(1.3);
-  const toastBox = await p.locator('.ive-notification-shell').first().boundingBox();
 
   // The turn ends; at the idle the warning is typed into the session as the next user turn.
   pushAssistant(f, 'checks', [{ type: 'text', text: 'Still 1 failing check: expired session keeps the return path.' }], { done: true });
@@ -66,14 +68,6 @@ export async function record(wrapped, rec) {
   await r.hold(2.4);
   await r.stop();
 
-  // Phones: 3:4 cuts of the full window height. The repeated calls (left of the column), then
-  // the warning (top right), then the corrective turn and the new steps.
-  const W = 1500, H = 2000, clampX = (x) => Math.max(0, Math.min(3200 - W, Math.round(x)));
-  const nudgeBox = await p.locator('main, [role="main"], body').getByText(/You appear to be stuck/).last().boundingBox();
-  const left = clampX((stepsBox.x - 24) * 2);
-  const right = clampX((toastBox.x + toastBox.width + 16) * 2 - W);
-  const nudge = clampX(Math.min(stepsBox.x - 24, nudgeBox.x - 20) * 2);
-  return { fixture: f, encoding: { crops: [{ suffix: '-m', scale: [900, 1200], poster: 'poster', segments: [
-    { from: 0, x: left, y: 0, w: W, h: H }, { from: 'toast', x: right, y: 0, w: W, h: H }, { from: 'nudge', x: nudge, y: 0, w: W, h: H },
-  ] }] } };
+  if (!phone) return { fixture: f };
+  return { fixture: f, encoding: { crops: [{ suffix: '-m', poster: 'poster', segments: cam.segments() }] } };
 }
