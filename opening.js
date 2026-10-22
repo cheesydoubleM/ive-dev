@@ -1,8 +1,9 @@
 /* IVE.DEV · opening.js — the opening scene (brief 4.1).
    Inside the machine: a grid corridor flows past with ring ribs and a slow
-   camera drift (back from 0d2d27a on the owner's call, 2026-10-22). Agents swarm
-   in it as flat session cards, glide onto one board, the corridor fades to the
-   dark ground, the viewer zooms out of the V until "IVE" stands, the name unfolds
+   camera drift, on a black ground (back from 0d2d27a on the owner's call,
+   2026-10-22). Agents swarm in it in depth as session cards that turn in space
+   (the card motion of 0d2d27a), glide onto one board, the corridor fades to
+   black, the viewer zooms out of the V until "IVE" stands, the name unfolds
    into "Integrated Vibecoding Environment", then shrinks and rises away while the
    header takes the page tokens and the hero rises underneath.
    One rAF loop, only while the scene is in view. Scroll and resize request
@@ -47,14 +48,13 @@
   var walls = {};
   Array.prototype.forEach.call(mark.querySelectorAll('[data-wall]'), function (w) { walls[w.getAttribute('data-wall')] = w; });
   var ringsBox = mark.querySelector('[data-scene-rings]');
-  var vignette = mark.querySelector('[data-scene-vignette]');
-  var scan = mark.querySelector('[data-scene-scan]');
+  var scan = mark.querySelector('[data-scene-scan]');   /* the vignette is pure CSS */
   var corridor = !!(cam && walls.floor && walls.ceil && walls.left && walls.right && ringsBox);
   var columnQuery = window.matchMedia('(max-width: 719.98px)');
 
   /* timeline on the scroll axis (raw 0..1 over the 200vh travel) */
   var T = {
-    swarmEnd: 0.22, waitFrom: 0.06, boardIn: 0.28, capSwap: 0.34,
+    swarmEnd: 0.22, waitFrom: 0, boardIn: 0.28, capSwap: 0.34,
     doneFrom: 0.36, dockEnd: 0.42, cutEnd: 0.45, zoomEnd: 0.60,
     unfoldStart: 0.64, byAt: 0.78, unfoldEnd: 0.82,
     handStart: 0.88, groundFrom: 0.90, headerAt: 0.94, goneAt: 0.98
@@ -75,12 +75,14 @@
     ['Migrate the schema', 'sonnet'], ['Write the changelog', 'haiku']
   ];
   var WORDS = { run: 'Running', wait: 'Waiting', done: 'Done' };
+  var STATES = { run: 'Working on your request', wait: 'Your answer is needed', done: 'Reply ready' };
 
   var clamp = function (x) { return x < 0 ? 0 : x > 1 ? 1 : x; };
   var ease = function (x) { x = clamp(x); return x * x * (3 - 2 * x); };
   var rnd = function (i, k) { var x = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return x - Math.floor(x); };
 
-  /* cards, built from the site's own tokens (opening.css .swarm-card) */
+  /* cards, built from the site's own tokens (opening.css .swarm-card); their lanes and
+     drift are those of 0d2d27a (same seeds, same agent order, so the same swarm) */
   var cards = AGENTS.map(function (def, i) {
     var el = document.createElement('div');
     el.className = 'swarm-card';
@@ -93,7 +95,6 @@
     model.className = 'sc-model';
     model.textContent = def[1];
     top.appendChild(title);
-    top.appendChild(model);
     var pill = document.createElement('span');
     pill.className = 'sc-pill';
     var dot = document.createElement('i');
@@ -101,17 +102,27 @@
     word.textContent = WORDS.run;
     pill.appendChild(dot);
     pill.appendChild(word);
+    top.appendChild(pill);
+    top.appendChild(model);
+    var status = document.createElement('div');
+    status.className = 'sc-status';
+    var state = document.createElement('span');
+    state.className = 'sc-state';
+    state.textContent = STATES.run;
+    status.appendChild(state);
     el.appendChild(top);
-    el.appendChild(pill);
+    el.appendChild(status);
     swarmBox.appendChild(el);
     return {
       el: el, word: word, st: '', model: model, long: def[1], short: def[2] || '',
-      x0: (rnd(i, 1) * 2 - 1), y0: (rnd(i, 2) * 2 - 1), z0: (i + rnd(i, 3) * 0.6) / AGENTS.length,
-      v: 0.035 + 0.03 * rnd(i, 4),
-      ax: 0.05 + 0.08 * rnd(i, 6), ay: 0.04 + 0.07 * rnd(i, 7),
-      wx: 0.18 + 0.22 * rnd(i, 8), wy: 0.15 + 0.2 * rnd(i, 9),
+      /* lane in the corridor (x, y in view half-widths) and depth phase */
+      x0: (rnd(i, 1) * 2 - 1) * 0.9, y0: (rnd(i, 2) * 2 - 1) * 0.8, z0: rnd(i, 3),
+      /* depth speed per second; three in ten fly toward the viewer, the rest away */
+      v: (0.045 + 0.06 * rnd(i, 4)) * (rnd(i, 5) < 0.3 ? -1 : 1),
+      ax: 0.12 + 0.3 * rnd(i, 6), ay: 0.08 + 0.22 * rnd(i, 7),
+      wx: 0.3 + 0.5 * rnd(i, 8), wy: 0.25 + 0.45 * rnd(i, 9),
       px: rnd(i, 10) * 6.283, py: rnd(i, 11) * 6.283,
-      flick: 0.35 + 0.5 * rnd(i, 13)
+      rot: 3 + 7 * rnd(i, 12), flick: 0.6 + 0.8 * rnd(i, 13)
     };
   });
 
@@ -120,6 +131,7 @@
     c.st = st;
     c.el.setAttribute('data-st', st);
     c.word.textContent = WORDS[st];
+    c.el.querySelector('.sc-state').textContent = STATES[st];
   }
 
   var rings = [];
@@ -140,9 +152,9 @@
 
   /* the corridor, as in 0d2d27a: the grid flows past and the ribs rush by on the swarm's
      clock and faster with scroll; the camera drifts; drift and ribs come to rest while the
-     agents dock, the grid dims to 35 %, and everything fades to the ground at the cut.
-     Only transform and opacity change. A rib peaks at opacity 1 here (0d2d27a: 0.5 of
-     pure white); its colour token carries the brightness now. */
+     agents dock, the grid dims to 35 %, and everything fades to black at the cut.
+     Only transform and opacity change. Brightness as in 0d2d27a: a rib peaks at opacity
+     0.5 of near white (opening.css), the vignette stays at full strength. */
   function renderCorridor(sw, k, cut, emerge) {
     var still = (1 - k) * cut;
     var lines = (emerge * (0.35 + 0.65 * (1 - k)) * cut).toFixed(3);
@@ -151,7 +163,6 @@
     put(walls.left, 'opacity', lines);
     put(walls.right, 'opacity', lines);
     put(scan, 'opacity', (emerge * cut).toFixed(3));
-    put(vignette, 'opacity', cut.toFixed(3));
     var swayX = Math.sin(clock * 0.37) * 16 * still, swayY = Math.cos(clock * 0.29) * 10 * still;
     var swayR = Math.sin(clock * 0.23) * 0.9 * still;
     put(cam, 'transform', 'translate(' + swayX.toFixed(1) + 'px, ' + swayY.toFixed(1) + 'px) rotate(' + swayR.toFixed(2) + 'deg)');
@@ -165,14 +176,14 @@
     var fz = camz - Math.floor(camz);
     for (var i = 0; i < RINGS; i++) {
       var d = (i / RINGS + 1 - fz) % 1;              /* 0 = passing the viewer, 1 = far */
-      var o = (0.4 + 0.6 * (1 - d)) * ease(d / 0.06) * ease((1 - d) / 0.3) * emerge * still;
+      var o = 0.5 * (0.4 + 0.6 * (1 - d)) * ease(d / 0.06) * ease((1 - d) / 0.3) * emerge * still;
       put(rings[i], 'opacity', o.toFixed(3));
       if (o > 0) put(rings[i], 'transform', 'translate(-50%, -50%) scale(' + (2.8 / (1 + d * 26)).toFixed(4) + ')');
     }
   }
 
   var m = null;
-  var raw = 0, lastRaw = -1, clock = 0, age = 0, lastTs = null, looping = false, halted = false;
+  var raw = 0, lastRaw = -1, clock = 0, age = 0, frameNo = 0, lastTs = null, looping = false, halted = false;
   var hintReady = false, dark = true, inView = true, zoomOn = false;
   var lastCountA = '', lastCountB = '';
 
@@ -221,42 +232,57 @@
   function renderScene(dt) {
     var sw = clamp(raw / T.swarmEnd);                              /* progress through the swarm */
     var k = ease((raw - T.swarmEnd) / (T.dockEnd - T.swarmEnd));    /* docking */
-    var cut = 1 - ease((raw - T.dockEnd) / (T.cutEnd - T.dockEnd)); /* board and captions fade to the ground */
+    var cut = 1 - ease((raw - T.dockEnd) / (T.cutEnd - T.dockEnd)); /* board and captions fade to black */
+    frameNo++;
     age += dt;
     clock += dt * (1 - k);
     var emerge = ease(age / 1.2);
     if (corridor) renderCorridor(sw, k, cut, emerge);
-    var RX = m.w * 0.44, RY = m.h * 0.38;
+    /* the swarm in depth, as in 0d2d27a. Every card flies down its own lane: depth
+       dz runs 0 (at the viewer) to 1 (far), most cards away into the corridor and
+       some toward the viewer, all faster with scroll. One perspective law gives the
+       depth its size (2.4x the board card at the viewer, a third of it far away) and
+       pulls the lane toward the vanishing point; each card turns in space on its own
+       700px perspective, leaning in toward the corridor's axis, and rocks about its
+       centre. The size is the card's real size (--s), never scale(): the same
+       geometry as the old scale() step, but the text is set, not stretched (Safari). */
+    var RX = m.w * 0.55, RY = m.h * 0.5;
     var t = clock;
     var counts = { run: 0, wait: 0, done: 0 };
     var doneSpan = T.dockEnd - T.doneFrom;
     for (var n = 0; n < cards.length; n++) {
       var c = cards[n];
-      /* depth: 0 = at the viewer, 1 = far; scroll pushes the cards toward the viewer */
-      var z = c.z0 - t * c.v - sw * 0.7;
-      z = ((z % 1) + 1) % 1;
-      var near = 1 - z;
-      var s = 0.55 + 0.6 * near;
-      var op = (0.35 + 0.65 * near) * ease(z / 0.07) * ease((1 - z) / 0.12) * emerge;
-      var spread = 0.42 + 0.58 * near;
-      var px = (c.x0 + c.ax * Math.sin(c.wx * t + c.px)) * RX * spread;
-      var py = (c.y0 + c.ay * Math.sin(c.wy * t + c.py)) * RY * spread;
+      var dz = ((c.z0 + t * c.v + sw * 0.6 * (c.v > 0 ? 1 : -1)) % 1 + 1) % 1;
+      var persp = 0.35 / (0.35 + 2.2 * dz);
+      var sx = c.x0 + c.ax * Math.sin(c.wx * t + c.px);
+      var sy = c.y0 + c.ay * Math.sin(c.wy * t + c.py);
+      var px = sx * RX * persp, py = sy * RY * persp;
+      var s = 2.4 * persp;
+      var op = ease(dz / 0.05) * ease((1 - dz) / 0.2) * emerge;
+      var rot = c.rot * Math.sin(c.wy * t * 1.3 + c.py);
+      var tiltY = -sx * 16, tiltX = sy * 10;
       var st;
       if (raw >= T.doneFrom && (raw - T.doneFrom) / doneSpan > (n + 0.5) / cards.length) st = 'done';
-      else if (k < 0.35 && raw >= T.waitFrom && Math.sin(t * c.flick + c.px * 2) > 0.72) st = 'wait';
+      else if (k < 0.35 && raw >= T.waitFrom && Math.sin(t * c.flick + c.px * 2) > 0.76) st = 'wait';
       else st = 'run';
+      /* a session that needs you shivers */
+      if (st === 'wait') { px += (rnd(frameNo, n) - 0.5) * 3; py += (rnd(frameNo, n + 40) - 0.5) * 3; }
       if (k > 0) {
+        /* docking: onto the board slot, flat, upright, at the board size */
         var slot = m.slots[n];
         px += (slot.x - px) * k;
         py += (slot.y - py) * k;
         s += (1 - s) * k;
         op += (1 - op) * k;
+        rot *= 1 - k;
+        tiltY *= 1 - k;
+        tiltX *= 1 - k;
       }
       op *= cut;
       c.el.style.setProperty('--s', s.toFixed(3));
-      c.el.style.transform = 'translate(-50%, -50%) translate(' + px.toFixed(1) + 'px, ' + py.toFixed(1) + 'px)';
+      c.el.style.transform = 'translate(-50%, -50%) translate(' + px.toFixed(1) + 'px, ' + py.toFixed(1) + 'px) perspective(700px) rotateY(' + tiltY.toFixed(1) + 'deg) rotateX(' + tiltX.toFixed(1) + 'deg) rotate(' + rot.toFixed(2) + 'deg)';
       c.el.style.opacity = op.toFixed(3);
-      c.el.style.zIndex = String(k > 0.5 ? 60 : 10 + Math.round(near * 40));
+      c.el.style.zIndex = String(k > 0.5 ? 60 : 10 + Math.round((1 - dz) * 40));
       setStatus(c, st);
       counts[st]++;
     }
@@ -329,12 +355,29 @@
     if (wantDark !== dark) { dark = wantDark; root.classList.toggle('mark-dark', dark); }
   }
 
+
+  /* Keep the original tunnel's physical scroll distances, then retain the new
+     name/unfold/handover duration. Desktop: 126/210/231vh; phone: 108/180/198vh.
+     The semantic raw values stay unchanged for the existing render functions. */
+  function scrollProgress(distance) {
+    var oldTravel = m.column ? 360 : 420;
+    var letterTravel = m.column ? 88 : 110;
+    var unit = m.travel / (oldTravel * 0.55 + letterTravel);
+    var swarm = oldTravel * 0.30 * unit;
+    var dock = oldTravel * 0.50 * unit;
+    var cut = oldTravel * 0.55 * unit;
+    if (distance <= swarm) return clamp(distance / swarm) * T.swarmEnd;
+    if (distance <= dock) return T.swarmEnd + (distance - swarm) / (dock - swarm) * (T.dockEnd - T.swarmEnd);
+    if (distance <= cut) return T.dockEnd + (distance - dock) / (cut - dock) * (T.cutEnd - T.dockEnd);
+    return T.cutEnd + clamp((distance - cut) / (m.travel - cut)) * (1 - T.cutEnd);
+  }
+
   function frame(ts) {
     looping = false;
     if (!m || halted) return;
     var dt = lastTs === null ? 0 : Math.min(0.05, (ts - lastTs) / 1000);
     lastTs = ts;
-    raw = clamp((window.scrollY - m.top) / m.travel);
+    raw = scrollProgress(window.scrollY - m.top);
     inView = window.scrollY < m.top + m.travel + m.h;
     var sceneOn = raw < T.cutEnd && inView;
     if (raw !== lastRaw) {

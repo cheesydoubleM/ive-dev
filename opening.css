@@ -1,10 +1,11 @@
 /* ═══════════════════════════════════════════════════════════════
    IVE.DEV · opening.css — the opening scene (brief 4.1), index only.
    Replaces the .mark block of styles.css and the .au card subset of
-   app-ui*.css. The scene ground is #0E1014 in both themes; [data-mark]
-   carries the dark token set (site.css), so the cards use site tokens.
-   The grid corridor of the 0d2d27a opening is back (owner, 2026-10-22):
-   same planes, rings, drift, vignette and scanlines, drawn in the tokens.
+   app-ui*.css. [data-mark] carries the dark token set (site.css), so the
+   cards use site tokens. The grid corridor of the 0d2d27a opening is back
+   (owner, 2026-10-22): same planes, rings, drift, vignette and scanlines,
+   with its brightness, on its black ground until the letters light up;
+   after that the ground is #0E1014 in both themes.
    Static (no JS, reduced motion): the full name on a 100vh dark block.
    Live (html.mark-live): 300vh section, 100vh sticky pin; opening.js
    drives the custom properties from scroll progress.
@@ -99,7 +100,7 @@
   --mark-hint: 1;
   --mark-line-alpha: 0;
   --mark-by: 0;
-  height: 300vh;
+  height: 441vh;
 }
 .mark-live .mark-pin {
   position: sticky; top: 0;
@@ -109,6 +110,9 @@
   padding: 0 var(--gutter);
   contain: layout paint;
 }
+/* the corridor runs on pure black in both themes, as in 0d2d27a; the ground turns
+   #0E1014 when the letters light up (the first lit frame is the V's stroke) */
+.mark-live .mark:not(.is-lit) .mark-pin { background: #000; }
 .mark-live .mark-line {
   flex-wrap: nowrap;
   white-space: nowrap;
@@ -134,14 +138,14 @@
 /* ── the scene: inside the machine ──
    A grid corridor (four perspective planes) flows past, ring ribs rush by,
    the camera drifts; the agents swarm in it, glide onto one board, and the
-   corridor fades to the ground at the cut. opening.js drives only transform
-   and opacity of these layers. Colours from the dark set on [data-mark]:
-   hairline grid in --text-4 at 55 %, ring ribs in the strong border colour
-   (--text-4, as on hovered outlines; --line-strong leaves them at a third of
-   the original brightness), no accent. */
+   corridor fades to black at the cut. opening.js drives only transform
+   and opacity of these layers. Line colours and weights are the 0d2d27a
+   values, not tokens (owner, 2026-10-22: the corridor as before): 1px grid
+   in near white at 27 %, 2px ribs in near white that peak at opacity 0.5
+   (opening.js), no accent. */
 .scene {
-  --scene-grid: color-mix(in srgb, var(--text-4) 55%, transparent);
-  --scene-ring: var(--text-4);
+  --scene-grid: rgba(244, 245, 246, 0.27);
+  --scene-ring: #F4F5F6;
   display: none;
   position: absolute; inset: 0; z-index: 0;
   overflow: hidden;
@@ -210,9 +214,11 @@
   transform: translate(-50%, -50%) scale(0.1);
   will-change: transform, opacity;
 }
-/* the vignette sits in the camera; it overhangs the view so the drift never bares an edge */
+/* the vignette sits in the camera and covers the view, as in 0d2d27a (an overhang
+   would stretch the gradient and weaken it in the view). Where the drift bares an
+   edge strip (16px at most), the strip shows the black ground. */
 .scene-vignette {
-  position: absolute; inset: -48px;
+  position: absolute; inset: 0;
   background: radial-gradient(ellipse at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.72) 100%);
 }
 /* scanlines over everything in the scene, very faint */
@@ -238,20 +244,29 @@
   line-height: 1.4;
   color: var(--text-3);
 }
+/* the captions, top centre under the header as in 0d2d27a: mono, uppercase, tracked,
+   the live counter below in a smaller size */
 .scene-caption {
   position: absolute; z-index: 3;
-  left: max(var(--gutter), (100% - var(--maxw)) / 2);
-  bottom: clamp(28px, 8vh, 72px);
-  max-width: calc(100% - 2 * var(--gutter));
+  left: var(--gutter); right: var(--gutter); top: 15%;
   margin: 0;
-  display: flex; flex-direction: column; gap: 6px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.6;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--text-2);
   opacity: 0;
 }
-.scene-caption-text { font-family: var(--sans); font-weight: 400; font-size: 16px; line-height: 1.4; color: var(--text-2); }
-.scene-count { min-height: 1.4em; font-family: var(--mono); font-weight: 500; font-size: 12px; line-height: 1.4; color: var(--text-3); }
+.scene-count { min-height: 1em; font-size: 11px; letter-spacing: 0.12em; color: var(--text-3); }
 
-/* a session card: title, model, state word; flat, depth comes from size and opacity.
-   --s is set per frame by opening.js; every size follows it (real font sizes). */
+/* a session card: title, model, state word. In the swarm it hangs in space: opening.js
+   sets its depth size --s (0.33 far to 2.4 at the viewer, 1 on the board) and turns it
+   with perspective(700px) rotateY/rotateX/rotate. Every size follows --s (real font
+   sizes), outline and shadow too, as they grew with the old scale(). */
 .swarm-card {
   --card-w: 236px;
   --card-f: 12px;
@@ -260,7 +275,7 @@
   padding: 0.8em 0.95em 0.85em;
   border-radius: 0.5em;
   background: var(--bg-raised);
-  box-shadow: 0 0 0 1px var(--line-strong), 0 12px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 calc(1px * var(--s, 1)) var(--line-strong), 0 calc(12px * var(--s, 1)) calc(32px * var(--s, 1)) rgba(0, 0, 0, 0.4);
   color: var(--text-1);
   font-family: var(--sans);
   font-size: calc(var(--card-f) * var(--s, 1));
@@ -285,7 +300,7 @@
   color: var(--accent);
 }
 .sc-pill i { width: 0.55em; height: 0.55em; border-radius: 50%; background: currentColor; }
-.swarm-card[data-st="wait"] { box-shadow: 0 0 0 1px var(--waiting), 0 12px 32px rgba(0, 0, 0, 0.4); }
+.swarm-card[data-st="wait"] { box-shadow: 0 0 0 calc(1px * var(--s, 1)) var(--waiting), 0 calc(12px * var(--s, 1)) calc(32px * var(--s, 1)) rgba(0, 0, 0, 0.4); }
 .swarm-card[data-st="wait"] .sc-pill { color: var(--waiting); }
 .swarm-card[data-st="done"] .sc-pill { color: var(--done); }
 .swarm-card[data-st="done"] .sc-pill i {
@@ -305,7 +320,7 @@
 /* ── phones: the letters stack and unfold to the right ── */
 @media (max-width: 719.98px) {
   .mark { --mark-size: clamp(38px, 11.5vw, 64px); }
-  .mark-live .mark { --mark-size: min(56vw, 19vh); height: 260vh; }
+  .mark-live .mark { --mark-size: min(56vw, 19vh); height: 386vh; }
   .mark-pin { align-items: flex-start; }
   .mark-line {
     flex-direction: column; align-items: flex-start; justify-content: center;
@@ -314,7 +329,54 @@
   }
   .mark-by { text-align: left; }
   .swarm-card { --card-w: 150px; --card-f: 10.5px; }
-  .scene-caption-text { font-size: 15px; }
+  .scene-caption { top: 12%; }
+}
+
+/* Original app tile composition (0d2d27a), scoped to the tunnel only.
+   These rules do not change the active 3D transform, corridor or caption. */
+.scene .swarm-card {
+  --card-w: 284px;
+  --card-f: 12px;
+  width: calc(var(--card-w) * var(--s, 1));
+  padding: 0;
+  display: flex; flex-direction: column; min-width: 0;
+  border: 1px solid #262a33; border-radius: 6px;
+  background: #0e1014; overflow: hidden;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  color: #f4f6fa;
+  font-size: calc(var(--card-f) * var(--s, 1)); line-height: 1.4;
+}
+.scene .sc-top {
+  display: flex; align-items: center; gap: 0.6em;
+  padding: 0.55em 0.8em; border-bottom: 1px solid #262a33;
+  background: #16181d;
+}
+.scene .sc-title { font-weight: 600; font-size: 1.08em; }
+.scene .sc-model { flex-shrink: 0; font-size: 0.9em; color: #9aa3b2; }
+.scene .sc-pill {
+  margin-top: 0; display: inline-flex; align-items: center; gap: 0.4em;
+  font-family: var(--sans); font-size: 1em; font-weight: 500; white-space: nowrap;
+  color: #7a97ff;
+}
+.scene .sc-pill i { width: 0.62em; height: 0.62em; background: #4d74ff; box-shadow: 0 0 0 0.2em rgba(77, 116, 255, 0.18); }
+.scene .sc-status { display: flex; flex-direction: column; gap: 0.15em; padding: 0.55em 0.8em; background: #16181d; }
+.scene .sc-state { display: inline-flex; align-items: center; gap: 0.45em; font-weight: 600; white-space: nowrap; min-width: 0; }
+.scene .sc-state::before { content: ''; flex: none; width: 0.5em; height: 0.5em; border-radius: 50%; background: #4d74ff; }
+.scene .sc-state::after { content: '⌄'; color: #9aa3b2; font-weight: 400; margin-left: 0.1em; position: relative; top: -0.15em; }
+.scene .swarm-card[data-st="wait"] { border-color: #f59e0b; box-shadow: 0 0 0 1px #f59e0b, 0 14px 34px rgba(0, 0, 0, 0.55); }
+.scene .swarm-card[data-st="wait"] .sc-pill { color: #f59e0b; }
+.scene .swarm-card[data-st="wait"] .sc-pill i, .scene .swarm-card[data-st="wait"] .sc-state::before { background: #f59e0b; box-shadow: none; }
+.scene .swarm-card[data-st="done"] .sc-pill { color: #22c55e; }
+.scene .swarm-card[data-st="done"] .sc-pill i { width: 0.4em; height: 0.72em; border-radius: 0; background: transparent; border: solid #22c55e; border-width: 0 2px 2px 0; transform: translateY(-0.12em) rotate(42deg); margin-right: 0.15em; box-shadow: none; }
+.scene .swarm-card[data-st="done"] .sc-state::before { background: #6b7280; }
+@media (max-width: 1080px) {
+  .scene .swarm-card { --card-w: min(262px, calc((100vw - 72px) / 3)); --card-f: 11px; }
+}
+@media (max-width: 719.98px) {
+  .scene .swarm-card { --card-w: min(160px, calc((100vw - 58px) / 2)); --card-f: 10px; }
+  .scene .sc-top .sc-pill, .scene .sc-top .sc-model { display: none; }
+  .scene .sc-state { overflow: hidden; text-overflow: ellipsis; display: block; }
+  .scene .sc-state::before { display: inline-block; vertical-align: 0.1em; margin-right: 0.45em; }
 }
 
 /* ── the hero follows the opening: it rises underneath the last 40vh ── */
