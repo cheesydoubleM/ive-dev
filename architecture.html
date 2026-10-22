@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://ive.dev/assets/og.png?v=20261022oss">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts.css?v=20260908f">
-<link rel="stylesheet" href="styles.css?v=20261022mac">
+<link rel="stylesheet" href="styles.css?v=20261022mac2">
 </head>
 <body class="architecture-page">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -57,14 +57,14 @@
       <p class="kicker">PROCESS MODEL</p>
       <div>
         <h2 id="process-title">A local backend manages each process.</h2>
-        <p>The browser sends commands. The backend owns the agent processes and their state.</p>
+        <p>The interface sends commands. The backend owns the agent processes and their state.</p>
       </div>
     </div>
 
-    <figure class="arch-process-diagram" aria-label="The local React browser connects over HTTP and WebSocket to a Python backend that forks PTY sessions for Claude Code and Gemini CLI agents while persisting all state in SQLite.">
+    <figure class="arch-process-diagram" aria-label="The local React interface connects over HTTP and WebSocket to a Python backend that forks PTY sessions for Claude Code and Gemini CLI agents while persisting all state in SQLite.">
       <div class="arch-node arch-node-browser">
         <span class="arch-node-label">local interface</span>
-        <strong>React in the browser</strong>
+        <strong>React, in the app window or browser</strong>
         <span class="arch-node-meta">commands · terminal input · live state</span>
       </div>
 

@@ -360,7 +360,8 @@ https://github.com/michael-ra/ive. Since 2026-10-22 (owner request) it also
 links the Mac app: https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg
 (stable across releases). Facts that may be stated: Apple silicon (M1 or newer),
 macOS 13.5 or newer, a signed-in coding CLI, signed with the Developer ID of
-AIFOREU GmbH and notarized by Apple, runs its own local service, one app in the
+AIFOREU GmbH and notarized by Apple (the app, not the DMG), runs its own local
+service, opens in its own window (no terminal, no browser tab), one app in the
 Dock. Never host the DMG in this repository and show no version number or file
 size for it. Do not promise Windows support, an Intel Mac app, a community,
 stars, or contributors.
