@@ -3,26 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-FZc6fPc+pszWZqSMmueqEHs+8iOuXLE4ztkgogg2Aqs='; style-src 'self'; img-src 'self' data:; media-src 'self'; font-src 'self'; base-uri 'none'; connect-src 'self' https://ive-beta-waitlist.intertrans-vorschau.workers.dev; form-action 'self' https://ive-beta-waitlist.intertrans-vorschau.workers.dev">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-FZc6fPc+pszWZqSMmueqEHs+8iOuXLE4ztkgogg2Aqs='; style-src 'self'; img-src 'self' data:; media-src 'self'; font-src 'self'; base-uri 'none'; connect-src 'self'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <script>(function(){var d=document.documentElement;try{var t=localStorage.getItem('ive-theme');if(t==='dark'||t==='light'){d.setAttribute('data-theme',t);}}catch(e){}try{if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('mark-live');d.classList.add('mark-dark');}}catch(e){}})();</script>
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#F4F5F6">
 <title>IVE — Run agents. Keep control.</title>
-<meta name="description" content="IVE keeps parallel coding agents visible and under control. Give it one goal, follow the work in one place, and review one clear result on your machine. Explore the actual app and join the beta waitlist.">
+<meta name="description" content="IVE keeps parallel coding agents visible and under control. Give it one goal, follow the work in one place, and review one clear result on your machine. Open source under the MIT license.">
 <link rel="canonical" href="https://ive.dev/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ive.dev/">
 <meta property="og:title" content="IVE — Run agents. Keep control.">
-<meta property="og:description" content="Give IVE one goal. Follow every coding agent in one place. Review one clear result. Join the beta waitlist.">
-<meta property="og:image" content="https://ive.dev/assets/og.png?v=20261017m">
+<meta property="og:description" content="Give IVE one goal. Follow every coding agent in one place. Review one clear result. Open source under the MIT license.">
+<meta property="og:image" content="https://ive.dev/assets/og.png?v=20261022oss">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="IVE — Run agents. Keep control.">
-<meta name="twitter:description" content="Give IVE one goal. Follow every coding agent in one place. Review one clear result. Join the beta waitlist.">
-<meta name="twitter:image" content="https://ive.dev/assets/og.png?v=20261017m">
+<meta name="twitter:description" content="Give IVE one goal. Follow every coding agent in one place. Review one clear result. Open source under the MIT license.">
+<meta name="twitter:image" content="https://ive.dev/assets/og.png?v=20261022oss">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts.css?v=20260908f">
-<link rel="stylesheet" href="styles.css?v=20261019d">
+<link rel="stylesheet" href="styles.css?v=20261022oss">
 <link rel="stylesheet" href="showcase.css?v=20261019c">
 <link rel="stylesheet" href="app-ui.css?v=20261019c">
 <link rel="stylesheet" href="app-ui-blocks.css?v=20261019c">
@@ -39,7 +39,7 @@
       <a href="#inside">Inside IVE</a><a href="#why">Why IVE</a><a href="#operation">How it works</a><a href="architecture.html">Architecture</a>
     </nav>
     <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Switch to dark theme" data-theme-toggle>Light</button>
-    <a class="btn btn-primary nav-cta" href="#waitlist">Join the beta</a>
+    <a class="btn btn-primary nav-cta" href="#install">Install IVE</a>
   </div>
 </header>
 
@@ -83,9 +83,9 @@
       <p class="kicker">LOCAL CONTROL FOR CODING AGENTS</p>
       <h1 class="hero-title" id="hero-title">Run agents.<br>Keep control.</h1>
       <p class="hero-lede">Give IVE one goal. It coordinates the work, catches problems, and brings you one clear result to review — while your code stays on your machine.</p>
-      <div class="hero-ctas"><a class="btn btn-primary" href="#waitlist">Join the beta</a><a class="btn btn-ghost" href="#operation">See how it works <span class="btn-arrow" aria-hidden="true">↓</span></a></div>
-      <div class="chip-row hero-chip-row" aria-label="Product attributes"><span class="chip">Your code stays local</span><span class="chip">Every agent in one view</span><span class="chip">Claude Code · Codex · Gemini CLI</span><span class="chip">Beta access by invitation</span></div>
-      <p class="hero-install">Want to try IVE? Join the waitlist for a beta invitation.</p>
+      <div class="hero-ctas"><a class="btn btn-primary" href="#install">Install IVE</a><a class="btn btn-ghost" href="#operation">See how it works <span class="btn-arrow" aria-hidden="true">↓</span></a></div>
+      <div class="chip-row hero-chip-row" aria-label="Product attributes"><span class="chip">Your code stays local</span><span class="chip">Every agent in one view</span><span class="chip">Claude Code · Codex · Gemini CLI</span><span class="chip">Open source · MIT</span></div>
+      <p class="hero-install"><span class="ps1" aria-hidden="true">$ </span>curl -fsSL https://ive.dev/install.sh | bash <span class="dim">· then run ive</span></p>
     </div>
 
     <figure class="hero-stage" aria-label="Illustration of the IVE board for the goal “Make sign-in more secure”: Sign-in backend and Sign-in screen are running, Sign-in checks is waiting for your answer on npm test, Review the changes is done with its reply ready">
@@ -692,11 +692,12 @@ Received: previous session</pre></div>
   </div>
 </section>
 
-<!-- 10 · BETA ACCESS -->
-<section class="chapter phase-section" id="beta" data-phase="proof" aria-labelledby="beta-title">
+<!-- 10 · OPEN SOURCE -->
+<section class="chapter phase-section" id="open-source" data-phase="proof" aria-labelledby="oss-title">
+  <span id="beta" class="anchor-alias" aria-hidden="true"></span>
   <div class="oss-grid">
-    <div class="chapter-head"><p class="kicker">HELP SHAPE IVE</p><h2 id="beta-title">Your next project.<br>Our next step.</h2><p class="chapter-lede">We’re looking for beta testers who want to try IVE on real work and share what could be better. Leave your email and we’ll get in touch when beta access is available.</p><div class="oss-row"><a class="btn btn-primary" href="#waitlist">Join the beta</a><a class="btn btn-ghost" href="architecture.html">Read the architecture</a></div></div>
-    <dl class="repo-evidence"><div><dt>runs</dt><dd>on your machine</dd></div><div><dt>works with</dt><dd>Claude Code · Codex · Gemini CLI</dd></div><div><dt>access</dt><dd>by invitation</dd></div><div><dt>next step</dt><dd>join the beta waitlist</dd></div></dl>
+    <div class="chapter-head"><p class="kicker">OPEN SOURCE</p><h2 id="oss-title">Read the code.<br>Run it locally.</h2><p class="chapter-lede">IVE is open source under the MIT license. See what it does on GitHub before you try it on real work.</p><div class="oss-row"><a class="btn btn-primary" href="#install">Install IVE</a><a class="btn btn-ghost" href="https://github.com/evostorednew/ive" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a></div></div>
+    <dl class="repo-evidence"><div><dt>runs</dt><dd>on your machine</dd></div><div><dt>works with</dt><dd>Claude Code · Codex · Gemini CLI</dd></div><div><dt>access</dt><dd>open source, MIT</dd></div><div><dt>telemetry</dt><dd>off by default</dd></div><div><dt>source</dt><dd><a href="https://github.com/evostorednew/ive" target="_blank" rel="noopener">github.com/evostorednew/ive</a></dd></div></dl>
   </div>
 </section>
 
@@ -786,62 +787,53 @@ Received: previous session</pre></div>
     <div class="chapter-head"><p class="kicker">A few things to know</p><h2 id="faq-title">Before you<br>come aboard.</h2></div>
     <div class="faq-list">
       <details><summary>Are the demos recordings of the real app?<span aria-hidden="true">+</span></summary><p>Yes. They were recorded from IVE’s actual application frontend on an isolated test transport. The Orbit project, session names, and conversation content were prepared for this tour; no AI provider ran. The animated scenes on this page are illustrations.</p></details>
-      <details><summary>Can I use IVE today?<span aria-hidden="true">+</span></summary><p>IVE is in private beta. Join the waitlist to be considered for an invitation. Joining the list does not give immediate access.</p></details>
+      <details><summary>Can I use IVE today?<span aria-hidden="true">+</span></summary><p>Yes. IVE is open source under the MIT license. Install it with one command or clone it from GitHub. You need macOS or Linux and Claude Code, Codex, or Gemini CLI.</p></details>
       <details><summary>Which agents can I use?<span aria-hidden="true">+</span></summary><p>IVE works with Claude Code, Codex, and Gemini CLI. The recordings show Claude Code and Codex side by side. Available models and features depend on your installed CLI and provider account.</p></details>
       <details><summary>Does everything stay on my machine?<span aria-hidden="true">+</span></summary><p>IVE’s desktop workspace runs locally. Using an AI provider can send prompts, context, and code to that provider. Local execution does not mean the model runs offline.</p></details>
-      <details><summary>What platform is shown here?<span aria-hidden="true">+</span></summary><p>The recordings show the current macOS app. Beta availability and setup details come with your invitation.</p></details>
+      <details><summary>What platform is shown here?<span aria-hidden="true">+</span></summary><p>The recordings show IVE on macOS. You can install it on macOS or Linux.</p></details>
     </div>
   </div>
 </section>
 
-<!-- 13 · BETA WAITLIST -->
-<section class="waitlist" id="waitlist" aria-labelledby="waitlist-title">
-  <span id="get-ive" class="waitlist-legacy-anchor" aria-hidden="true"></span>
-  <div class="waitlist-inner">
-    <div class="waitlist-copy">
-      <p class="kicker">BETA WAITLIST</p>
-      <h2 id="waitlist-title">Your next project.<br><span class="h-soft">With IVE.</span></h2>
-      <p>Try it on real work.<br>Help shape what comes next.</p>
-      <ol class="waitlist-steps" aria-label="How to join the beta">
-        <li><span class="waitlist-step-mark" aria-hidden="true">01</span><div><strong>Leave your email.</strong><span>No account to create.</span></div></li>
-        <li><span class="waitlist-step-mark" aria-hidden="true">02</span><div><strong>Look out for an invitation.</strong><span>We’ll email when access is available.</span></div></li>
-      </ol>
+<!-- 13 · INSTALL -->
+<section class="install-section" id="install" aria-labelledby="install-title">
+  <span id="waitlist" class="anchor-alias" aria-hidden="true"></span>
+  <span id="get-ive" class="anchor-alias" aria-hidden="true"></span>
+  <div class="install-inner">
+    <div class="install-copy">
+      <p class="kicker">GET IVE</p>
+      <h2 id="install-title">Install IVE<br><span class="h-soft">with one command.</span></h2>
+      <p>IVE is open source under the MIT license. It installs on macOS and Linux and runs on your machine.</p>
     </div>
-    <div class="waitlist-panel">
-      <form class="waitlist-form" action="https://ive-beta-waitlist.intertrans-vorschau.workers.dev/api/waitlist" method="post" data-waitlist-form aria-labelledby="signup-title">
-        <p class="kicker">PRIVATE BETA · macOS</p>
-        <h3 id="signup-title">Join the waitlist.</h3>
-        <p class="waitlist-intro" id="waitlist-help">Leave your email for a beta invitation.<br>We’ll get in touch when access is available.</p>
-        <div class="waitlist-field"><label for="waitlist-email">Email address</label><input id="waitlist-email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" maxlength="254" required placeholder="you@example.com" aria-describedby="waitlist-help"></div>
-        <div class="waitlist-field"><label for="waitlist-name">Name <span>(optional)</span></label><input id="waitlist-name" name="name" type="text" autocomplete="given-name" maxlength="100" placeholder="What should we call you?"></div>
-        <div class="waitlist-trap" aria-hidden="true"><label for="waitlist-company">Leave this field empty</label><input id="waitlist-company" name="company" type="text" tabindex="-1" autocomplete="off"></div>
-        <label class="waitlist-consent"><input name="consent" type="checkbox" value="yes" required><span>I agree to be contacted by email about IVE beta access. I can withdraw my consent at any time. <a href="privacy.html#privacy-waitlist" target="_blank" rel="noopener">Privacy notice</a>.</span></label>
-        <button class="btn btn-primary waitlist-submit" type="submit"><span data-waitlist-button-label>Join the beta</span><span aria-hidden="true">↗</span></button>
-        <p class="waitlist-status" role="status" aria-live="polite" aria-atomic="true" data-waitlist-status></p>
-        <p class="waitlist-footnote">Only emails about the beta. No newsletter.</p>
-      </form>
-      <div class="waitlist-success" data-waitlist-success tabindex="-1" hidden>
-        <span class="waitlist-success-mark" aria-hidden="true">✓</span>
-        <p class="kicker">ON THE WAITLIST</p>
-        <h3>You’re on the list.</h3>
-        <p class="waitlist-email-sent" data-waitlist-email-sent></p>
-        <p>We’ll email you when beta access is available.</p>
-        <p class="waitlist-success-help">Joining the waitlist does not give immediate access.</p>
-        <button class="btn btn-ghost" type="button" data-waitlist-edit>Add another email <span aria-hidden="true">↗</span></button>
+    <div class="install-panel">
+      <div class="term install-term">
+        <div class="term-head"><span class="install-term-label mono">Install</span><button class="copy-btn" type="button" data-copy="curl -fsSL https://ive.dev/install.sh | bash" aria-label="Copy the install command" hidden>Copy</button></div>
+        <pre class="term-body install-cmd" data-copy-source><code><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>curl -fsSL https://ive.dev/install.sh | bash</span></code></pre>
       </div>
+      <p class="install-then">Then start IVE with: <code>ive</code></p>
+      <p class="install-note">The installer puts the code in <code>~/.ive</code>, installs its dependencies, builds the app, and adds the <code>ive</code> command to <code>~/.local/bin</code>. <a href="install.sh">Read the script first: ive.dev/install.sh</a></p>
+      <p class="install-req"><span class="install-req-label mono">Requirements</span> macOS or Linux, Python 3.11+, Node.js 22.12+ with npm, Git, and at least one coding CLI you already use: Claude Code · Codex · Gemini CLI.</p>
+      <details class="install-alt">
+        <summary>Prefer to clone it yourself?<span aria-hidden="true">+</span></summary>
+        <div class="term install-term">
+          <div class="term-head"><span class="install-term-label mono">From source</span><button class="copy-btn" type="button" data-copy="git clone https://github.com/evostorednew/ive.git&#10;cd ive&#10;bash install.sh&#10;bash start.sh" aria-label="Copy the four setup commands" hidden>Copy</button></div>
+          <pre class="term-body install-cmd install-cmd-alt" data-copy-source><code><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>git clone https://github.com/evostorednew/ive.git</span><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>cd ive</span><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>bash install.sh</span><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>bash start.sh</span></code></pre>
+        </div>
+      </details>
+      <p class="sr-only" role="status" aria-live="polite" data-copy-status></p>
     </div>
+    <div class="install-actions oss-row"><a class="btn btn-primary" href="https://github.com/evostorednew/ive" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a><a class="btn btn-ghost" href="architecture.html">Read the architecture</a></div>
   </div>
 </section>
 
 </main>
 
 <footer class="footer surface-secondary">
-  <div class="footer-inner"><p class="footer-brand"><span class="wordmark-text">IVE</span><span class="footer-full">from <a href="https://aiforgov.eu/" target="_blank" rel="noopener">AIFOREU ↗</a></span></p><nav class="footer-links" aria-label="Footer"><a href="#waitlist">Join the beta</a><a href="imprint.html">Imprint</a><a href="privacy.html">Privacy</a></nav><p class="footer-license">EU-based · Beta waitlist</p></div>
+  <div class="footer-inner"><p class="footer-brand"><span class="wordmark-text">IVE</span><span class="footer-full">from <a href="https://aiforgov.eu/" target="_blank" rel="noopener">AIFOREU ↗</a></span></p><nav class="footer-links" aria-label="Footer"><a href="#install">Install IVE</a><a href="https://github.com/evostorednew/ive" target="_blank" rel="noopener">GitHub</a><a href="imprint.html">Imprint</a><a href="privacy.html">Privacy</a></nav><p class="footer-license">EU-based · Open source under the MIT license</p></div>
 </footer>
 <dialog class="shot-dialog" aria-labelledby="shot-caption"><div class="shot-dialog-bar"><p id="shot-caption"></p><button type="button" class="shot-dialog-close" aria-label="Close">Close <span aria-hidden="true">×</span></button></div><div class="shot-dialog-wrap"><img width="1600" height="1000" alt=""><video controls muted loop playsinline width="1600" height="1000"></video></div><p class="shot-dialog-hint mono">Scroll to inspect · Escape to close</p></dialog>
-<script src="script.js?v=20261019live" defer></script>
+<script src="script.js?v=20261022oss" defer></script>
 <script src="showcase.js?v=20261019c" defer></script>
 <script src="behind.js?v=20261019f" defer></script>
-<script src="waitlist.js?v=20261019live" defer></script>
 </body>
 </html>

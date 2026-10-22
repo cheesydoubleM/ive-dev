@@ -15,10 +15,10 @@ clear outcome, not a collection of implementation details: one goal becomes
 visible parallel work and returns as one result a person can review.
 
 The footer is strictly factual: IVE, its relationship to AIFOREU, relevant
-links, its EU-based origin, and the beta waitlist. Decorative system-status
+links, its EU-based origin, and the open-source license (MIT). Decorative system-status
 language and compressed technical metadata do not appear there.
 
-The header carries a compact “IVE / by AIFOREU” maker lockup. Header ink is explicitly bound to its own surface tokens so the logo and theme control stay readable over the dark opening. The 28px mark, 14px theme label, and 18px outlined “Join the beta” action provide clear hierarchy without a bright filled button; the action remains visible on mobile. The footer keeps
+The header carries a compact “IVE / by AIFOREU” maker lockup. Header ink is explicitly bound to its own surface tokens so the logo and theme control stay readable over the dark opening. The 28px mark, 14px theme label, and 18px outlined “Install IVE” action provide clear hierarchy without a bright filled button; the action remains visible on mobile. The footer keeps
 the product relationship “from AIFOREU,” with AIFOREU linked to
 `https://aiforgov.eu/`. “EU-backed” is not used because it can imply institutional
 EU funding or endorsement; no such claim is part of the verified product truth.
@@ -133,7 +133,7 @@ DARK
 Mission Control, the architecture security ledger, and the footer use the
 secondary ground. Human review remains the explicit opposite-ground moment.
 
-The high-intent hero CTA and the waitlist submit action use the execution accent:
+The high-intent hero CTA and the “View on GitHub” action of the install section use the execution accent:
 
 ```css
 .hero .btn-primary { background: var(--running); color: var(--on-accent); }
@@ -198,18 +198,19 @@ The homepage contains exactly these blocks, in order:
 11. What you bring: the terminal inside the app, your own models, your own
     accounts and tokens; two panels drawn in the app's design (a session with
     the terminal open, the model menu)
-12. Beta invitation and local workflow
+12. Open source and local workflow: MIT license, telemetry off by default, link to the public repository
 13. Three concrete use cases in an interactive run chooser
 14. Questions: five short answers, including what is real and what is illustrated
-15. Beta waitlist: a static, immediately usable signup section. The established
-    Archivo / Source Sans 3 / IBM Plex Mono faces and cool gray / electric blue
-    tokens carry through. A two-column composition pairs the invitation with a
-    simple form; on mobile it stacks, with the form before any repeated step
-    explanation. Email comes first and is required; name is optional. A clear
-    consent checkbox links to the privacy notice. Submission has loading, retry,
-    and confirmation states; no fake success before the server saves the entry.
-    The success screen shows the saved address and explains that invitations
-    follow later. Email confirmation is not enabled on the live service.
+15. Install (`#install`, with `#waitlist` and `#get-ive` kept as alias anchors
+    for old links): a static section. The one-line installer
+    `curl -fsSL https://ive.dev/install.sh | bash` comes first in a terminal panel with a
+    copy button, then “Then start IVE with: ive”, what the installer does, a
+    link to read the script, and the requirements. The clone path
+    (`git clone`, `cd ive`, `bash install.sh`, `bash start.sh`) sits folded in a
+    native `<details>`. Copy buttons ship `hidden` and only appear with
+    JavaScript; without it the commands stay selectable. On mobile the
+    terminal comes before the buttons. The beta waitlist form was retired on
+    2026-10-22; its backend and data remain (see README).
 
 Architecture, implementation totals, and the deeper security surface belong on
 the dedicated Architecture page or in the repository documentation.
@@ -291,10 +292,9 @@ Grammar: **Branch → Execute → Verify → Proof.**
   arrives. The trunk then draws down out of the section in the complete
   green, ending in one review. Faint ghost lines show the paths before they
   are drawn. Below 720px there are six lanes and id-only labels.
-- The page closes with the static beta signup. It never waits for an animation
-  or scroll transition before revealing the form. Header and hero CTAs link
-  directly to `#waitlist`. Respect reduced motion and support native HTML POST
-  submission when JavaScript is disabled.
+- The page closes with the static install section. It never waits for an
+  animation or scroll transition before revealing the commands. Header and
+  hero CTAs link directly to `#install`. Everything works without JavaScript.
 - The tunnel is part of Inside IVE, immediately after the app recordings and
   before Why IVE. It starts with the complete app-style board: sidebar and
   four sessions. One continuous camera zooms into its lower-left Sign-in checks
@@ -334,9 +334,16 @@ Grammar: **Branch → Execute → Verify → Proof.**
 
 ## Honesty constraints
 
-No public installer or download page is published on this website. Do not add a download or publish release binaries without a new explicit request from the owner.
+IVE is open source under the MIT license (owner decision, 2026-10-22). The
+site offers the one-line installer `install.sh` (served at
+https://ive.dev/install.sh) and the source path from
+https://github.com/evostorednew/ive. Do not publish app bundles or release
+binaries here, and do not promise a Mac app download, signed builds, Windows
+support, a community, stars, or contributors.
 
-- Access is by beta invitation. Do not promise open-source availability, a public repository, a license, or a direct installation.
+- Supported systems for the install: macOS or Linux. Requirements: Python
+  3.11+, Node.js 22.12+ with npm, Git, and at least one supported coding CLI.
+- Telemetry is off by default; the site may say so, nothing more about it.
 - If product telemetry is discussed, explain it in plain prose next to the
   relevant technical documentation rather than compressing it into metadata.
 - Supported CLIs: Claude Code, Codex, and Gemini CLI (profiles in the app's

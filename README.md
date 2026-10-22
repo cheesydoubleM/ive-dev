@@ -10,11 +10,11 @@ From this folder, run:
 python3 -m http.server
 ```
 
-Then open `http://localhost:8000/`. The marketing pages can also be opened from `file://`; signup requires the deployed Cloudflare endpoint.
+Then open `http://localhost:8000/`. The marketing pages can also be opened from `file://`.
 
 ## File map
 
-- `index.html` — homepage: the agent tunnel opening, IVE unfolds into “Integrated Vibecoding Environment”, then the hero, Inside IVE (five app recordings and a tunnel into a failed check's feedback loop), Why IVE, two app details, GOAL → PLAN → WORK → CHECK → REVIEW, merge, review with the real code review, what you bring (terminal, models, tokens), run chooser, FAQ, and the beta waitlist
+- `index.html` — homepage: the agent tunnel opening, IVE unfolds into “Integrated Vibecoding Environment”, then the hero, Inside IVE (five app recordings and a tunnel into a failed check's feedback loop), Why IVE, two app details, GOAL → PLAN → WORK → CHECK → REVIEW, merge, review with the real code review, what you bring (terminal, models, tokens), run chooser, FAQ, and the open-source install section (`#install`; `#waitlist` and `#get-ive` stay as alias anchors)
 - `behind.css`, `behind.js` — the early illustrated board-to-session-to-feedback tunnel within Inside IVE, keyboard controls, and static fallbacks
 - `showcase.css`, `showcase.js` — styles, tabs, playback and the full-size viewer for the recorded app demos, on the tokens of `styles.css`
 - `assets/app/` — recorded application demos (`<view>.mp4` at 3200×2000, `<view>-s.mp4` at 1600×1000, lossless WebP posters); made by `scripts/demos/record.mjs`
@@ -24,7 +24,8 @@ Then open `http://localhost:8000/`. The marketing pages can also be opened from 
 - `404.html` — self-contained not-found page
 - `styles.css` — shared design system and page styles
 - `script.js` — dependency-free theme, scroll-driven mark, sequential Why IVE benefits, run-story, and use-case chooser
-- `waitlist.js` — accessible signup, loading, failure/retry, and success states
+- `install.sh` — the one-line installer, published at `https://ive.dev/install.sh` (not excluded in `_config.yml`)
+- `waitlist.js` — the retired beta signup script; no page loads it since 2026-10-22, kept with its backend
 - `worker/` — Cloudflare Worker, D1 schema, and signup tests
 - `scripts/export-waitlist.mjs` — authenticated CSV export; never exposes the list publicly
 - `assets/og.html` — 1200×630 Open Graph image source
@@ -38,8 +39,10 @@ Serve the folder, open `assets/og.html` in a browser at exactly 1200×630, and c
 
 ## Product truth
 
-- The homepage presents IVE as a beta with access by invitation. It must not promise a public app repository, an open-source release, a license, or a direct download.
-- The primary homepage action is joining the beta waitlist. Email is required; name is optional. No release date or immediate-access promise.
+- IVE is open source under the MIT license. The public repository is `https://github.com/evostorednew/ive`.
+- The primary homepage action is installing IVE: `curl -fsSL https://ive.dev/install.sh | bash` (puts the code in `~/.ive`, installs its dependencies, builds the app, adds an `ive` command in `~/.local/bin`), or from source with `git clone https://github.com/evostorednew/ive.git`, `cd ive`, `bash install.sh`, `bash start.sh`.
+- Requirements: macOS or Linux, Python 3.11+, Node.js 22.12+ with npm, Git, and at least one supported coding CLI. Telemetry is off by default.
+- Do not promise a Mac app download, signed builds, Windows support, a community, stars, or contributors.
 - Supported integrations are Claude Code, Codex, and Gemini CLI (app profiles in `backend/cli_profiles.py`, checked 2026-10-17). Models depend on the installed CLI and account; illustrations name only Haiku, Sonnet, Opus, Gemini Pro, and Flash.
 - The app demos are recordings of the actual IVE frontend (the installed app build) on the isolated test transport from the app's own test suite. The Orbit project, its sessions and conversations are a clearly labelled demonstration; no provider ran and no live execution success is claimed. The animated scenes elsewhere on the page are illustrations.
 - Reverify compatibility against the app before changing provider claims.
@@ -48,13 +51,14 @@ Serve the folder, open `assets/og.html` in a browser at exactly 1200×630, and c
 
 ## Installer distribution
 
-No public installer or download page is published from this repository. Do not commit application bundles, DMG/PKG/IPA installers, release ZIP archives, or private app source here. Publishing an installer requires a new explicit request from the owner.
+The only installer published from this repository is the shell script `install.sh` at the site root. It installs IVE from the public source repository. Do not commit application bundles, DMG/PKG/IPA installers, release ZIP archives, or private app source here.
 
-## Beta waitlist
+## Beta waitlist (retired)
 
-The 2026-10-19 website release uses the existing signup service. Prepared
-double-opt-in work remains in the local review branch and is not deployed here.
-The form therefore confirms a saved signup without promising an automatic email.
+Since 2026-10-22 the website no longer shows the signup form; IVE is open source
+and the homepage offers the install instead. The Worker, the D1 database and the
+export below remain, because earlier signups are still stored (privacy notice 6a).
+The notes below describe that service as it was used up to then.
 
 The website stays on GitHub Pages. Signup is handled by
 `https://ive-beta-waitlist.intertrans-vorschau.workers.dev/api/waitlist` in

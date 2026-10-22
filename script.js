@@ -607,21 +607,48 @@
     setRunStep(4);
   });
 
-  /* ── copy install command ────────────────────────────── */
+  /* ── copy install commands ───────────────────────────── */
+  /* The buttons ship hidden, so without JavaScript only the selectable
+     commands show. If the clipboard is unavailable, the commands are
+     selected for copying by hand instead of claiming success. */
+  var copyStatus = document.querySelector('[data-copy-status]');
   document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    var label = btn.textContent;
+    var timer = 0;
+    var term = btn.closest('.term');
+    var source = term && term.querySelector('[data-copy-source]');
+    function show(text, ok, announce) {
+      btn.textContent = text;
+      btn.classList.toggle('copied', ok);
+      if (copyStatus) copyStatus.textContent = announce;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        btn.classList.remove('copied');
+        btn.textContent = label;
+        if (copyStatus) copyStatus.textContent = '';
+      }, 2200);
+    }
+    function fail() {
+      var selected = false;
+      if (source && window.getSelection && document.createRange) {
+        var range = document.createRange();
+        range.selectNodeContents(source);
+        var selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        selected = true;
+      }
+      show(selected ? 'Selected' : 'Copy failed', false,
+        selected ? 'Commands selected. Copy them with your keyboard.' : 'Copy failed.');
+    }
+    btn.hidden = false;
     btn.addEventListener('click', function () {
       var text = btn.getAttribute('data-copy');
-      var done = function () {
-        btn.classList.add('copied');
-        btn.textContent = 'Copied ✓';
-        setTimeout(function () {
-          btn.classList.remove('copied');
-          btn.textContent = 'Copy';
-        }, 2200);
-      };
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(done, done);
-      } else { done(); }
+        navigator.clipboard.writeText(text).then(function () {
+          show('Copied ✓', true, 'Copied to the clipboard.');
+        }, fail);
+      } else { fail(); }
     });
   });
 

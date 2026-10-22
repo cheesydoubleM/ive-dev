@@ -1,4 +1,5 @@
-# GitHub Pages (Jekyll): keep internal docs out of the published site
+# GitHub Pages (Jekyll): keep internal docs out of the published site.
+# install.sh at the root is published on purpose (https://ive.dev/install.sh); never exclude it.
 exclude:
   - README.md
   - DESIGN.md
