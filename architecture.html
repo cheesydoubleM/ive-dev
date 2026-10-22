@@ -212,13 +212,13 @@
       <p class="kicker">SECURITY</p>
       <div>
         <h2 id="security-title">Checks run before and during execution.</h2>
-        <p>Package scans, account isolation, and audit records are part of the runtime.</p>
+        <p>Account isolation and audit records are part of the runtime. The package scan is optional.</p>
       </div>
     </div>
     <dl class="arch-security-ledger">
       <div>
         <dt><code>AVCP</code> · supply chain</dt>
-        <dd>Intercepts <code>pip</code>, <code>npm</code>, and GitHub Actions. Runs a 9-step package scan before execution.</dd>
+        <dd>Optional and off by default. When turned on, it intercepts <code>pip</code>, <code>npm</code>, and GitHub Actions and runs a 9&#8209;step package scan before execution.</dd>
       </div>
       <div>
         <dt><code>HOME</code> · account sandbox</dt>

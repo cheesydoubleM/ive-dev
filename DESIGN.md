@@ -215,7 +215,7 @@ The homepage contains exactly these blocks, in order:
     native `<details>`. Copy buttons ship `hidden` and only appear with
     JavaScript; without it the commands stay selectable. On mobile the
     panel comes before the buttons. The beta waitlist form was retired on
-    2026-10-22; its backend and data remain (see README).
+    2026-10-22; its backend and data were deleted the same day (see README).
     Below the command, one line asks for a GitHub star; it is the only
     star ask on the site. The header carries a GitHub logo link on every page.
 16. Behind all this (`#aiforeu`): who makes IVE. The approved AIFOREU logo
