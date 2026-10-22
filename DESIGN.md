@@ -15,7 +15,7 @@ clear outcome, not a collection of implementation details: one goal becomes
 visible parallel work and returns as one result a person can review.
 
 The footer is strictly factual: IVE, its relationship to AIFOREU, relevant
-links, its EU-based origin, and the open-source license (MIT). Decorative system-status
+links, its EU-based origin, and the open-source license (Apache 2.0). Decorative system-status
 language and compressed technical metadata do not appear there.
 
 The header carries a compact “IVE / by AIFOREU” maker lockup. Header ink is explicitly bound to its own surface tokens so the logo and theme control stay readable over the dark opening. The 28px mark, 14px theme label, and 18px outlined “Install IVE” action provide clear hierarchy without a bright filled button; the action remains visible on mobile. The footer keeps
@@ -198,7 +198,7 @@ The homepage contains exactly these blocks, in order:
 11. What you bring: the terminal inside the app, your own models, your own
     accounts and tokens; two panels drawn in the app's design (a session with
     the terminal open, the model menu)
-12. Open source and local workflow: MIT license, telemetry off by default, link to the public repository
+12. Open source and local workflow: Apache 2.0 license, telemetry off by default, link to the public repository
 13. Three concrete use cases in an interactive run chooser
 14. Questions: five short answers, including what is real and what is illustrated
 15. Install (`#install`, with `#waitlist` and `#get-ive` kept as alias anchors
@@ -334,7 +334,7 @@ Grammar: **Branch → Execute → Verify → Proof.**
 
 ## Honesty constraints
 
-IVE is open source under the MIT license (owner decision, 2026-10-22). The
+IVE is open source under the Apache 2.0 license (owner decision, 2026-10-22). The
 site offers the one-line installer `install.sh` (served at
 https://ive.dev/install.sh) and the source path from
 https://github.com/michael-ra/ive. Do not publish app bundles or release

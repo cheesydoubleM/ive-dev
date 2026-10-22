@@ -39,7 +39,7 @@ Serve the folder, open `assets/og.html` in a browser at exactly 1200×630, and c
 
 ## Product truth
 
-- IVE is open source under the MIT license. The public repository is `https://github.com/michael-ra/ive`.
+- IVE is open source under the Apache 2.0 license. The public repository is `https://github.com/michael-ra/ive`.
 - The primary homepage action is installing IVE: `curl -fsSL https://ive.dev/install.sh | bash` (puts the code in `~/.ive`, installs its dependencies, builds the app, adds an `ive` command in `~/.local/bin`), or from source with `git clone https://github.com/michael-ra/ive.git`, `cd ive`, `bash install.sh`, `bash start.sh`.
 - Requirements: macOS or Linux, Python 3.11+, Node.js 22.12+ with npm, Git, and at least one supported coding CLI. Telemetry is off by default.
 - Do not promise a Mac app download, signed builds, Windows support, a community, stars, or contributors.
