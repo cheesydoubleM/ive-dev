@@ -219,11 +219,9 @@
     });
   });
 
-  /* ── sources (5.7): -m below 720px, the 3200 master only when width × DPR > 1700 ── */
+  /* ── inline sources: phone crop below 720px, 1600px otherwise; masters stay in the viewer ── */
   function pickSource(width, srcs) {
     if (narrowQuery.matches && srcs.m) return srcs.m;
-    var dpr = window.devicePixelRatio || 1;
-    if (srcs.src && (!srcs.small || width * dpr > 1700)) return srcs.src;
     return srcs.small || srcs.src;
   }
   IVE.pickSource = pickSource;
@@ -255,6 +253,60 @@
     return paused;
   }
   IVE.pauseAll = pauseAll;
+
+
+  /* Shared playback ownership: generic clips, Why and Inside choose one visible
+     recording together. A visitor's play choice wins until it leaves view. */
+  var inlinePlayers = [], activeInline = null, preferredInline = null;
+  function visibleRatio(el) {
+    var r = el.getBoundingClientRect();
+    if (!r.width || !r.height) return 0;
+    var w = Math.max(0, Math.min(r.right, window.innerWidth) - Math.max(r.left, 0));
+    var h = Math.max(0, Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0));
+    return w * h / (r.width * r.height);
+  }
+  function viewerIsOpen() { return !!(viewer && viewer.dialog.open); }
+  function syncInline(preferred) {
+    if (preferred) preferredInline = preferred;
+    var best = null, bestRatio = 0, preferredEligible = false;
+    if (!document.hidden && !viewerIsOpen()) {
+      inlinePlayers.forEach(function (c) {
+        if (!c.wantsPlay()) return;
+        var ratio = visibleRatio(c.element || c.video);
+        if (!ratio) return;
+        if (c.video === preferredInline) preferredEligible = true;
+        if (!best || c.video === preferredInline ||
+            (best.video !== preferredInline && (ratio > bestRatio + 0.01 ||
+              (Math.abs(ratio - bestRatio) <= 0.01 && c === activeInline)))) {
+          best = c;
+          bestRatio = ratio;
+        }
+      });
+      if (!preferredEligible) preferredInline = null;
+    }
+    activeInline = best;
+    inlinePlayers.forEach(function (c) {
+      if (c !== best && !c.video.paused) c.video.pause();
+    });
+    if (best && best.video.paused) {
+      pauseAll(best.video);
+      best.play();
+    }
+    return !!best;
+  }
+  IVE.registerInline = function (control) { inlinePlayers.push(control); };
+  IVE.syncInline = syncInline;
+  IVE.viewerIsOpen = viewerIsOpen;
+  // A queued play event or an independent page player must not start behind
+  // the modal or in a hidden tab. The full-size viewer owns playback there.
+  document.addEventListener('play', function (e) {
+    var v = e.target;
+    if (v.tagName !== 'VIDEO' || v.closest('.viewer')) return;
+    if (document.hidden || viewerIsOpen()) { v.pause(); return; }
+    var registered = inlinePlayers.some(function (c) { return c.video === v; });
+    if (registered && (!activeInline || activeInline.video !== v)) { v.pause(); return; }
+    pauseAll(v);
+  }, true);
 
   /* ── recorded clips: [data-clip] frames (6.4) ── */
   var clips = [];
@@ -291,7 +343,7 @@
     clip.wantsPlay = function () {
       if (document.hidden || clip.userPaused) return false;
       if (motionQuery.matches && !clip.userStarted) return false;
-      return clip.ratio >= 0.5;
+      return clip.ratio >= 0.5 || (clip.userStarted && clip.ratio > 0);
     };
     clip.play = function () {
       clip.load();
@@ -333,11 +385,12 @@
           clip.userPaused = false;
           clip.userStarted = true;
           frame.classList.remove('is-paused-by-user');
-          clip.play();
+          syncInline(video);
         } else {
           clip.userPaused = true;
           frame.classList.add('is-paused-by-user');
           clip.pause();
+          syncInline();
         }
       });
     }
@@ -346,23 +399,16 @@
       playBtn.addEventListener('click', function () {
         clip.userPaused = false;
         clip.userStarted = true;
-        clip.play();
+        syncInline(video);
       });
     }
+    IVE.registerInline({ video: video, element: frame, wantsPlay: clip.wantsPlay, play: clip.play });
     render();
     return clip;
   }
 
   function syncClips() {
-    // One autoplaying clip at a time: the most visible one at least half in view.
-    var best = null;
-    clips.forEach(function (c) {
-      if (c.wantsPlay() && (!best || c.ratio > best.ratio)) best = c;
-    });
-    clips.forEach(function (c) {
-      if (c === best) c.play();
-      else c.pause();
-    });
+    syncInline();
   }
   IVE.syncClips = syncClips;
 
@@ -396,8 +442,11 @@
   }
 
   document.addEventListener('visibilitychange', function () {
-    if (document.hidden) pauseAll(null);
-    else syncClips();
+    if (document.hidden) {
+      pauseAll(null);
+      if (viewer && viewer.dialog.open) viewer.video.pause();
+    }
+    syncInline();
   });
 
   /* ── the full-size viewer: one <dialog>, built on first use ── */
@@ -445,9 +494,16 @@
       video.removeAttribute('src');
       video.load();
       img.removeAttribute('src');
-      viewerPaused.forEach(function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); });
+      // Re-evaluate today's visible controller, not the videos that happened to
+      // be playing when the modal opened (the page may have moved meanwhile).
+      var resumed = syncInline();
+      if (!resumed && !document.hidden) viewerPaused.some(function (v) {
+        if (inlinePlayers.some(function (c) { return c.video === v; }) || visibleRatio(v) < 0.5) return false;
+        var p = v.play();
+        if (p && p.catch) p.catch(function () {});
+        return true;
+      });
       viewerPaused = [];
-      syncClips();
       if (viewerOpener && viewerOpener.focus) viewerOpener.focus({ preventScroll: true });
     });
     viewer = { dialog: d, caption: cap, video: video, img: img };

@@ -65,7 +65,7 @@
         <h2 class="label" id="mac-title">Mac app</h2>
         <a class="btn btn-outline" href="https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg">Download for Mac</a>
         <p class="facts">Apple silicon (M1 or newer) · macOS 13.5 or newer</p>
-        <p class="body">Open the disk image and drag IVE into Applications. The app runs its own local service in the background: no terminal window, no browser tab, one app in the Dock. You need at least one coding CLI you are signed in to: Claude Code, Codex or Gemini (Antigravity CLI). The app is signed by AIFOREU GmbH and notarized by Apple. The SHA-256 is on the releases page.</p>
+        <p class="body">Open the disk image and drag IVE into Applications. The app runs its own local service in the background: no terminal window, no browser tab, one app in the Dock. You need at least one coding CLI you are signed in to: Claude Code, Codex or Gemini (Antigravity&nbsp;CLI). The app is signed by AIFOREU GmbH and notarized by Apple. The SHA-256 is on the releases page.</p>
         <p><a class="arrow-link" href="https://github.com/michael-ra/ive/releases" target="_blank" rel="noopener">Release notes on GitHub<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.75 11.25l6.5-6.5M5.75 4.75h5.5v5.5"/></svg><span class="sr-only"> (opens in a new tab)</span></a></p>
       </section>
 
@@ -78,7 +78,7 @@
         </div>
         <p class="body">Then start IVE with <code>ive</code>. It runs in the background and opens http://127.0.0.1:5111; you can close the terminal. <code>ive stop</code> stops it; <code>ive status</code>, <code>ive logs</code> and <code>ive update</code> do what they say; <code>ive uninstall</code> removes it. The installer puts the code in <code>~/.ive</code>, installs its dependencies, builds the app and adds the <code>ive</code> command to <code>~/.local/bin</code>. It does not use sudo.</p>
         <p><a class="arrow-link" href="https://github.com/michael-ra/ive/blob/main/get.sh" target="_blank" rel="noopener">Read the script first on GitHub<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.75 11.25l6.5-6.5M5.75 4.75h5.5v5.5"/></svg><span class="sr-only"> (opens in a new tab)</span></a></p>
-        <p class="facts">Requirements: macOS or Linux · Python 3.11+ · Node.js 22.12+ with npm · Git · at least one coding CLI: Claude Code, Codex or Gemini (Antigravity CLI)</p>
+        <p class="facts">Requirements: macOS or Linux · Python 3.11+ · Node.js 22.12+ with npm · Git · at least one coding CLI: Claude Code, Codex or Gemini (Antigravity&nbsp;CLI)</p>
       </section>
 
       <section class="panel panel-lg" id="source" aria-labelledby="source-title">
@@ -95,7 +95,7 @@
     <section class="block" id="questions" aria-labelledby="questions-title">
       <h2 class="t-h2-sm" id="questions-title">Questions</h2>
       <div class="qa mt-24">
-        <details><summary>Which agents work with IVE?<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.75 6l4.25 4.25L12.25 6"/></svg></summary><p>Claude Code, Codex and Gemini (Antigravity CLI). Available models depend on your installed CLI and provider account.</p></details>
+        <details><summary>Which agents work with IVE?<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.75 6l4.25 4.25L12.25 6"/></svg></summary><p>Claude Code, Codex and Gemini (Antigravity&nbsp;CLI). Available models depend on your installed CLI and provider account.</p></details>
         <details><summary>Does the model run locally?<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.75 6l4.25 4.25L12.25 6"/></svg></summary><p>IVE runs on your computer and listens on 127.0.0.1 by default. Your coding CLI still sends prompts, context and code to the provider you use, as it does without IVE.</p></details>
         <details><summary>Are the recordings real?<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.75 6l4.25 4.25L12.25 6"/></svg></summary><p>Yes. They show the IVE app on an isolated test transport with a prepared demo project (Orbit). No provider ran. The opening scene of the homepage is an illustration.</p></details>
         <details><summary>Which platforms?<svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.75 6l4.25 4.25L12.25 6"/></svg></summary><p>The Mac app runs on Apple silicon with macOS 13.5 or newer. The terminal install works on macOS (including Intel Macs) and Linux. There is no Windows version.</p></details>

@@ -1,7 +1,9 @@
 /* IVE.DEV · opening.js — the opening scene (brief 4.1).
-   Agents swarm as flat session cards, glide onto one board, the ground stays
-   dark, the viewer zooms out of the V until "IVE" stands, the name unfolds into
-   "Integrated Vibecoding Environment", then shrinks and rises away while the
+   Inside the machine: a grid corridor flows past with ring ribs and a slow
+   camera drift (back from 0d2d27a on the owner's call, 2026-10-22). Agents swarm
+   in it as flat session cards, glide onto one board, the corridor fades to the
+   dark ground, the viewer zooms out of the V until "IVE" stands, the name unfolds
+   into "Integrated Vibecoding Environment", then shrinks and rises away while the
    header takes the page tokens and the hero rises underneath.
    One rAF loop, only while the scene is in view. Scroll and resize request
    frames; the swarm's idle drift is the only clock and stops off-screen.
@@ -40,6 +42,14 @@
   var countA = mark.querySelector('[data-scene-count="a"]');
   var countB = mark.querySelector('[data-scene-count="b"]');
   if (!pin || !line || !swarmBox || !board) { staticMode(); return; }
+  /* the corridor: camera, four grid planes, ring ribs, vignette, scanlines (skipped if the markup lacks it) */
+  var cam = mark.querySelector('[data-scene-cam]');
+  var walls = {};
+  Array.prototype.forEach.call(mark.querySelectorAll('[data-wall]'), function (w) { walls[w.getAttribute('data-wall')] = w; });
+  var ringsBox = mark.querySelector('[data-scene-rings]');
+  var vignette = mark.querySelector('[data-scene-vignette]');
+  var scan = mark.querySelector('[data-scene-scan]');
+  var corridor = !!(cam && walls.floor && walls.ceil && walls.left && walls.right && ringsBox);
   var columnQuery = window.matchMedia('(max-width: 719.98px)');
 
   /* timeline on the scroll axis (raw 0..1 over the 200vh travel) */
@@ -51,6 +61,8 @@
   };
   var POP = 5;                         /* the zoom starts at 5× inside the V's left stroke */
   var GAP0 = 0.02, GAP1 = 0.24;        /* em between the words: tight IVE → real word gap */
+  var GRID = 120;                      /* px, the planes' background-size in opening.css */
+  var RINGS = 8;                       /* ring ribs along the corridor */
   /* sessions: title + model (+ the shorter label for the 150px phone cards);
      illustrations name only Haiku, Sonnet, Opus and the Gemini Pro and Flash models
      (Gemini runs through the Antigravity CLI profile in 1.0.17) */
@@ -110,8 +122,57 @@
     c.word.textContent = WORDS[st];
   }
 
+  var rings = [];
+  if (corridor) {
+    for (var r = 0; r < RINGS; r++) {
+      var ring = document.createElement('div');
+      ring.className = 'scene-ring';
+      ringsBox.appendChild(ring);
+      rings.push(ring);
+    }
+  }
+  /* style writes for the corridor: only when the value changes (the layers rest once docked) */
+  function put(el, prop, val) {
+    if (!el) return;
+    var memo = el.__ive || (el.__ive = {});
+    if (memo[prop] !== val) { memo[prop] = val; el.style[prop] = val; }
+  }
+
+  /* the corridor, as in 0d2d27a: the grid flows past and the ribs rush by on the swarm's
+     clock and faster with scroll; the camera drifts; drift and ribs come to rest while the
+     agents dock, the grid dims to 35 %, and everything fades to the ground at the cut.
+     Only transform and opacity change. A rib peaks at opacity 1 here (0d2d27a: 0.5 of
+     pure white); its colour token carries the brightness now. */
+  function renderCorridor(sw, k, cut, emerge) {
+    var still = (1 - k) * cut;
+    var lines = (emerge * (0.35 + 0.65 * (1 - k)) * cut).toFixed(3);
+    put(walls.floor, 'opacity', lines);
+    put(walls.ceil, 'opacity', lines);
+    put(walls.left, 'opacity', lines);
+    put(walls.right, 'opacity', lines);
+    put(scan, 'opacity', (emerge * cut).toFixed(3));
+    put(vignette, 'opacity', cut.toFixed(3));
+    var swayX = Math.sin(clock * 0.37) * 16 * still, swayY = Math.cos(clock * 0.29) * 10 * still;
+    var swayR = Math.sin(clock * 0.23) * 0.9 * still;
+    put(cam, 'transform', 'translate(' + swayX.toFixed(1) + 'px, ' + swayY.toFixed(1) + 'px) rotate(' + swayR.toFixed(2) + 'deg)');
+    var dist = (clock * 90 + sw * 900) % GRID;
+    var near = dist.toFixed(1), back = (-dist).toFixed(1);
+    put(walls.floor, 'transform', 'rotateX(-90deg) translateY(' + back + 'px)');
+    put(walls.ceil, 'transform', 'rotateX(90deg) translateY(' + near + 'px)');
+    put(walls.left, 'transform', 'rotateY(90deg) translateX(' + back + 'px)');
+    put(walls.right, 'transform', 'rotateY(-90deg) translateX(' + near + 'px)');
+    var camz = clock * 0.32 + sw * 1.4;
+    var fz = camz - Math.floor(camz);
+    for (var i = 0; i < RINGS; i++) {
+      var d = (i / RINGS + 1 - fz) % 1;              /* 0 = passing the viewer, 1 = far */
+      var o = (0.4 + 0.6 * (1 - d)) * ease(d / 0.06) * ease((1 - d) / 0.3) * emerge * still;
+      put(rings[i], 'opacity', o.toFixed(3));
+      if (o > 0) put(rings[i], 'transform', 'translate(-50%, -50%) scale(' + (2.8 / (1 + d * 26)).toFixed(4) + ')');
+    }
+  }
+
   var m = null;
-  var raw = 0, lastRaw = -1, clock = 0, age = 0, lastTs = null, looping = false;
+  var raw = 0, lastRaw = -1, clock = 0, age = 0, lastTs = null, looping = false, halted = false;
   var hintReady = false, dark = true, inView = true, zoomOn = false;
   var lastCountA = '', lastCountB = '';
 
@@ -164,6 +225,7 @@
     age += dt;
     clock += dt * (1 - k);
     var emerge = ease(age / 1.2);
+    if (corridor) renderCorridor(sw, k, cut, emerge);
     var RX = m.w * 0.44, RY = m.h * 0.38;
     var t = clock;
     var counts = { run: 0, wait: 0, done: 0 };
@@ -269,7 +331,7 @@
 
   function frame(ts) {
     looping = false;
-    if (!m) return;
+    if (!m || halted) return;
     var dt = lastTs === null ? 0 : Math.min(0.05, (ts - lastTs) / 1000);
     lastTs = ts;
     raw = clamp((window.scrollY - m.top) / m.travel);
@@ -289,7 +351,7 @@
     }
   }
   function loop() {
-    if (looping || document.hidden) return;
+    if (halted || looping || document.hidden) return;
     looping = true;
     window.requestAnimationFrame(frame);
   }
@@ -312,8 +374,10 @@
   /* reduced motion switched on while the page is open: fall back to the static block */
   var onMotion = function (e) {
     if (!e.matches) return;
+    halted = true;                 /* no more frames: the scene is gone */
     window.removeEventListener('scroll', loop);
     mark.classList.remove('is-lit', 'has-by', 'scene-off');
+    mark.removeAttribute('style'); /* drop the live custom properties (a zoom-sized --mark-size among them) */
     root.classList.remove('mark-zoom');
     staticMode();
   };

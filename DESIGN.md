@@ -35,7 +35,7 @@ No two neighbours share a composition, and none appears twice.
 
 | Section | One job | Composition |
 |---|---|---|
-| Opening (in `#hero`) | The problem and the payoff without words, then the name | Pinned scroll scene on a dark ground in both themes: swarm, board, zoom out of the V, IVE unfolds into Integrated Vibecoding Environment |
+| Opening (in `#hero`) | The problem and the payoff without words, then the name | Pinned scroll scene on a dark ground in both themes: inside the machine, a grid corridor with ring ribs and camera drift (owner decision 2026-10-22), the swarm in it, board, zoom out of the V, IVE unfolds into Integrated Vibecoding Environment |
 | Hero `#hero` | Name the product and show it | Left headline block, then a 1,320px product frame with the board recording |
 | Why IVE `#why` | The four reasons | Viewport-wide question that docks, statement column plus sticky media panel (pinned at 720px and up, in flow on phones) |
 | Inside IVE `#inside` | What IVE really does, as it happens | Chapter rail, one wide player, caption block; four real clips auto-advance: start and queue, Auto-fix loop, Pipelines, loop detection |
@@ -141,8 +141,9 @@ Status glyphs belong only to product states inside diagrams and recordings.
 
 - English, short, concrete. No em or en dashes as punctuation, no emojis, no AI
   vocabulary (unlock, seamless, supercharge, revolutionize, elevate and their kin).
-- Hard word budgets per section (brief 2.4). Round 1 measured on the rendered
-  homepage: 271 marketing words (hero 14, Why 109, Inside 111, Get 31, Maker 6).
+- Hard word budgets per section (brief 2.4). Measured on the rendered homepage
+  after Gemini came back (2026-10-22): 274 marketing words (hero 17 of 17, Why 109,
+  Inside 111, Get 31, Maker 6).
 - One primary home per claim (brief 2.5). The homepage gives the short version,
   Product describes the view or mechanism in other words. Functional lines
   (commands, requirements, provenance, legal, buttons) may repeat where needed.

@@ -3,6 +3,8 @@
    Replaces the .mark block of styles.css and the .au card subset of
    app-ui*.css. The scene ground is #0E1014 in both themes; [data-mark]
    carries the dark token set (site.css), so the cards use site tokens.
+   The grid corridor of the 0d2d27a opening is back (owner, 2026-10-22):
+   same planes, rings, drift, vignette and scanlines, drawn in the tokens.
    Static (no JS, reduced motion): the full name on a 100vh dark block.
    Live (html.mark-live): 300vh section, 100vh sticky pin; opening.js
    drives the custom properties from scroll progress.
@@ -129,15 +131,96 @@
 .mark.is-measuring .mark-line { font-size: 100px !important; transform: none !important; visibility: hidden; }
 .mark.is-measuring .mark-rest { width: auto !important; }
 
-/* ── the scene: swarm, board, captions ── */
+/* ── the scene: inside the machine ──
+   A grid corridor (four perspective planes) flows past, ring ribs rush by,
+   the camera drifts; the agents swarm in it, glide onto one board, and the
+   corridor fades to the ground at the cut. opening.js drives only transform
+   and opacity of these layers. Colours from the dark set on [data-mark]:
+   hairline grid in --text-4 at 55 %, ring ribs in the strong border colour
+   (--text-4, as on hovered outlines; --line-strong leaves them at a third of
+   the original brightness), no accent. */
 .scene {
+  --scene-grid: color-mix(in srgb, var(--text-4) 55%, transparent);
+  --scene-ring: var(--text-4);
   display: none;
-  position: absolute; inset: 0;
+  position: absolute; inset: 0; z-index: 0;
   overflow: hidden;
   pointer-events: none;
 }
 .mark-live .scene { display: block; }
 .mark-live .mark.scene-off .scene { visibility: hidden; }
+.scene-cam { position: absolute; inset: 0; will-change: transform; }
+.scene-space { position: absolute; inset: 0; perspective: 720px; perspective-origin: 50% 50%; }
+/* each plane starts at an edge of the view and runs 2040px into depth (17 grid
+   cells of 120px, GRID in opening.js), the mask fades it out toward the far end.
+   0d2d27a drew 2640px and faded out at 78 % (2059px); the rest was invisible but
+   still rasterized, so the planes now end where the fade does, cells aligned.
+   backface-visibility: hidden as in 0d2d27a. Through the parent's perspective
+   floor and ceiling face away from the camera, so Chrome and WebKit cull them
+   and the grid shows on the two side walls only: that is the look the owner
+   approved. backface-visibility: visible on .wall-floor and .wall-ceil would
+   draw all four planes. */
+.scene-wall {
+  position: absolute;
+  background-image:
+    linear-gradient(var(--scene-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--scene-grid) 1px, transparent 1px);
+  background-size: 120px 120px;
+  opacity: 0;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+.wall-floor {
+  left: 0; top: 100%; width: 100%; height: 2040px;
+  transform-origin: 50% 0;
+  transform: rotateX(-90deg);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0, transparent 100%);
+}
+.wall-ceil {
+  left: 0; bottom: 100%; width: 100%; height: 2040px;
+  transform-origin: 50% 100%;
+  transform: rotateX(90deg);
+  -webkit-mask-image: linear-gradient(to top, #000 0, transparent 100%);
+  mask-image: linear-gradient(to top, #000 0, transparent 100%);
+}
+.wall-left {
+  top: 0; left: 0; height: 100%; width: 2040px;
+  transform-origin: 0 50%;
+  transform: rotateY(90deg);
+  -webkit-mask-image: linear-gradient(to right, #000 0, transparent 100%);
+  mask-image: linear-gradient(to right, #000 0, transparent 100%);
+}
+.wall-right {
+  top: 0; right: 0; height: 100%; width: 2040px;
+  transform-origin: 100% 50%;
+  transform: rotateY(-90deg);
+  -webkit-mask-image: linear-gradient(to left, #000 0, transparent 100%);
+  mask-image: linear-gradient(to left, #000 0, transparent 100%);
+}
+/* ring ribs: frames the size of the view, scaled by depth (built by opening.js) */
+.scene-rings { position: absolute; inset: 0; }
+.scene-ring {
+  position: absolute; left: 50%; top: 50%;
+  width: 100%; height: 100%;
+  border: 2px solid var(--scene-ring);
+  border-radius: clamp(10px, 2.4vmin, 28px);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.1);
+  will-change: transform, opacity;
+}
+/* the vignette sits in the camera; it overhangs the view so the drift never bares an edge */
+.scene-vignette {
+  position: absolute; inset: -48px;
+  background: radial-gradient(ellipse at 50% 50%, transparent 48%, rgba(0, 0, 0, 0.72) 100%);
+}
+/* scanlines over everything in the scene, very faint */
+.scene-scan {
+  position: absolute; inset: 0; z-index: 4;
+  background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--text-1) 4.5%, transparent) 0 1px, transparent 1px 3px);
+  opacity: 0;
+}
 .scene-swarm { position: absolute; inset: 0; z-index: 2; }
 .scene-board {
   position: absolute; left: 50%; top: 50%; z-index: 1;

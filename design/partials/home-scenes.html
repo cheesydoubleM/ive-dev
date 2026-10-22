@@ -22,7 +22,7 @@
 <link rel="preload" href="assets/fonts/source-sans-3-latin-variable.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/fonts.css?v=20261023a">
 <link rel="stylesheet" href="site.css?v=20261023a">
-<link rel="stylesheet" href="opening.css?v=20261023a">
+<link rel="stylesheet" href="opening.css?v=20261023b">
 <link rel="stylesheet" href="home.css?v=20261023a">
 </head>
 <body>
@@ -56,10 +56,21 @@
   <div class="mark" id="top" data-mark>
     <div class="mark-pin" data-mark-pin>
       <div class="scene" data-scene aria-hidden="true">
-        <div class="scene-board" data-scene-board><span class="scene-board-title">Board · 12 sessions</span></div>
-        <div class="scene-swarm" data-scene-swarm></div>
+        <div class="scene-cam" data-scene-cam>
+          <div class="scene-space">
+            <div class="scene-wall wall-floor" data-wall="floor"></div>
+            <div class="scene-wall wall-ceil" data-wall="ceil"></div>
+            <div class="scene-wall wall-left" data-wall="left"></div>
+            <div class="scene-wall wall-right" data-wall="right"></div>
+          </div>
+          <div class="scene-rings" data-scene-rings></div>
+          <div class="scene-vignette" data-scene-vignette></div>
+          <div class="scene-board" data-scene-board><span class="scene-board-title">Board · 12 sessions</span></div>
+          <div class="scene-swarm" data-scene-swarm></div>
+        </div>
         <p class="scene-caption" data-scene-caption="a"><span class="scene-caption-text">Agents running everywhere.</span><span class="scene-count" data-scene-count="a"></span></p>
         <p class="scene-caption" data-scene-caption="b"><span class="scene-caption-text">Under control.</span><span class="scene-count" data-scene-count="b"></span></p>
+        <div class="scene-scan" data-scene-scan></div>
       </div>
       <p class="mark-line" data-mark-line aria-hidden="true"><span class="mark-word"><span class="mark-cap" data-mark-cap>I</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>ntegrated</span></span></span> <span class="mark-word"><span class="mark-cap" data-mark-cap>V</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>ibecoding</span></span></span> <span class="mark-word"><span class="mark-cap" data-mark-cap>E</span><span class="mark-rest"><span class="mark-rest-text" data-mark-rest>nvironment</span></span></span></p>
       <p class="sr-only">IVE, Integrated Vibecoding Environment</p>
@@ -72,7 +83,7 @@
     <div class="wrap">
       <div class="hero-head">
         <h1 id="hero-title">Run your coding agents side by side.</h1>
-        <p class="lead">Claude Code, Codex and Gemini (Antigravity CLI) in one window.</p>
+        <p class="lead">Claude Code, Codex and Gemini (Antigravity&nbsp;CLI) in one window.</p>
         <div class="hero-cta">
           <a class="btn btn-fill" href="https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg" data-mac-download data-install-label-narrow="Get IVE"><span data-mac-download-label>Download for Mac</span></a>
           <div class="term" data-copy-box>
@@ -147,7 +158,7 @@
             <div class="why-media why-ledger-wrap" data-why-media="3">
               <dl class="ledger why-ledger">
                 <div><dt>Runs on</dt><dd>your computer, 127.0.0.1 by default</dd></div>
-                <div><dt>Signs in with</dt><dd>your Claude Code, Codex and Gemini (Antigravity CLI) logins</dd></div>
+                <div><dt>Signs in with</dt><dd>your Claude Code, Codex and Gemini (Antigravity&nbsp;CLI) logins</dd></div>
                 <div><dt>Account with IVE</dt><dd>none</dd></div>
                 <div><dt>Telemetry</dt><dd>off by default</dd></div>
                 <div><dt>Source</dt><dd>github.com/michael-ra/ive, Apache 2.0</dd></div>
@@ -286,7 +297,7 @@
   </div>
 </footer>
 <script src="site.js?v=20261023a" defer></script>
-<script src="opening.js?v=20261023a" defer></script>
+<script src="opening.js?v=20261023b" defer></script>
 <script src="home.js?v=20261023a" defer></script>
 <script src="madeby.js?v=20261023a" defer></script>
 </body>

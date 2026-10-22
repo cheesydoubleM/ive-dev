@@ -59,18 +59,23 @@
     v.addEventListener('playing', function () { v.classList.add('is-ready'); });
   });
 
-  function syncVideos() {
-    videos.forEach(function (v, i) {
-      if (!v) return;
-      var play = mode !== 'static' && i === active && inView && !document.hidden && !motion.matches;
-      if (play) {
+  videos.forEach(function (v, i) {
+    if (!v || !IVE.registerInline) return;
+    IVE.registerInline({
+      video: v, element: media[i],
+      wantsPlay: function () {
+        return mode !== 'static' && i === active && inView && !layout.inert && !motion.matches;
+      },
+      play: function () {
         loadVideo(v);
         var p = v.play();
         if (p && p.catch) p.catch(function () {});
-      } else if (!v.paused) {
-        v.pause();
       }
     });
+  });
+
+  function syncVideos() {
+    if (IVE.syncInline) IVE.syncInline();
   }
 
   function setActive(i) {
@@ -364,22 +369,26 @@
     if (motion.matches && !userStarted) return false;
     return current >= 0;
   }
-  function sync() {
+  function playVideo() {
+    var p = video.play();
+    if (p && p.catch) {
+      p.catch(function (err) {
+        if (err && err.name === 'AbortError') return;
+        player.classList.add('was-blocked');
+        render();
+      });
+    }
+  }
+  if (IVE.registerInline) IVE.registerInline({
+    video: video, element: player, wantsPlay: wantsPlay, play: playVideo
+  });
+  function sync(preferred) {
     if (wantsPlay()) {
       var c = chapters[current];
       var src = sourceFor(c);
       if (src && src !== loadedSrc) { select(current, { load: true }); return; }
-      var p = video.play();
-      if (p && p.catch) {
-        p.catch(function (err) {
-          if (err && err.name === 'AbortError') return;
-          player.classList.add('was-blocked');
-          render();
-        });
-      }
-    } else if (!video.paused) {
-      video.pause();
     }
+    if (IVE.syncInline) IVE.syncInline(preferred === true ? video : null);
     render();
   }
 
@@ -416,12 +425,13 @@
       if (i === current && !video.paused) return;
       userPaused = false;
       select(i, { load: true, restart: true });
+      if (IVE.syncInline) IVE.syncInline(video);
     });
   });
   if (toggle) {
     toggle.addEventListener('click', function () {
-      if (video.paused) { userPaused = false; userStarted = true; sync(); }
-      else { userPaused = true; video.pause(); render(); }
+      if (video.paused) { userPaused = false; userStarted = true; sync(true); }
+      else { userPaused = true; video.pause(); sync(); }
     });
   }
   if (playBtn) {
@@ -430,7 +440,7 @@
       userPaused = false;
       userStarted = true;
       player.classList.remove('was-blocked');
-      sync();
+      sync(true);
     });
   }
   if (expand) {

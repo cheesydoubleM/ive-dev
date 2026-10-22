@@ -13,31 +13,39 @@
 .hero-cta .term { flex: 0 1 auto; min-width: 0; }
 .hero-cta .term-code { white-space: pre; }
 .hero-note { margin-top: 12px; }
+/* A small window into the app. The complete board stays in the viewer. */
 .hero-frame {
-  --hero-frame-w: clamp(100%, 100vw - 120px, 1320px);
-  width: var(--hero-frame-w);
-  margin-left: calc((100% - var(--hero-frame-w)) / 2);
-  margin-top: 56px;
+  width: min(100%, 880px);
+  margin: 40px 0 0;
 }
-.hero-frame .frame-caption { margin-top: 16px; }
+.hero-frame .frame-caption { margin-top: 14px; }
+.hero-frame-footer { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+.hero-frame-footer > p { max-width: 58ch; }
+html.no-js .hero-frame [data-clip-toggle] { display: none; }
+.hero-frame-footer .frame-controls { position: static; flex: none; opacity: 1; gap: 6px; }
+/* Interim focus cut of the real board: two top sessions, no project sidebar.
+   This class is removed when the dedicated light hero-focus footage is ready. */
+.hero-frame--board-crop .frame-media { aspect-ratio: 2704 / 936; }
+.hero-frame--board-crop .frame-media > .frame-poster,
+.hero-frame--board-crop .frame-media > .frame-video {
+  inset: auto;
+  left: calc(-488 / 2704 * 100%);
+  top: calc(-96 / 936 * 100%);
+  width: calc(3200 / 2704 * 100%);
+  height: calc(2000 / 936 * 100%);
+  max-width: none;
+}
 @media (max-width: 719.98px) {
   .hero-body { padding-top: 72px; padding-bottom: 72px; }
   .hero-cta .term { display: none; }
-  .hero-frame { margin-top: 40px; }
-}
-/* phones without the -m clip: the left tile column of the 3200×2000 master
-   (x 300 to 1150, y 60 to 1190) via a crop of the full recording */
-@media (max-width: 719.98px) {
-  .frame-media.crop-hero-m { aspect-ratio: 3 / 4; }
-  .crop-hero-m > .frame-poster,
-  .crop-hero-m > .frame-video {
-    --mw: 3200; --mh: 2000; --cx: 300; --cy: 60; --cw: 850;
-    inset: 0 auto auto 0;
-    width: calc(var(--mw) / var(--cw) * 100%);
-    height: auto;
-    max-width: none;
-    aspect-ratio: 16 / 10;
-    transform: translate(calc(var(--cx) / var(--mw) * -100%), calc(var(--cy) / var(--mh) * -100%));
+  .hero-frame { margin-top: 32px; }
+  .hero-frame-footer { gap: 12px; }
+  /* One working session on a phone; the same master is available on expand. */
+  .hero-frame--board-crop .frame-media { aspect-ratio: 1348 / 936; }
+  .hero-frame--board-crop .frame-media > .frame-poster,
+  .hero-frame--board-crop .frame-media > .frame-video {
+    left: calc(-488 / 1348 * 100%);
+    width: calc(3200 / 1348 * 100%);
   }
 }
 
