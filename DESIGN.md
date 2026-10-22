@@ -213,6 +213,14 @@ The homepage contains exactly these blocks, in order:
     2026-10-22; its backend and data remain (see README).
     Below the command, one line asks for a GitHub star; it is the only
     star ask on the site. The header carries a GitHub logo link on every page.
+16. Behind all this (`#aiforeu`): who makes IVE. The approved AIFOREU logo
+    reveal (`assets/aiforeu/`, 0.6–5.9 s of the master, no sound, keyframe
+    every 5 frames so seeking stays smooth) is pinned and follows the scroll in
+    both directions; it never plays on its own and holds the finished logo with
+    the EU co-funding notice for the last part of the pin. The film has a fixed
+    light ground, so the section keeps the light palette in both themes.
+    Reduced motion, no JavaScript and short windows show the poster (the
+    finished logo) in normal flow. Logic in `madeby.js`.
 
 Architecture, implementation totals, and the deeper security surface belong on
 the dedicated Architecture page or in the repository documentation.
