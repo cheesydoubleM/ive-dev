@@ -313,7 +313,9 @@ Grammar: **Branch → Execute → Verify → Proof.**
   animation or scroll transition before revealing the commands. The header
   CTA links to `#install`. The hero CTA downloads the Mac app; on phones,
   tablets, Linux and Windows `script.js` turns it into “Install IVE” → `#install`.
-  Everything works without JavaScript.
+  Intel Macs get the same in Chromium browsers, which report the CPU
+  architecture; Safari and Firefox do not, so there the note below the button
+  names Apple silicon. Everything works without JavaScript.
 - The tunnel is part of Inside IVE, immediately after the app recordings and
   before Why IVE. It starts with the complete app-style board: sidebar and
   four sessions. One continuous camera zooms into its lower-left Sign-in checks
