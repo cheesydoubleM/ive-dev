@@ -40,9 +40,9 @@ Serve the folder, open `assets/og.html` in a browser at exactly 1200×630, and c
 ## Product truth
 
 - IVE is open source under the Apache 2.0 license. The public repository is `https://github.com/michael-ra/ive`.
-- The primary homepage action is installing IVE: `curl -fsSL https://ive.dev/install.sh | bash` (puts the code in `~/.ive`, installs its dependencies, builds the app, adds an `ive` command in `~/.local/bin`), or from source with `git clone https://github.com/michael-ra/ive.git`, `cd ive`, `bash install.sh`, `bash start.sh`.
+- The primary homepage action for Mac users is the Mac app: https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg (latest GitHub release of michael-ra/ive, Apple silicon, macOS 13.5 or newer, signed by AIFOREU GmbH and notarized by Apple). Linux, Intel Macs and developers use `curl -fsSL https://ive.dev/install.sh | bash` (puts the code in `~/.ive`, installs its dependencies, builds the app, adds an `ive` command in `~/.local/bin`; `ive` then runs IVE in the background), or from source with `git clone https://github.com/michael-ra/ive.git`, `cd ive`, `bash install.sh`, `bin/ive`.
 - Requirements: macOS or Linux, Python 3.11+, Node.js 22.12+ with npm, Git, and at least one supported coding CLI. Telemetry is off by default.
-- Do not promise a Mac app download, signed builds, Windows support, a community, stars, or contributors.
+- Do not promise Windows support, an Intel Mac app, a community, stars, or contributors. Show no version number or file size for the Mac app.
 - Supported integrations are Claude Code, Codex, and Gemini CLI (app profiles in `backend/cli_profiles.py`, checked 2026-10-17). Models depend on the installed CLI and account; illustrations name only Haiku, Sonnet, Opus, Gemini Pro, and Flash.
 - The app demos are recordings of the actual IVE frontend (the installed app build) on the isolated test transport from the app's own test suite. The Orbit project, its sessions and conversations are a clearly labelled demonstration; no provider ran and no live execution success is claimed. The animated scenes elsewhere on the page are illustrations.
 - Reverify compatibility against the app before changing provider claims.
@@ -51,13 +51,13 @@ Serve the folder, open `assets/og.html` in a browser at exactly 1200×630, and c
 
 ## Installer distribution
 
-The only installer published from this repository is the shell script `install.sh` at the site root. It installs IVE from the public source repository. Do not commit application bundles, DMG/PKG/IPA installers, release ZIP archives, or private app source here.
+The only installer published from this repository is the shell script `install.sh` at the site root. It installs IVE from the public source repository and must stay byte-identical to `get.sh` on the main branch of michael-ra/ive. The Mac app is a release asset of michael-ra/ive; the site only links it. Do not commit application bundles, DMG/PKG/IPA installers, release ZIP archives, or private app source here.
 
 ## Beta waitlist (retired)
 
 Since 2026-10-22 the website no longer shows the signup form; IVE is open source
 and the homepage offers the install instead. The Worker, the D1 database and the
-export below remain, because earlier signups are still stored (privacy notice 6a).
+export below remain, because earlier signups are still stored (privacy notice 6a was removed on 2026-10-22; delete the stored entries).
 The notes below describe that service as it was used up to then.
 
 The website stays on GitHub Pages. Signup is handled by

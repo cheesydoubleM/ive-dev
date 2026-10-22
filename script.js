@@ -607,6 +607,25 @@
     setRunStep(4);
   });
 
+  /* ── hero download: the Mac app on a Mac, the install section elsewhere ── */
+  /* The DMG is for Macs only. Phones, tablets, Linux and Windows get the
+     install section instead of an 85 MB file they cannot use. Without
+     JavaScript the button stays a plain download link. */
+  (function () {
+    var link = document.querySelector('[data-mac-download]');
+    if (!link) return;
+    var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+    // iPads report a Mac platform but have a touch screen.
+    if (/mac/i.test(platform) && !(navigator.maxTouchPoints > 1)) return;
+    link.href = '#install';
+    var label = link.querySelector('[data-mac-download-label]');
+    if (label) label.textContent = 'Install IVE';
+    var icon = link.querySelector('.dl-icon');
+    if (icon) icon.parentNode.removeChild(icon);
+    var note = document.querySelector('[data-mac-download-note]');
+    if (note) note.hidden = true;
+  })();
+
   /* ── copy install commands ───────────────────────────── */
   /* The buttons ship hidden, so without JavaScript only the selectable
      commands show. If the clipboard is unavailable, the commands are

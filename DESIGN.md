@@ -133,7 +133,7 @@ DARK
 Mission Control, the architecture security ledger, and the footer use the
 secondary ground. Human review remains the explicit opposite-ground moment.
 
-The high-intent hero CTA and the “View on GitHub” action of the install section use the execution accent:
+The high-intent hero CTA (“Download for Mac”) and the download button of the install section use the execution accent; “View on GitHub” in the install section is a ghost button:
 
 ```css
 .hero .btn-primary { background: var(--running); color: var(--on-accent); }
@@ -202,14 +202,19 @@ The homepage contains exactly these blocks, in order:
 13. Three concrete use cases in an interactive run chooser
 14. Questions: five short answers, including what is real and what is illustrated
 15. Install (`#install`, with `#waitlist` and `#get-ive` kept as alias anchors
-    for old links): a static section. The one-line installer
-    `curl -fsSL https://ive.dev/install.sh | bash` comes first in a terminal panel with a
+    for old links): a static section. The Mac app comes first: “Download for
+    Mac” links the DMG of the latest GitHub release, followed by its
+    requirements (Apple silicon, macOS 13.5 or newer), how to install it (drag
+    into Applications; the app runs its own local service, one app in the
+    Dock) and that it is signed by AIFOREU GmbH and notarized by Apple. Below a
+    “Linux, Intel Macs and developers” divider follows the one-line installer
+    `curl -fsSL https://ive.dev/install.sh | bash` in a terminal panel with a
     copy button, then “Then start IVE with: ive”, what the installer does, a
     link to read the script, and the requirements. The clone path
-    (`git clone`, `cd ive`, `bash install.sh`, `bash start.sh`) sits folded in a
+    (`git clone`, `cd ive`, `bash install.sh`, `bin/ive`) sits folded in a
     native `<details>`. Copy buttons ship `hidden` and only appear with
     JavaScript; without it the commands stay selectable. On mobile the
-    terminal comes before the buttons. The beta waitlist form was retired on
+    panel comes before the buttons. The beta waitlist form was retired on
     2026-10-22; its backend and data remain (see README).
     Below the command, one line asks for a GitHub star; it is the only
     star ask on the site. The header carries a GitHub logo link on every page.
@@ -305,8 +310,10 @@ Grammar: **Branch → Execute → Verify → Proof.**
   green, ending in one review. Faint ghost lines show the paths before they
   are drawn. Below 720px there are six lanes and id-only labels.
 - The page closes with the static install section. It never waits for an
-  animation or scroll transition before revealing the commands. Header and
-  hero CTAs link directly to `#install`. Everything works without JavaScript.
+  animation or scroll transition before revealing the commands. The header
+  CTA links to `#install`. The hero CTA downloads the Mac app; on phones,
+  tablets, Linux and Windows `script.js` turns it into “Install IVE” → `#install`.
+  Everything works without JavaScript.
 - The tunnel is part of Inside IVE, immediately after the app recordings and
   before Why IVE. It starts with the complete app-style board: sidebar and
   four sessions. One continuous camera zooms into its lower-left Sign-in checks
@@ -349,13 +356,19 @@ Grammar: **Branch → Execute → Verify → Proof.**
 IVE is open source under the Apache 2.0 license (owner decision, 2026-10-22). The
 site offers the one-line installer `install.sh` (served at
 https://ive.dev/install.sh) and the source path from
-https://github.com/michael-ra/ive. Do not publish app bundles or release
-binaries here, and do not promise a Mac app download, signed builds, Windows
-support, a community, stars, or contributors.
+https://github.com/michael-ra/ive. Since 2026-10-22 (owner request) it also
+links the Mac app: https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg
+(stable across releases). Facts that may be stated: Apple silicon (M1 or newer),
+macOS 13.5 or newer, a signed-in coding CLI, signed with the Developer ID of
+AIFOREU GmbH and notarized by Apple, runs its own local service, one app in the
+Dock. Never host the DMG in this repository and show no version number or file
+size for it. Do not promise Windows support, an Intel Mac app, a community,
+stars, or contributors.
 Asking for a GitHub star is fine; never show a star count that is not current.
 
-- Supported systems for the install: macOS or Linux. Requirements: Python
-  3.11+, Node.js 22.12+ with npm, Git, and at least one supported coding CLI.
+- Supported systems for the one-line install: macOS or Linux. Requirements:
+  Python 3.11+, Node.js 22.12+ with npm, Git, and at least one supported coding
+  CLI. The Mac app needs none of the first three, only a signed-in coding CLI.
 - Telemetry is off by default; the site may say so, nothing more about it.
 - If product telemetry is discussed, explain it in plain prose next to the
   relevant technical documentation rather than compressing it into metadata.

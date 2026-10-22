@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://ive.dev/assets/og.png?v=20261022oss">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts.css?v=20260908f">
-<link rel="stylesheet" href="styles.css?v=20261022film">
+<link rel="stylesheet" href="styles.css?v=20261022mac">
 <link rel="stylesheet" href="showcase.css?v=20261019c">
 <link rel="stylesheet" href="app-ui.css?v=20261019c">
 <link rel="stylesheet" href="app-ui-blocks.css?v=20261019c">
@@ -84,10 +84,11 @@
       <p class="kicker">LOCAL CONTROL FOR CODING AGENTS</p>
       <h1 class="hero-title" id="hero-title">Run agents.<br>Keep control.</h1>
       <p class="hero-lede">Give IVE one goal. It coordinates the work, catches problems, and brings you one clear result to review. Your code stays on your machine.</p>
-      <div class="hero-ctas"><a class="btn btn-primary" href="#install">Install IVE</a><a class="btn btn-ghost" href="#operation">See how it works <span class="btn-arrow" aria-hidden="true">↓</span></a></div>
+      <div class="hero-ctas"><a class="btn btn-primary" href="https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg" data-mac-download><svg class="dl-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v7.5m0 0L4.75 6.75M8 10l3.25-3.25M2.75 13.25h10.5"/></svg><span data-mac-download-label>Download for Mac</span></a><a class="btn btn-ghost" href="#operation">See how it works <span class="btn-arrow" aria-hidden="true">↓</span></a></div>
+      <p class="hero-dl-note" data-mac-download-note>For Macs with Apple silicon and macOS 13.5 or newer.</p>
       <div class="chip-row hero-chip-row" aria-label="Product attributes"><span class="chip">Your code stays local</span><span class="chip">Every agent in one view</span><span class="chip">Claude Code · Codex · Gemini CLI</span><span class="chip">Open source · Apache 2.0</span></div>
       <div class="cmd-copy hero-cmd" data-copy-box><code class="cmd-copy-text" data-copy-source><span class="ps1" aria-hidden="true">$ </span>curl -fsSL https://ive.dev/install.sh | bash</code><button class="copy-btn" type="button" data-copy="curl -fsSL https://ive.dev/install.sh | bash" aria-label="Copy the install command" hidden>Copy</button></div>
-      <p class="cmd-copy-then">Paste it into your terminal, then run <code>ive</code></p>
+      <p class="cmd-copy-then">On Linux or an Intel Mac, paste this into your terminal, then run <code>ive</code></p>
     </div>
 
     <figure class="hero-stage" aria-label="Illustration of the IVE board for the goal “Make sign-in more secure”: Sign-in backend and Sign-in screen are running, Sign-in checks is waiting for your answer on npm test, Review the changes is done with its reply ready">
@@ -789,10 +790,10 @@ Received: previous session</pre></div>
     <div class="chapter-head"><p class="kicker">A few things to know</p><h2 id="faq-title">Before you<br>come aboard.</h2></div>
     <div class="faq-list">
       <details><summary>Are the demos recordings of the real app?<span aria-hidden="true">+</span></summary><p>Yes. They were recorded from IVE’s actual application frontend on an isolated test transport. The Orbit project, session names, and conversation content were prepared for this tour; no AI provider ran. The animated scenes on this page are illustrations.</p></details>
-      <details><summary>Can I use IVE today?<span aria-hidden="true">+</span></summary><p>Yes. IVE is open source under the Apache 2.0 license. Install it with one command or clone it from GitHub. You need macOS or Linux and Claude Code, Codex, or Gemini CLI.</p></details>
+      <details><summary>Can I use IVE today?<span aria-hidden="true">+</span></summary><p>Yes. IVE is open source under the Apache 2.0 license. Download the Mac app for Apple silicon, install it with one command on macOS or Linux, or clone it from GitHub. You need Claude Code, Codex, or Gemini CLI.</p></details>
       <details><summary>Which agents can I use?<span aria-hidden="true">+</span></summary><p>IVE works with Claude Code, Codex, and Gemini CLI. The recordings show Claude Code and Codex side by side. Available models and features depend on your installed CLI and provider account.</p></details>
       <details><summary>Does everything stay on my machine?<span aria-hidden="true">+</span></summary><p>IVE’s desktop workspace runs locally. Using an AI provider can send prompts, context, and code to that provider. Local execution does not mean the model runs offline.</p></details>
-      <details><summary>What platform is shown here?<span aria-hidden="true">+</span></summary><p>The recordings show IVE on macOS. You can install it on macOS or Linux.</p></details>
+      <details><summary>What platform is shown here?<span aria-hidden="true">+</span></summary><p>The recordings show IVE on macOS. The Mac app runs on Apple silicon with macOS 13.5 or newer; the one-line installer works on macOS and Linux.</p></details>
     </div>
   </div>
 </section>
@@ -804,11 +805,19 @@ Received: previous session</pre></div>
   <div class="install-inner">
     <div class="install-copy">
       <p class="kicker">GET IVE</p>
-      <h2 id="install-title">Install IVE<br><span class="h-soft">with one command.</span></h2>
-      <p>IVE is open source under the Apache 2.0 license. It installs on macOS and Linux and runs on your machine.</p>
+      <h2 id="install-title">Install IVE.<br><span class="h-soft">Mac app or terminal.</span></h2>
+      <p>IVE is open source under the Apache 2.0 license and runs on your machine. Use the Mac app on Apple silicon, or the one-line installer on Linux and Intel Macs.</p>
       <p class="install-star">If IVE is useful to you, <a href="https://github.com/michael-ra/ive" target="_blank" rel="noopener">give it a star on GitHub</a>.</p>
     </div>
     <div class="install-panel">
+      <div class="install-mac">
+        <p class="install-term-label mono">Mac app</p>
+        <a class="btn btn-primary install-dl" href="https://github.com/michael-ra/ive/releases/latest/download/IVE-macOS-arm64.dmg"><svg class="dl-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v7.5m0 0L4.75 6.75M8 10l3.25-3.25M2.75 13.25h10.5"/></svg>Download for Mac</a>
+        <p class="install-mac-req">For Macs with Apple silicon (M1 or newer) and macOS 13.5 or newer.</p>
+        <p class="install-note">Open the disk image and drag IVE into Applications. The app runs its own local service in the background: no terminal, no browser tab, one app in the Dock. You need at least one coding CLI you are signed in to: Claude Code, Codex, or Gemini CLI.</p>
+        <p class="install-note">Signed by AIFOREU GmbH and notarized by Apple.</p>
+      </div>
+      <p class="install-or">Linux, Intel Macs and developers</p>
       <div class="term install-term">
         <div class="term-head"><span class="install-term-label mono">Install</span><button class="copy-btn" type="button" data-copy="curl -fsSL https://ive.dev/install.sh | bash" aria-label="Copy the install command" hidden>Copy</button></div>
         <pre class="term-body install-cmd" data-copy-source><code><span class="cmd-line"><span class="ps1" aria-hidden="true">$ </span>curl -fsSL https://ive.dev/install.sh | bash</span></code></pre>
@@ -826,7 +835,7 @@ Received: previous session</pre></div>
       </details>
       <p class="sr-only" role="status" aria-live="polite" data-copy-status></p>
     </div>
-    <div class="install-actions oss-row"><a class="btn btn-primary" href="https://github.com/michael-ra/ive" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a><a class="btn btn-ghost" href="architecture.html">Read the architecture</a></div>
+    <div class="install-actions oss-row"><a class="btn btn-ghost" href="https://github.com/michael-ra/ive" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a><a class="btn btn-ghost" href="architecture.html">Read the architecture</a></div>
   </div>
 </section>
 
@@ -855,7 +864,7 @@ Received: previous session</pre></div>
   <div class="footer-inner"><p class="footer-brand"><span class="wordmark-text">IVE</span><span class="footer-full">from <a href="https://aiforgov.eu/" target="_blank" rel="noopener">AIFOREU ↗</a></span></p><nav class="footer-links" aria-label="Footer"><a href="#install">Install IVE</a><a href="https://github.com/michael-ra/ive" target="_blank" rel="noopener">GitHub</a><a href="imprint.html">Imprint</a><a href="privacy.html">Privacy</a></nav><p class="footer-license">EU-based · Open source under the Apache 2.0 license</p></div>
 </footer>
 <dialog class="shot-dialog" aria-labelledby="shot-caption"><div class="shot-dialog-bar"><p id="shot-caption"></p><button type="button" class="shot-dialog-close" aria-label="Close">Close <span aria-hidden="true">×</span></button></div><div class="shot-dialog-wrap"><img width="1600" height="1000" alt=""><video controls muted loop playsinline width="1600" height="1000"></video></div><p class="shot-dialog-hint mono">Scroll to inspect · Escape to close</p></dialog>
-<script src="script.js?v=20261022cmd" defer></script>
+<script src="script.js?v=20261022mac" defer></script>
 <script src="showcase.js?v=20261019c" defer></script>
 <script src="behind.js?v=20261019f" defer></script>
 <script src="madeby.js?v=20261022b" defer></script>
