@@ -2,24 +2,20 @@
    Every [data-demo] figure shows a sharp, generated preview of the IVE interface in a same-origin
    iframe (assets/demo/frame.html?scene=…&theme=…). Previews always play while in view (one at a
    time, the most visible), loop, pause off-screen and in a hidden tab; the preview surface itself
-   is inert (no click or wheel inside, no focus). Next to a preview there are two controls only:
-   Pause/Play and "Try it yourself", which opens the IVE app built into the site (frame.html with
-   mode=app) in a <dialog>, at the slot's place in the app. The Inside IVE reel keeps one frame per
-   chapter and advances when a scene ends. Needs site.js first (window.IVE). Without JS the figures
-   show their poster. */
+   is inert (no click or wheel inside, no focus). Next to a preview there is one control only:
+   Pause/Play. The IVE app built into the site opens from the page's "Try it yourself" links
+   (try.html). The Inside IVE reel keeps one frame per chapter and advances when a scene ends.
+   Needs site.js first (window.IVE). Without JS the figures show their poster. */
 (function () {
   'use strict';
   var root = document.documentElement;
   var IVE = window.IVE || {};
   var isGerman = (root.getAttribute('lang') || '').indexOf('de') === 0;
   var TEXT = isGerman
-    ? { pause: 'Pause', play: 'Abspielen', pauseLabel: 'Vorschau anhalten', playLabel: 'Vorschau abspielen', close: 'Schließen', tryIt: 'Selbst ausprobieren', tryTitle: 'IVE Demo' }
-    : { pause: 'Pause', play: 'Play', pauseLabel: 'Pause the preview', playLabel: 'Play the preview', close: 'Close', tryIt: 'Try it yourself', tryTitle: 'IVE demo' };
-  // the app route a preview opens in "Try it yourself" (the Why panel's tile opens the board)
-  var APP_ROUTE = { attention: 'board' };
-  var FRAME = 'assets/demo/r5/frame.html'; // versioned runtime folder (CDN caches these files for hours)
+    ? { pause: 'Pause', play: 'Abspielen', pauseLabel: 'Vorschau anhalten', playLabel: 'Vorschau abspielen' }
+    : { pause: 'Pause', play: 'Play', pauseLabel: 'Pause the preview', playLabel: 'Play the preview' };
+  var FRAME = 'assets/demo/r5/frame.html'; // versioned runtime folder of the previews (CDN caches these files for hours)
   var demos = [];
-  var viewerOpen = false;
   var whyGroup = [];
 
   function frameUrl(scene, theme, extra) {
@@ -85,8 +81,6 @@
       } else if (d.type === 'playstate') {
         f.playing = !!d.playing;
         if (f.onPlayState) f.onPlayState(f.playing);
-      } else if (d.type === 'key' && d.key === 'Escape') {
-        if (dialog && dialog.dialog.open) dialog.dialog.close();
       }
     };
     return f;
@@ -120,12 +114,6 @@
       else { demo.userPaused = false; sync(demo); }
       renderPlayState(demo);
     });
-    if (!row.querySelector('[data-demo-try]')) {
-      var tryBtn = el('button', 'btn btn-outline btn-sm', { type: 'button', 'data-demo-try': demo.appRoute || APP_ROUTE[demo.scene] || demo.scene, 'data-demo-try-theme': demo.theme || 'light' });
-      tryBtn.textContent = TEXT.tryIt;
-      row.appendChild(tryBtn);
-      wireTry(tryBtn);
-    }
   }
   function paintToggle(t, playing, userPaused) {
     t.setAttribute('aria-label', playing ? TEXT.pauseLabel : TEXT.playLabel);
@@ -172,7 +160,7 @@
     return demo;
   }
   function wantsPlay(demo) {
-    if (document.hidden || viewerOpen || demo.userPaused) return false;
+    if (document.hidden || demo.userPaused) return false;
     if (IVE.openingIsPinned && IVE.openingIsPinned() && demo.figure.classList.contains('hero-frame')) return false;
     if (demo.figure.hasAttribute('data-demo-when-active') && stackedMode(demo) && !demo.figure.classList.contains('is-active')) return false;
     return demo.ratio >= 0.5;
@@ -236,7 +224,6 @@
     var title = figure.getAttribute('data-demo-title') || 'IVE demo';
     var demo = Demo(figure, { loop: figure.getAttribute('data-demo-loop') !== 'false', controls: figure.getAttribute('data-demo-controls') !== 'false' });
     demo.scene = scene; demo.theme = theme; demo.title = title;
-    demo.appRoute = figure.getAttribute('data-demo-app') || null;
     demo.pair = figure.getAttribute('data-demo-pair') || null;
     if (figure.hasAttribute('data-demo-when-active')) whyGroup.push(demo);
     var frame = newFrame(scene, theme, extra);
@@ -281,10 +268,6 @@
       var own = el('div', 'try-row why-slot-row');
       var t = makeToggle();
       own.appendChild(t);
-      var tryBtn = el('button', 'btn btn-outline btn-sm', { type: 'button', 'data-demo-try': d.appRoute || APP_ROUTE[d.scene] || d.scene, 'data-demo-try-theme': d.theme || 'dark' });
-      tryBtn.textContent = TEXT.tryIt;
-      own.appendChild(tryBtn);
-      wireTry(tryBtn);
       beat.insertBefore(own, beat.firstChild);
       d.ui = { toggle: t };
       t.addEventListener('click', function () {
@@ -343,9 +326,6 @@
       demo.theme = c.data.theme || 'light';
       demo.title = c.data.alt || c.btn.textContent;
       demo.scene = c.data.scene;
-      demo.appRoute = c.data.app || null;
-      var tryBtn = section.querySelector('[data-player-try]');
-      if (tryBtn) { tryBtn.setAttribute('data-demo-try', demo.appRoute || APP_ROUTE[demo.scene] || demo.scene); tryBtn.setAttribute('data-demo-try-theme', demo.theme); }
       demo.attach(c.frame, demo.title);
       if (restart && c.frame.ready) c.frame.seek(0);
       sync(demo.ratio >= 0.5 ? demo : null);
@@ -358,59 +338,6 @@
     (section.classList ? section : document.body).classList.add('is-live');
     observe(demo);
   }
-
-  /* ── "Try it yourself": the IVE app built into the site, in a dialog, at the slot's route ── */
-  var dialog = null, dialogFrame = null, dialogOpener = null;
-  function buildDialog() {
-    var d = el('dialog', 'viewer viewer--demo ink-dark', { 'aria-labelledby': 'demo-viewer-caption' });
-    var bar = el('div', 'viewer-bar');
-    var cap = el('p', 'viewer-caption', { id: 'demo-viewer-caption' });
-    var close = el('button', 'icon-btn viewer-close', { type: 'button', 'aria-label': TEXT.close });
-    close.appendChild(svg(ICON.close));
-    bar.appendChild(cap); bar.appendChild(close);
-    var body = el('div', 'viewer-body viewer-body--demo');
-    var box = el('div', 'viewer-demo viewer-app');
-    body.appendChild(box);
-    d.appendChild(bar); d.appendChild(body);
-    document.body.appendChild(d);
-    close.addEventListener('click', function () { d.close(); });
-    d.addEventListener('click', function (e) { if (e.target === d || e.target === body) d.close(); });
-    d.addEventListener('close', function () {
-      root.classList.remove('viewer-open');
-      viewerOpen = false;
-      if (dialogFrame) { if (dialogFrame.iframe) dialogFrame.iframe.remove(); frames.splice(frames.indexOf(dialogFrame), 1); dialogFrame = null; }
-      sync();
-      if (dialogOpener && dialogOpener.focus) dialogOpener.focus({ preventScroll: true });
-    });
-    dialog = { dialog: d, caption: cap, box: box };
-    return dialog;
-  }
-  function openApp(route, theme, opener) {
-    var v = dialog || buildDialog();
-    if (typeof v.dialog.showModal !== 'function') return;
-    dialogOpener = opener || document.activeElement;
-    v.caption.textContent = TEXT.tryTitle;
-    viewerOpen = true;
-    sync();
-    v.box.textContent = '';
-    v.box.className = 'viewer-demo viewer-app frame demo is-ready' + (theme === 'light' ? ' is-light' : '');
-    dialogFrame = newFrame(route, theme || 'light', 'mode=app');
-    dialogFrame.mount(v.box, TEXT.tryTitle, false);
-    dialogFrame.iframe.classList.add('is-active');
-    dialogFrame.iframe.removeAttribute('loading');
-    v.dialog.showModal();
-    root.classList.add('viewer-open');
-    setTimeout(function () { try { dialogFrame.iframe.focus(); } catch (e) {} }, 50);
-  }
-  function wireTry(btn) {
-    btn.addEventListener('click', function () {
-      var route = btn.getAttribute('data-demo-try') || 'board';
-      var theme = btn.getAttribute('data-demo-try-theme') || (root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
-      openApp(route, theme, btn);
-    });
-  }
-  Array.prototype.forEach.call(document.querySelectorAll('[data-demo-try]'), wireTry);
-  IVE.openApp = openApp;
 
   document.addEventListener('visibilitychange', sync);
   window.addEventListener('resize', sync);

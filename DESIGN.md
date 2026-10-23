@@ -132,7 +132,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
 - The app demos are generated, not recorded (owner decision 2026-10-23: "diese Videos
   haben total schlechte Qualität … generiert und keine Aufnahme aus IVE, jedes einzelne
   Video"). Each is the IVE interface rendered live inside a same-origin iframe
-  (`assets/demo/r5/frame.html`) from the app's own stylesheet and DOM markup, so text is
+  (`assets/demo/r6/frame.html`) from the app's own stylesheet and DOM markup, so text is
   sharp at every size, selectable and scrollable; a deterministic script drives the
   scene, and a scrubber with markers lets a visitor move through it. A frame is
   created one viewport ahead and plays when at least half in view, always (owner,
@@ -145,15 +145,23 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   (sidebar hidden under 1000 stage px). Phones get a 3:4 window. Expand opens the
   same scene at window size in the `<dialog>` viewer, with the same controls. The
   Maker film is the one clip with sound.
-- Try it yourself (owner, 2026-10-23 evening, "ich will, dass in der Website die IVE-App
-  quasi gebaut ist", refined to a hybrid: a sharp automatic preview per slot plus a button
-  next to it that opens the usable app): every preview carries an adjacent "Try it yourself"
-  button (hero footer, reel caption, under each Product figure, under the Why panel). It opens
-  the IVE app built into the site (`assets/demo/r5/lib/app.js`, `frame.html?mode=app`) in the
-  viewer at that slot's place: Home, Board, sessions, terminals a visitor types into, Review,
-  Pipelines and the guided task flow, with canned agent replies over the Orbit sample project
-  and running sessions working in the background. The dialog is titled "IVE demo". The hero preview uses the whole container width
-  with a minimum scale of 0.8 so its text paints at about 10 px.
+- Try it yourself (owner, 2026-10-23 evening and night): the previews are what they are; the
+  app is reached from two places only, the hero's CTA row and the Product lead, and opens as
+  `try.html`: the IVE app built into the site (`assets/demo/r6`, `lib/app.js`) at window size
+  and native scale under a slim strip (brand, the introduction's Skip/Again, Back to ive.dev),
+  like a freshly started IVE, with normal browser Back. No dialog, no controls under the
+  previews except Pause/Play.
+- The introduction (owner: "wie die alte Einführung, aber präziser … Felder, die aufblinken …
+  kein Text, den keiner liest … subtil"): `lib/mod-tour.js`. Six actions, each a real click:
+  Start the example task (in the box, editable), the same session's terminal (⌘J), the Board
+  (on phones the sidebar first), answer the waiting permission (allow or deny), Review, open a
+  changed file. One quiet ring on the control that is next (three slow pulses, then still;
+  none under reduced motion), a numbered beacon, two to four words; Skip and Again in the
+  strip, never over the app; Again returns to Home with the example and keeps what the visitor
+  made. The ring only ever marks a control a tap would really reach: a squeezed phone tile
+  gets "Open the request" (the session, with the permission card in its conversation), a
+  hidden sidebar "Open the sidebar", an open Review panel "Back to the session", an empty box
+  "Describe a task". Done is one word. Codex's audit: review/CODEX-ONBOARDING-AUDIT.md.
 - No footnotes under the demos (owner, 2026-10-23 night: "diese Notizen unten dran … die will
   keiner sehen … alle dieser Art"): no provenance or sample-project notes under previews, in the
   Why panel, under Product figures or in the viewer header; the only text next to a preview is
@@ -167,7 +175,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   in a normal terminal inside IVE and that ten of them fit on the board. So the hero
   lead names the terminals, the reel opens with the Terminal and the Ten-at-once
   chapters, and Product opens with a Terminal row. The terminal text in those scenes is
-  scripted demo output in the style of the CLIs (`assets/demo/r5/lib/term.js`), rendered
+  scripted demo output in the style of the CLIs (`assets/demo/r6/lib/term.js`), rendered
   as DOM rows in the look of the app's xterm; typing and Enter are part of the script.
 - `prefers-reduced-motion`: nothing starts by itself, the two scenes show their
   static states, transitions are instant. Without JS every page is a calm static
@@ -217,7 +225,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
 - Static HTML, CSS and JS, no build step. Shared: `site.css`, `site.js`; homepage
   adds `opening.css`, `home.css`, `opening.js`, `home.js`, `madeby.js`; pages with
   app demos add `demo.css`, `demo.js` and `frame-src 'self'` to their CSP. The demo
-  document (`assets/demo/r5/frame.html`) has its own CSP (`style-src 'unsafe-inline'`
+  document (`assets/demo/r6/frame.html`) has its own CSP (`style-src 'unsafe-inline'`
   for the app's inline geometry; scripts `'self'` only).
 - Every page: strict CSP meta (`default-src 'none'`, `'self'` only, inline scripts
   and styles by sha256 hash, `media-src 'self'` only on pages with video (the Maker film),
