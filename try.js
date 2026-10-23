@@ -37,8 +37,10 @@
     var t = e.data;
     guide.hidden = !t.started;
     if (!t.started) return;
-    if (!t.on) { text.textContent = ''; skip.hidden = true; again.hidden = false; again.textContent = 'Show me around'; }
-    else if (t.finished) { text.textContent = 'Done'; skip.hidden = true; again.hidden = false; again.textContent = 'Again'; }
-    else { text.textContent = t.step + ' / ' + t.total; skip.hidden = false; again.hidden = true; }
+    var say = !t.on ? '' : t.finished ? 'Done' : t.step + ' / ' + t.total;
+    if (text.textContent !== say) text.textContent = say; // a live region: set only when it changes
+    if (!t.on) { skip.hidden = true; again.hidden = false; again.textContent = 'Show me around'; }
+    else if (t.finished) { skip.hidden = true; again.hidden = false; again.textContent = 'Again'; }
+    else { skip.hidden = false; again.hidden = true; }
   });
 })();

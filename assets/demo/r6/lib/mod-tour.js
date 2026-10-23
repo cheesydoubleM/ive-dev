@@ -114,7 +114,7 @@ export default {
     if (!ov) {
       ov = document.createElement('div');
       ov.className = 'demo-tour';
-      ov.innerHTML = '<div class="demo-tour-ring" hidden></div><div class="demo-tour-beacon" hidden></div><div class="demo-tour-label" hidden></div><div class="demo-tour-bar" hidden><span class="demo-tour-text"></span><button type="button" class="demo-tour-btn" data-tour-skip>Skip</button><button type="button" class="demo-tour-btn" data-tour-replay hidden>Show me around</button></div>';
+      ov.innerHTML = '<div class="demo-tour-ring" hidden></div><div class="demo-tour-beacon" hidden></div><div class="demo-tour-label" role="status" aria-live="polite" hidden></div><div class="demo-tour-bar" hidden><span class="demo-tour-text"></span><button type="button" class="demo-tour-btn" data-tour-skip>Skip</button><button type="button" class="demo-tour-btn" data-tour-replay hidden>Show me around</button></div>';
       stage.appendChild(ov);
     }
     const ring = ov.querySelector('.demo-tour-ring'), beacon = ov.querySelector('.demo-tour-beacon'), label = ov.querySelector('.demo-tour-label');
@@ -166,7 +166,7 @@ export default {
     beacon.textContent = String(Math.min(doneN + 1, total));
     Object.assign(beacon.style, { left: `${x + w + pad - 12}px`, top: `${y - pad - 12}px` });
     beacon.hidden = false;
-    label.textContent = pick.label;
+    if (label.textContent !== pick.label) label.textContent = pick.label; // announced once, not on every tick or frame
     label.hidden = false;
     const lw = label.offsetWidth, lh = label.offsetHeight;
     let lx = x, ly = y + h + pad + 8;
