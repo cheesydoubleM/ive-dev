@@ -51,11 +51,11 @@ export function rich(text) {
 }
 
 /* ── the app window ── */
-export function shell({ sidebar: showSidebar = true, view = 'session', workspace, sessions = [], activeId = null, main, header: head = null, overlays = '' }) {
+export function shell({ sidebar: showSidebar = true, view = 'session', workspace, sessions = [], activeId = null, main, header: head = null, overlays = '', tools = false }) {
   const session = sessions.find((s) => s.id === activeId) || null;
   return html`<div class="x-app-shell flex flex-col overflow-hidden x-canvas" style="height: 100%;">
   <div class="flex flex-1 min-h-0">
-    ${showSidebar ? sidebar({ workspace, sessions, activeId, view }) : ''}
+    ${showSidebar ? sidebar({ workspace, sessions, activeId, view, tools }) : ''}
     <main class="x-app-main flex-1 flex flex-col min-w-0 min-h-0">
       ${head || header({ view, workspace, session, sidebarOpen: showSidebar })}
       <div class="ive-main-body flex-1 flex flex-col min-h-0 min-w-0 relative">${main}</div>
@@ -66,7 +66,7 @@ export function shell({ sidebar: showSidebar = true, view = 'session', workspace
 }
 
 /* ── sidebar (NavSidebar + SidebarFoot) ── */
-export function sidebar({ workspace = { id: 'orbit', name: 'Orbit', color: 'rgb(16, 185, 129)' }, sessions = [], activeId = null, view = 'session' }) {
+export function sidebar({ workspace = { id: 'orbit', name: 'Orbit', color: 'rgb(16, 185, 129)' }, sessions = [], activeId = null, view = 'session', tools = false }) {
   const running = sessions.filter((s) => s.state === 'running').length;
   const attention = sessions.filter((s) => s.state === 'waiting').length;
   const navItem = (key, name, label, extra = '') => html`<button type="button" data-nav="${key}" data-chrome-button="true" class="ive-nav-item${view === key ? ' is-active' : ''}" title="${label}"${view === key ? raw(' aria-current="page"') : ''}>${I(name, 15)}<span class="ive-nav-label">${label}</span>${extra}</button>`;
@@ -89,7 +89,7 @@ ${navItem('knowledge', 'book-open', 'Knowledge')}
 <div class="relative px-1.5 pb-1.5">
 <button title="New session in ${workspace.name}" data-sidebar-new-session="${workspace.id}" class="w-full flex items-center gap-1.5 px-3 py-1.5 text-xs text-x-faint hover:text-x-ink-secondary hover:bg-x-hover transition-colors duration-[80ms] border-l-2 border-l-transparent">${I('plus', 11)}New session</button>
 ${sessions.filter((s) => !s.hidden).map((s) => sessionCard(s, s.id === activeId))}
-<details class="ive-sidebar-project-tools"><summary>Project tools</summary></details>
+<details class="ive-sidebar-project-tools"${tools ? raw(' open=""') : ''}><summary>Project tools</summary><div class="ive-project-actions"><button type="button" class="ive-project-action" data-demo-open="pipelines" title="Open the Pipeline editor (⌘⇧L)">${I('git-branch', 11)}<span class="truncate">Pipelines</span></button><button type="button" class="ive-project-action" data-demo-open="task" title="Open the guided task">${I('sparkles', 11)}<span class="truncate">Guided task</span></button><button type="button" class="ive-project-action" data-nav="review" title="Review the changes">${I('git-compare-arrows', 11)}<span class="truncate">Review</span></button></div></details>
 </div></div></div></div></div>
 <nav class="ive-nav-group ive-nav-group--setup" aria-label="Set up"><div class="t-label ive-nav-group-title">Set up</div>
 ${navItem('settings', 'settings', 'Settings')}
@@ -184,10 +184,10 @@ export function transcript(messages, { sessionId = 's' } = {}) {
     const parts = [];
     if (n || running) {
       const label = running ? activityLine(steps) : `Activity · ${n} step${n === 1 ? '' : 's'}`;
-      parts.push(html`<div class="ive-conversation-process" data-key="${id}-p"><div class="min-w-0"><div class="ive-conversation-activity"><button type="button" aria-expanded="${m.open ? 'true' : 'false'}" class="ive-conversation-activity-toggle">${running ? I('loader-circle', 14, 'animate-spin') : I('check', 14)}<span>${label}</span>${I('chevron-down', 13, m.open ? '' : '-rotate-90')}</button>${m.open && n ? html`<div class="border-t border-x-line-subtle p-3 space-y-3 bg-x-surface-2/30">${steps.map((st, k) => stepCard(st, { latest: running && k === n - 1 }))}</div>` : ''}</div>${m.text && m.inline ? html`<div class="mt-2 text-x-ink/95"><div class="space-y-2 text-[13px] leading-6 text-x-ink/95 break-words font-sans"><div><p class="my-1.5 text-x-ink/90 leading-6 font-sans">${rich(m.text)}</p></div></div></div>` : ''}</div></div>`);
+      parts.push(html`<div class="ive-conversation-process" data-key="${id}-p"><div class="min-w-0"><div class="ive-conversation-activity"><button type="button" aria-expanded="${m.open ? 'true' : 'false'}" class="ive-conversation-activity-toggle">${running ? I('loader-circle', 14, 'animate-spin') : I('check', 14)}<span>${label}</span>${I('chevron-down', 13, m.open ? '' : '-rotate-90')}</button>${m.open && n ? html`<div class="border-t border-x-line-subtle p-3 space-y-3 bg-x-surface-2/30">${steps.map((st, k) => stepCard(st, { latest: running && k === n - 1 }))}</div>` : ''}</div>${(m.text || m.html) && m.inline ? html`<div class="mt-2 text-x-ink/95"><div class="space-y-2 text-[13px] leading-6 text-x-ink/95 break-words font-sans"><div>${m.html ? raw(m.html) : html`<p class="my-1.5 text-x-ink/90 leading-6 font-sans">${rich(m.text)}</p>`}</div></div></div>` : ''}</div></div>`);
     }
-    if (m.text && !m.inline) {
-      parts.push(html`<article id="msg-${id}-t" data-key="${id}-t" data-chat-message-row="true" data-chat-message-id="${id}-t" data-chat-role="assistant" data-chat-role-label="agent" data-chat-timeline-row="true" class="ive-conversation-message is-assistant"><div class="ive-conversation-content"><div class="space-y-2 text-[13px] leading-6 text-x-ink/95 break-words font-sans"><div><p class="my-1.5 text-x-ink/90 leading-6 font-sans">${rich(m.text)}</p></div></div></div><div class="ive-conversation-message-actions"><time>${m.time || ''}</time><button type="button" aria-label="Copy message" title="Copy message">${I('copy', 13)}</button></div></article>`);
+    if ((m.text || m.html) && !m.inline) {
+      parts.push(html`<article id="msg-${id}-t" data-key="${id}-t" data-chat-message-row="true" data-chat-message-id="${id}-t" data-chat-role="assistant" data-chat-role-label="agent" data-chat-timeline-row="true" class="ive-conversation-message is-assistant"><div class="ive-conversation-content"><div class="space-y-2 text-[13px] leading-6 text-x-ink/95 break-words font-sans"><div>${m.html ? raw(m.html) : html`<p class="my-1.5 text-x-ink/90 leading-6 font-sans">${rich(m.text)}</p>`}</div></div></div><div class="ive-conversation-message-actions"><time>${m.time || ''}</time><button type="button" aria-label="Copy message" title="Copy message">${I('copy', 13)}</button></div></article>`);
     }
     return parts;
   });
@@ -208,8 +208,8 @@ export function drawerBar(s, { full = false } = {}) {
 }
 
 /** The terminal area of a slot: the DOM terminal in the app's surface-2 box. */
-export function terminalArea(s, term, { cols = 80, fontSize = 13 } = {}) {
-  return html`<div class="flex-1 flex flex-col relative" style="min-height: 0px;"><div class="flex-1 bg-x-surface-2 relative" data-terminal-session="${s.id}" style="min-height: 0px; min-width: 0px;">${raw(renderTerminal(term, { cols, id: s.id, fontSize }))}</div><span hidden data-find-anchor="terminal"></span></div>`;
+export function terminalArea(s, term, { cols = 80, fontSize = 13, focused = true } = {}) {
+  return html`<div class="flex-1 flex flex-col relative" style="min-height: 0px;"><div class="flex-1 bg-x-surface-2 relative" data-terminal-session="${s.id}" style="min-height: 0px; min-width: 0px;">${raw(renderTerminal(term, { cols, id: s.id, fontSize, focused }))}</div><span hidden data-find-anchor="terminal"></span></div>`;
 }
 
 /** The bar under a full-size terminal: status, agent mode, "claude | name", the input row. */
@@ -225,14 +225,14 @@ export function terminalComposer(s, { typed = '', lastSeconds = null, narrow = f
  * The session screen. mode: 'full' (terminal fills the session), 'drawer' (overview with the
  * terminal below), 'overview' (no terminal). `terminal` is a term.js model, `cols` its columns.
  */
-export function sessionScreen({ session: s, mode = 'overview', messages = [], terminal: term = null, cols = 80, drawerHeight = 320, typed = '', queue = null, lastSeconds = null, termTyped = '', fontSize = 13, narrow = false }) {
+export function sessionScreen({ session: s, mode = 'overview', messages = [], terminal: term = null, cols = 80, drawerHeight = 320, typed = '', queue = null, lastSeconds = null, termTyped = '', fontSize = 13, narrow = false, after = '', termFocused = true }) {
   let main;
   if (mode === 'full') {
-    main = html`<div class="ive-session-terminal-full flex-1 flex flex-col min-h-0" data-session-terminal-drawer="full">${drawerBar(s, { full: true })}<div class="ive-terminal-slot" data-terminal-slot="${s.id}" data-terminal-mode="full"><div class="ive-terminal-portal" data-terminal-session="${s.id}"><div class="flex-1 flex flex-col relative" style="min-height: 0px;">${terminalArea(s, term, { cols, fontSize })}${terminalComposer(s, { typed: termTyped, lastSeconds, narrow })}</div></div></div></div>`;
+    main = html`<div class="ive-session-terminal-full flex-1 flex flex-col min-h-0" data-session-terminal-drawer="full">${drawerBar(s, { full: true })}<div class="ive-terminal-slot" data-terminal-slot="${s.id}" data-terminal-mode="full"><div class="ive-terminal-portal" data-terminal-session="${s.id}"><div class="flex-1 flex flex-col relative" style="min-height: 0px;">${terminalArea(s, term, { cols, fontSize, focused: termFocused })}${terminalComposer(s, { typed: termTyped, lastSeconds, narrow })}</div></div></div></div>`;
   } else {
     const drawer = mode === 'drawer';
     const padBottom = (drawer ? 0 : 0) + 131 + (queue ? 60 : 0);
-    main = html`${brief(s, messages)}<div class="flex-1 flex flex-col min-h-0 bg-x-bg x-canvas ive-conversation select-text relative"><span hidden data-find-anchor="chat"></span>${chatControls(s)}<div class="flex-1 overflow-y-auto px-3 md:px-4 py-3 scrollbar-thin flex flex-col" data-session-scroll="${s.id}" data-stick=""><div class="ive-conversation-layout w-full mx-auto flex-1 flex flex-row gap-6 relative justify-between"><div class="flex-1 min-w-0 flex flex-col justify-between"><div class="flex-1 space-y-1.5 transition-all duration-300 ease-in-out" style="padding-bottom: ${padBottom}px;">${transcript(messages, { sessionId: s.id })}</div></div></div></div>${composer(s, { typed, drawerOpen: drawer, bottom: 0, queue })}</div>${drawer ? html`<div class="ive-session-drawer" data-session-terminal-drawer="open" style="height: ${drawerHeight}px;">${drawerBar(s)}<div class="ive-terminal-slot" data-terminal-slot="${s.id}" data-terminal-mode="drawer"><div class="ive-terminal-portal" data-terminal-session="${s.id}"><div class="flex-1 flex flex-col relative" style="min-height: 0px;"><div class="px-3 py-1 border-b border-x-line text-[11px]">${modeStrip(s, 'terminal-perms')}</div>${terminalArea(s, term, { cols, fontSize })}</div></div></div></div>` : ''}`;
+    main = html`${brief(s, messages)}<div class="flex-1 flex flex-col min-h-0 bg-x-bg x-canvas ive-conversation select-text relative"><span hidden data-find-anchor="chat"></span>${chatControls(s)}<div class="flex-1 overflow-y-auto px-3 md:px-4 py-3 scrollbar-thin flex flex-col" data-session-scroll="${s.id}" data-stick=""><div class="ive-conversation-layout w-full mx-auto flex-1 flex flex-row gap-6 relative justify-between"><div class="flex-1 min-w-0 flex flex-col justify-between"><div class="flex-1 space-y-1.5 transition-all duration-300 ease-in-out" style="padding-bottom: ${padBottom}px;">${transcript(messages, { sessionId: s.id })}${after || ''}</div></div></div></div>${composer(s, { typed, drawerOpen: drawer, bottom: 0, queue })}</div>${drawer ? html`<div class="ive-session-drawer" data-session-terminal-drawer="open" style="height: ${drawerHeight}px;">${drawerBar(s)}<div class="ive-terminal-slot" data-terminal-slot="${s.id}" data-terminal-mode="drawer"><div class="ive-terminal-portal" data-terminal-session="${s.id}"><div class="flex-1 flex flex-col relative" style="min-height: 0px;"><div class="px-3 py-1 border-b border-x-line text-[11px]">${modeStrip(s, 'terminal-perms')}</div>${terminalArea(s, term, { cols, fontSize, focused: termFocused })}</div></div></div></div>` : ''}`;
   }
   return html`<div class="ive-session-screen flex-1 flex min-h-0 min-w-0 relative" data-session-view="${s.id}" data-grid-cell-session="${s.id}"><div class="ive-session-main flex-1 flex flex-col min-h-0 min-w-0 relative">${main}</div></div>`;
 }

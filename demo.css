@@ -20,17 +20,30 @@
 /* dark app window: the inset ground; light: white */
 .frame.demo .frame-media { background: #0E1014; }
 .frame.demo.is-light .frame-media { background: #FFFFFF; }
-/* phones: a 3:4 window of the app, as the recordings were cut */
+/* inline previews behave like a film: the wheel scrolls the page, the controls stay live;
+   scrolling and clicking inside happen in the expanded preview and in "Try it yourself" */
+.frame.demo:not(.viewer-demo) .frame-media > .demo-frame { pointer-events: none; }
+/* phones: a 3:4 window of the app, as the recordings were cut; the hero footer stacks */
 @media (max-width: 719.98px) {
   .frame.demo .frame-media { aspect-ratio: 3 / 4; }
   .frame.demo.hero-frame .frame-media { aspect-ratio: 3 / 4; }
+  .hero-frame-footer { flex-direction: column; align-items: flex-start; }
+  .hero-frame-footer > p { max-width: none; }
 }
 /* the hero keeps its wide window on desktops */
 .hero-frame.demo .frame-media { aspect-ratio: 2704 / 936; }
 .hero-frame.demo .frame-media > .frame-poster,
 .hero-frame.demo .frame-media > .frame-poster img { inset: 0; left: 0; top: 0; width: 100%; height: 100%; max-width: 100%; object-fit: cover; object-position: 0 0; }
 
-/* controls: the site's buttons, shown on hover; the demo's scrubber at the bottom */
+/* no overlay controls on a preview: Pause/Play and Try it yourself sit next to it */
+.frame.demo .frame-controls, .frame.demo .frame-play, .frame.demo .demo-scrub { display: none; }
+.demo-toggle { display: inline-flex; align-items: center; gap: 8px; }
+.demo-toggle .icon { width: 12px; height: 12px; }
+.demo-toggle .icon-play { display: none; }
+.demo-toggle.is-paused .icon-pause { display: none; }
+.demo-toggle.is-paused .icon-play { display: inline-block; }
+.player-provenance { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; }
+/* (legacy overlay controls, kept for the app dialog's frame classes) */
 .frame.demo .frame-controls { z-index: 4; }
 .frame.demo .frame-play { z-index: 4; }
 .frame.demo.is-paused .frame-btn[data-demo-toggle] .icon-pause { display: none; }
@@ -107,6 +120,30 @@
 .why-media .frame-controls, .why-media .frame-play, .why-media .demo-scrub { display: none; }
 .why-media.demo { background: #0E1014; }
 
+/* "Try it yourself": a labelled button among the frame controls */
+.frame-btn.frame-try {
+  display: inline-flex; align-items: center; gap: 8px;
+  width: auto; padding: 0 14px 0 12px;
+  font: 600 14px/1 var(--display);
+  white-space: nowrap;
+}
+.frame-btn.frame-try .icon { width: 12px; height: 12px; }
+.frame-btn[hidden] { display: none; }
+.hero-frame-footer .btn { flex: none; }
+.try-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.try-note { font-family: var(--mono); font-size: 12px; line-height: 1.4; color: var(--text-4); }
+
+.frame .try-row.frame-caption { margin-top: 12px; }
+/* the Why panel's Try button: under the panel in the pinned layout, after the stage on phones */
+.why-try { margin-top: 12px; }
+.why.is-pinned .why-try { grid-column: 6 / 13; grid-row: 3; justify-self: end; margin-top: 12px; }
+.why.is-pinned .why-layout { grid-template-rows: 1fr auto auto; }
+.why.is-pinned .why-panel { grid-row: 1 / 2; }
+.why.is-pinned .why-jumps { grid-row: 2 / 4; }
+
+/* without JS the buttons would do nothing: posters and captions stay */
+html.no-js [data-demo-try], html.no-js .try-row, html.no-js .why-try { display: none; }
+
 /* the full-size viewer hosts the same scene */
 .viewer-body--demo { padding: 0 20px 20px; }
 .viewer-demo {
@@ -119,6 +156,12 @@
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 24px 64px rgba(0, 0, 0, 0.5);
 }
 .viewer-demo > .demo-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+/* the app to try: as large as the window allows, no scrubber */
+.viewer-demo.viewer-app { width: 100%; aspect-ratio: auto; height: calc(100vh - 110px); height: calc(100dvh - 110px); }
+.viewer-app .frame-controls, .viewer-app .demo-scrub, .viewer-app .frame-play { display: none; }
+@media (max-width: 719.98px) {
+  .viewer-demo.viewer-app { height: calc(100dvh - 80px); }
+}
 .viewer-demo .frame-controls, .viewer-demo .demo-scrub { opacity: 1; }
 .viewer-demo .frame-controls .frame-btn[hidden] { display: none; }
 @media (max-width: 719.98px) {

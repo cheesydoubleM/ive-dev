@@ -18,7 +18,7 @@ and one should be able to scroll through it.
   with only `url(/fonts/` rewritten to `url(fonts/`; `assets/demo/fonts/` holds the app's Inter
   400/500/600 and JetBrains Mono 400/500 (OFL). So the demos are styled by the app's stylesheet,
   tokens (`--x-*`), theme switch (`html[data-theme]`) and all.
-- `assets/demo/frame.html` + `frame.js`: one scene per same-origin iframe
+- `assets/demo/r5/frame.html` + `frame.js`: one scene per same-origin iframe
   (`?scene=<id>&theme=light|dark[&variant=hero][&at=seconds][&phone=1]`). The stage (`#stage`,
   the app window) scales to the iframe but never below the scene's `fit.minScale` (0.72 default,
   0.6 for the board's establishing view): below that the app window itself gets narrower, so
@@ -26,7 +26,7 @@ and one should be able to scroll through it.
   (seek/play/pause/time/duration/markers/poster) and postMessage (`ready`, `time`, `ended`,
   `playstate`, `takeover`, `key`) are the protocol with the parent page (`demo.js`). Any pointer
   press, wheel or key inside the stage pauses the timer.
-- `assets/demo/lib/`: `dom.js` (`html` template tag, `morph` patches the live DOM so scroll
+- `assets/demo/r5/lib/`: `dom.js` (`html` template tag, `morph` patches the live DOM so scroll
   positions and selections survive a re-render), `timeline.js` (`script()`: hold/click/type/do/
   every/mark/scroll, `createPlayer`: `seek(t)` replays the deterministic event list from the
   start when scrubbing backwards, pointer and click ring, data-stick containers follow new output
@@ -38,7 +38,7 @@ and one should be able to scroll through it.
   card), `home.js` (Home screen, composer queue, toast), `taskflow.js` (Needs your attention, the
   guided task window, Run details), `pipeline.js` (Pipeline editor, canvas, Run Detail),
   `review.js` (review panel, fullscreen review, diff renderer).
-- `assets/demo/scenes/`: `board`, `attention`, `terminal`, `terminals`, `start`, `autofix`,
+- `assets/demo/r5/scenes/`: `board`, `attention`, `terminal`, `terminals`, `start`, `autofix`,
   `pipelines`, `loopdetect`, `review`, each a port of the clip script of the same story
   (`clips/hero-board.mjs`, `terminal.mjs`, `terminals.mjs`, `start-queue.mjs`, `loop-task.mjs`,
   `loop-canvas.mjs`, `loop-detect.mjs`, `review.mjs`). A scene exports `{ id, title, script,
@@ -59,6 +59,32 @@ and one should be able to scroll through it.
   are scripted pointer and keyboard actions, and the visitor's own scrolling and selecting are
   real. No provider ran. Provenance line: **IVE interface, rendered live · demo project · no
   provider ran.**
+
+## The app built into the site (round 5, 23 Oct 2026, evening)
+
+Owner steering: "ich will, dass in der Website die IVE-App quasi gebaut ist"; refined in his Codex
+thread to a hybrid: a sharp automatic preview per slot and a "Try it yourself" button next to it
+that opens the usable app.
+
+- `assets/demo/r5/lib/app.js`: the interactive model of the 1.0.17 interface. State: view (home,
+  board, session), active session, board tabs, sessions, per-session Overview rows and terminal
+  model (one source, `lib/data.js`), modes (overview, drawer, full terminal), tile views (chat,
+  terminal), queue (UP NEXT), toasts, agents (canned programs with timed events: step, say,
+  toast, nudge, done). Handlers: click (sidebar, header, Home Start, board tiles: Open, view
+  toggle, close, Allow once / Don't allow; session: drawer bar, composer, activity groups,
+  Cancel), dblclick (open a tile), input (composers; the terminal's hidden input takes
+  characters, paste and virtual keyboards), key (Enter sends, Backspace, Escape, ⌘J, the
+  permission dialog's 1/2/3), submit, tick (background work while the frame is visible).
+  Narrow windows keep the header's sidebar toggle and open the sidebar as an overlay.
+- Modules (`lib/mod-review.js`, `lib/mod-pipelines.js`, `lib/mod-flow.js`) add the Review panel
+  and fullscreen, the Pipeline editor (chooser, canvas, Run, Run Detail) and the guided task
+  flow (attention list, task window, approval, cycles, Run details) through one interface:
+  `{ id, init(state, env), overlays(state, ctx), main(state, ctx), click(e, state, api), key(e, state, api), tick(state, dt, api) }`.
+  Openers: the sidebar's Project tools (Pipelines, Guided task, Review), the "needs your
+  attention" button, ⌘⇧L.
+- `frame.html?scene=<route>&mode=app` boots the app at a route; the parent's "Try it yourself"
+  buttons (`demo.js`) open it in the viewer dialog. Honesty: the replies are canned demo data,
+  the dialog's caption says so; no provider, no shell, nothing leaves the page.
 
 ## The recordings (rounds 1 to 3, kept for `record.mjs`)
 
@@ -320,5 +346,5 @@ script is still `hero-board.mjs --light` (`meta.lightId`).
 ## Rules
 
 - Keep the demos honest: the app's own markup and stylesheet, labelled demo data, no provider claims.
-- After an app release that changes the views: dump again (`snapshot.mjs`), update `assets/demo/app.css`, the fonts and the markup in `assets/demo/lib/`, regenerate the posters, bump the site's `?v=`.
+- After an app release that changes the views: dump again (`snapshot.mjs`), update `assets/demo/app.css`, the fonts and the markup in `assets/demo/r5/lib/`, regenerate the posters, bump the site's `?v=`.
 - Do not commit frame or dump directories; they are scratch.

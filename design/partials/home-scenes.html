@@ -23,8 +23,8 @@
 <link rel="stylesheet" href="assets/fonts.css?v=20261023a">
 <link rel="stylesheet" href="site.css?v=20261023a">
 <link rel="stylesheet" href="opening.css?v=20261023b">
-<link rel="stylesheet" href="home.css?v=20261023e">
-<link rel="stylesheet" href="demo.css?v=20261023a">
+<link rel="stylesheet" href="home.css?v=20261023f">
+<link rel="stylesheet" href="demo.css?v=20261023c">
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -103,12 +103,12 @@
         <p class="caption hero-note" data-mac-download-note>For Macs with Apple silicon and macOS 13.5 or newer.</p>
       </div>
 
-      <figure class="frame hero-frame" data-demo="board" data-demo-theme="dark" data-demo-params="variant=hero" data-demo-title="The IVE board, rendered live: four coding sessions side by side" data-demo-caption="The IVE board. The interface rendered live with a demo project. No provider ran.">
+      <figure class="frame hero-frame" data-demo="board" data-demo-theme="dark" data-demo-params="variant=hero&amp;minScale=0.8" data-demo-title="The IVE board: four coding sessions side by side" data-demo-caption="The IVE board">
         <div class="frame-media">
-          <picture class="frame-poster"><source media="(max-width: 719.98px)" srcset="assets/demo/posters/board-hero-m.webp"><img src="assets/demo/posters/board-hero.webp" srcset="assets/demo/posters/board-hero.webp 1600w, assets/demo/posters/board-hero@2x.webp 3200w" sizes="(max-width: 719.98px) 100vw, 880px" width="1600" height="554" alt="The IVE board: four coding sessions side by side, two working, one waiting for your answer, one done." decoding="async"></picture>
+          <picture class="frame-poster"><source media="(max-width: 719.98px)" srcset="assets/demo/posters/board-hero-m.webp"><img src="assets/demo/posters/board-hero.webp" srcset="assets/demo/posters/board-hero.webp 1600w, assets/demo/posters/board-hero@2x.webp 3200w" sizes="(max-width: 1439.98px) 100vw, 1320px" width="1600" height="554" alt="The IVE board: four coding sessions side by side, two working, one waiting for your answer, one done." decoding="async"></picture>
         </div>
         <figcaption class="frame-caption hero-frame-footer">
-          <p class="caption">The IVE interface, rendered live with a demo project. No provider ran. Scroll inside it; expand it for the whole window.</p>
+          <div class="try-row"><button class="btn btn-outline btn-sm" type="button" data-demo-try="board" data-demo-try-theme="dark">Try it yourself</button></div>
         </figcaption>
       </figure>
     </div>
@@ -144,15 +144,12 @@
           <figure class="why-panel" data-why-panel aria-label="Pictures for the four reasons: the IVE board, a session waiting for your answer, the review of a change, and what runs where.">
             <div class="why-media" data-why-media="0" data-demo="board" data-demo-theme="dark" data-demo-controls="false" data-demo-when-active data-demo-title="The IVE board: four sessions run side by side and change state">
               <picture class="frame-poster"><img src="assets/demo/posters/board.webp" srcset="assets/demo/posters/board.webp 1600w, assets/demo/posters/board@2x.webp 3200w" sizes="760px" width="1600" height="1000" alt="" loading="lazy" decoding="async"></picture>
-              <span class="why-label">IVE interface · demo project</span>
             </div>
             <div class="why-media" data-why-media="1" data-demo="attention" data-demo-theme="dark" data-demo-controls="false" data-demo-when-active data-demo-title="A board tile waiting for your answer: the session asks for permission to run npm test">
               <picture class="frame-poster"><img src="assets/demo/posters/attention.webp" srcset="assets/demo/posters/attention.webp 1280w, assets/demo/posters/attention@2x.webp 2560w" sizes="640px" width="1280" height="880" alt="A board tile waiting for your answer: the session asks for permission to run npm test." loading="lazy" decoding="async"></picture>
-              <span class="why-label">IVE interface · demo project</span>
             </div>
             <div class="why-media" data-why-media="2" data-demo="review" data-demo-theme="dark" data-demo-controls="false" data-demo-when-active data-demo-title="The IVE review: the changed files of a session and the first change, line by line">
               <picture class="frame-poster"><img src="assets/demo/posters/review-dark.webp" srcset="assets/demo/posters/review-dark.webp 1280w, assets/demo/posters/review-dark@2x.webp 2560w" sizes="640px" width="1280" height="880" alt="" loading="lazy" decoding="async"></picture>
-              <span class="why-label">IVE interface · demo project</span>
             </div>
             <div class="why-media why-ledger-wrap" data-why-media="3">
               <dl class="ledger why-ledger">
@@ -165,6 +162,7 @@
               <span class="why-label">What runs where</span>
             </div>
           </figure>
+          <div class="why-try"><button class="btn btn-outline btn-sm" type="button" data-demo-try="board" data-demo-try-theme="dark">Try it yourself</button></div>
           <nav class="why-jumps" aria-label="Why IVE">
             <button class="why-jump" type="button" data-why-jump="0">Parallel</button>
             <button class="why-jump" type="button" data-why-jump="1">In view</button>
@@ -186,14 +184,14 @@
     </div>
     <div class="inside-live">
       <ol class="chapters" data-chapters>
-        <li><button class="chapter-btn" type="button" data-chapter="1" aria-pressed="true" data-chapter-demo='{"scene": "terminal", "theme": "light", "poster": "assets/demo/posters/terminal.webp", "poster2x": "assets/demo/posters/terminal@2x.webp", "alt": "A session’s terminal inside IVE; an instruction is typed, the CLI works through its steps, then the same session is shown as Overview with the terminal below.", "caption": "A normal terminal, enhanced. The IVE interface rendered live with a demo project. No provider ran."}'><span class="chapter-num">01</span><span class="chapter-name">Terminal</span></button></li>
-        <li><button class="chapter-btn" type="button" data-chapter="2" aria-pressed="false" data-chapter-demo='{"scene": "terminals", "theme": "light", "poster": "assets/demo/posters/terminals.webp", "poster2x": "assets/demo/posters/terminals@2x.webp", "alt": "The board with ten sessions as terminal tiles; output streams in every tile, a waiting tile is answered with Enter, one terminal is opened at full size.", "caption": "Ten terminals, one board. The IVE interface rendered live with a demo project. No provider ran."}'><span class="chapter-num">02</span><span class="chapter-name">Ten at once</span></button></li>
-        <li><button class="chapter-btn" type="button" data-chapter="3" aria-pressed="false" data-chapter-demo='{"scene": "start", "theme": "light", "poster": "assets/demo/posters/start.webp", "poster2x": "assets/demo/posters/start@2x.webp", "alt": "A goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it.", "caption": "Start with a sentence. The IVE interface rendered live with a demo project. No provider ran."}'><span class="chapter-num">03</span><span class="chapter-name">Start</span></button></li>
-        <li><button class="chapter-btn" type="button" data-chapter="4" aria-pressed="false" data-chapter-demo='{"scene": "autofix", "theme": "light", "poster": "assets/demo/posters/autofix.webp", "poster2x": "assets/demo/posters/autofix@2x.webp", "alt": "The plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes.", "caption": "Build, check, fix, repeat. The IVE interface rendered live with a demo project. No provider ran."}'><span class="chapter-num">04</span><span class="chapter-name">Auto-fix loop</span></button></li>
-        <li><button class="chapter-btn" type="button" data-chapter="5" aria-pressed="false" data-chapter-demo='{"scene": "pipelines", "theme": "light", "poster": "assets/demo/posters/pipelines.webp", "poster2x": "assets/demo/posters/pipelines@2x.webp", "alt": "A saved pipeline runs on the canvas; the check fails, the fix stage runs, the second cycle passes.", "caption": "Draw your own loop. The IVE interface rendered live with a demo project. No provider ran."}'><span class="chapter-num">05</span><span class="chapter-name">Pipelines</span></button></li>
-        <li><button class="chapter-btn" type="button" data-chapter="6" aria-pressed="false" data-chapter-demo='{"scene": "loopdetect", "theme": "light", "poster": "assets/demo/posters/loopdetect.webp", "poster2x": "assets/demo/posters/loopdetect@2x.webp", "alt": "An agent runs the same npm test three times; IVE shows Loop detected and the agent changes its approach.", "caption": "Caught going in circles. The IVE interface rendered live with a demo project. No provider ran."}'><span class="chapter-num">06</span><span class="chapter-name">Loop detected</span></button></li>
+        <li><button class="chapter-btn" type="button" data-chapter="1" aria-pressed="true" data-chapter-demo='{"scene": "terminal", "theme": "light", "poster": "assets/demo/posters/terminal.webp", "poster2x": "assets/demo/posters/terminal@2x.webp", "alt": "A session’s terminal inside IVE; an instruction is typed, the CLI works through its steps, then the same session is shown as Overview with the terminal below.", "caption": "A normal terminal, enhanced."}'><span class="chapter-num">01</span><span class="chapter-name">Terminal</span></button></li>
+        <li><button class="chapter-btn" type="button" data-chapter="2" aria-pressed="false" data-chapter-demo='{"scene": "terminals", "theme": "light", "poster": "assets/demo/posters/terminals.webp", "poster2x": "assets/demo/posters/terminals@2x.webp", "alt": "The board with ten sessions as terminal tiles; output streams in every tile, a waiting tile is answered with Enter, one terminal is opened at full size.", "caption": "Ten terminals, one board."}'><span class="chapter-num">02</span><span class="chapter-name">Ten at once</span></button></li>
+        <li><button class="chapter-btn" type="button" data-chapter="3" aria-pressed="false" data-chapter-demo='{"scene": "start", "theme": "light", "poster": "assets/demo/posters/start.webp", "poster2x": "assets/demo/posters/start@2x.webp", "alt": "A goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it.", "caption": "Start with a sentence."}'><span class="chapter-num">03</span><span class="chapter-name">Start</span></button></li>
+        <li><button class="chapter-btn" type="button" data-chapter="4" aria-pressed="false" data-chapter-demo='{"scene": "autofix", "theme": "light", "poster": "assets/demo/posters/autofix.webp", "poster2x": "assets/demo/posters/autofix@2x.webp", "alt": "The plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes.", "caption": "Build, check, fix, repeat."}'><span class="chapter-num">04</span><span class="chapter-name">Auto-fix loop</span></button></li>
+        <li><button class="chapter-btn" type="button" data-chapter="5" aria-pressed="false" data-chapter-demo='{"scene": "pipelines", "theme": "light", "poster": "assets/demo/posters/pipelines.webp", "poster2x": "assets/demo/posters/pipelines@2x.webp", "alt": "A saved pipeline runs on the canvas; the check fails, the fix stage runs, the second cycle passes.", "caption": "Draw your own loop."}'><span class="chapter-num">05</span><span class="chapter-name">Pipelines</span></button></li>
+        <li><button class="chapter-btn" type="button" data-chapter="6" aria-pressed="false" data-chapter-demo='{"scene": "loopdetect", "theme": "light", "poster": "assets/demo/posters/loopdetect.webp", "poster2x": "assets/demo/posters/loopdetect@2x.webp", "alt": "An agent runs the same npm test three times; IVE shows Loop detected and the agent changes its approach.", "caption": "Caught going in circles."}'><span class="chapter-num">06</span><span class="chapter-name">Loop detected</span></button></li>
       </ol>
-      <figure class="frame is-light player" data-player data-demo-player data-demo-title="Inside IVE: six scenes of the interface, rendered live">
+      <figure class="frame is-light player" data-player data-demo-player data-demo-title="Inside IVE: six scenes of the interface">
         <div class="frame-media">
           <img class="frame-poster" data-player-poster src="assets/demo/posters/terminal.webp" srcset="assets/demo/posters/terminal.webp 1600w, assets/demo/posters/terminal@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 1200px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
         </div>
@@ -206,7 +204,7 @@
             <div class="player-caption" data-chapter-caption="5"><p class="cap-title">Draw your own loop.</p><p class="cap-text">Agents, checks and conditions on one canvas. Every loop has a cycle limit and shows which round it is on.</p></div>
             <div class="player-caption" data-chapter-caption="6"><p class="cap-title">Caught going in circles.</p><p class="cap-text">When an agent repeats the same call three times, IVE warns you and tells it to change approach. On by default.</p></div>
           </div>
-          <p class="caption player-provenance">IVE interface, rendered live · demo project · no provider ran</p>
+          <div class="player-provenance"><button class="btn btn-outline btn-sm" type="button" data-demo-try="terminal" data-demo-try-theme="light" data-player-try>Try it yourself</button></div>
         </figcaption>
       </figure></figure>
     </div>
@@ -218,7 +216,6 @@
       <figure class="frame is-light"><span class="chapter-num">04 · Auto-fix loop</span><div class="frame-media"><img class="frame-poster" src="assets/demo/posters/autofix.webp" srcset="assets/demo/posters/autofix.webp 1600w, assets/demo/posters/autofix@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 1200px" width="1600" height="1000" alt="The run details of a guided task: completed in the second cycle, every stage passed." loading="lazy" decoding="async"></div><figcaption><p class="cap-title">Build, check, fix, repeat.</p><p class="cap-text">You approve the plan. A testing agent checks the work; a failed check goes back with its report, up to the limit you set.</p></figcaption></figure>
       <figure class="frame is-light"><span class="chapter-num">05 · Pipelines</span><div class="frame-media"><img class="frame-poster" src="assets/demo/posters/pipelines.webp" srcset="assets/demo/posters/pipelines.webp 1600w, assets/demo/posters/pipelines@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 1200px" width="1600" height="1000" alt="A pipeline on the canvas with a loop from the check back to the fix stage." loading="lazy" decoding="async"></div><figcaption><p class="cap-title">Draw your own loop.</p><p class="cap-text">Agents, checks and conditions on one canvas. Every loop has a cycle limit and shows which round it is on.</p></figcaption></figure>
       <figure class="frame is-light"><span class="chapter-num">06 · Loop detected</span><div class="frame-media"><img class="frame-poster" src="assets/demo/posters/loopdetect.webp" srcset="assets/demo/posters/loopdetect.webp 1600w, assets/demo/posters/loopdetect@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 1200px" width="1600" height="1000" alt="A session with the warning Loop detected after the same npm test ran three times." loading="lazy" decoding="async"></div><figcaption><p class="cap-title">Caught going in circles.</p><p class="cap-text">When an agent repeats the same call three times, IVE warns you and tells it to change approach. On by default.</p></figcaption></figure>
-      <p class="caption">IVE app · demo project · no provider ran</p>
     </div>
   </div>
 </section>
@@ -298,7 +295,7 @@
 <script src="site.js?v=20261023a" defer></script>
 <script src="opening.js?v=20261023b" defer></script>
 <script src="home.js?v=20261023a" defer></script>
-<script src="demo.js?v=20261023a" defer></script>
+<script src="demo.js?v=20261023c" defer></script>
 <script src="madeby.js?v=20261023a" defer></script>
 </body>
 </html>

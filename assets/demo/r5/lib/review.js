@@ -81,7 +81,7 @@ function folders(files) {
   return [...map.entries()];
 }
 export function fileTree(files) {
-  return html`<div class="mb-1"><button class="w-full flex items-center gap-1 px-2 py-1 text-[11px] font-mono uppercase tracking-wide text-x-accent-ink hover:bg-x-hover">${I('chevron-down', 12)}<span>unstaged</span><span class="text-x-muted">(${files.length})</span></button>${folders(files).map(([dir, list]) => html`<div><button class="w-full flex items-center gap-1 pl-4 pr-2 py-0.5 text-[11px] font-mono text-x-muted hover:bg-x-hover">${I('chevron-down', 12)}${I('folder-open', 12, 'text-x-faint')}<span class="truncate">${dir}</span></button>${list.map((f) => html`<button title="${f.path}" class="w-full flex items-center gap-1.5 pl-8 pr-2 py-0.5 text-[11px] font-mono transition-colors relative group text-x-ink-secondary hover:bg-x-hover hover:text-x-ink">${I('file-pen', 12, 'text-x-accent-ink')}<span class="truncate flex-1 text-left">${f.name}</span><span class="text-[11px] text-x-muted shrink-0 uppercase">M</span></button>`)}</div>`)}</div>`;
+  return html`<div class="mb-1"><button class="w-full flex items-center gap-1 px-2 py-1 text-[11px] font-mono uppercase tracking-wide text-x-accent-ink hover:bg-x-hover">${I('chevron-down', 12)}<span>unstaged</span><span class="text-x-muted">(${files.length})</span></button>${folders(files).map(([dir, list]) => html`<div><button class="w-full flex items-center gap-1 pl-4 pr-2 py-0.5 text-[11px] font-mono text-x-muted hover:bg-x-hover">${I('chevron-down', 12)}${I('folder-open', 12, 'text-x-faint')}<span class="truncate">${dir}</span></button>${list.map((f) => html`<button type="button" title="${f.path}" data-demo-review-file="${f.path}" class="w-full flex items-center gap-1.5 pl-8 pr-2 py-0.5 text-[11px] font-mono transition-colors relative group text-x-ink-secondary hover:bg-x-hover hover:text-x-ink">${I('file-pen', 12, 'text-x-accent-ink')}<span class="truncate flex-1 text-left">${f.name}</span><span class="text-[11px] text-x-muted shrink-0 uppercase">M</span></button>`)}</div>`)}</div>`;
 }
 
 /* ── the side panel (380 px, right of the session) ── */
@@ -115,7 +115,7 @@ export const reviewButton = ({ wide = false } = {}) => html`<div class="flex ite
 /** The Code Review side panel. `wide`: on narrow stages it takes the whole width, like the app in a small window. */
 export function reviewPanel({ files, wide = false }) {
   return html`<div class="relative ${wide ? 'flex-1 min-w-0' : 'w-[380px]'} border-l border-x-line bg-x-bg flex flex-col h-full overflow-hidden z-30 x-sidebar-slide" data-demo-review-panel="">
-<div class="flex items-center justify-between border-b border-x-line bg-x-surface-2 shrink-0 px-3 select-none"><div class="flex gap-1.5 py-2"><button class="px-3 py-1.5 text-[11px] font-semibold font-mono rounded-lg transition-all text-x-muted hover:text-x-ink-secondary">Files &amp; Plans</button><button class="px-3 py-1.5 text-[11px] font-semibold font-mono rounded-lg transition-all bg-x-tint text-x-ink">Code Review</button><button class="px-3 py-1.5 text-[11px] font-semibold font-mono rounded-lg transition-all text-x-muted hover:text-x-ink-secondary">Scratchpad</button></div><button class="p-1 rounded hover:bg-x-hover text-x-muted hover:text-x-ink transition-all">${I('x', 14)}</button></div>
+<div class="flex items-center justify-between border-b border-x-line bg-x-surface-2 shrink-0 px-3 select-none"><div class="flex gap-1.5 py-2"><button class="px-3 py-1.5 text-[11px] font-semibold font-mono rounded-lg transition-all text-x-muted hover:text-x-ink-secondary">Files &amp; Plans</button><button class="px-3 py-1.5 text-[11px] font-semibold font-mono rounded-lg transition-all bg-x-tint text-x-ink">Code Review</button><button class="px-3 py-1.5 text-[11px] font-semibold font-mono rounded-lg transition-all text-x-muted hover:text-x-ink-secondary">Scratchpad</button></div><button type="button" class="p-1 rounded hover:bg-x-hover text-x-muted hover:text-x-ink transition-all" data-demo-review-close="" aria-label="Close review panel" title="Close review panel">${I('x', 14)}</button></div>
 <div class="flex-1 overflow-y-auto scrollbar-thin"><div class="p-3.5 flex flex-col h-full min-h-[500px]">
 <div class="flex gap-1.5 mb-3"><button class="flex-1 py-1 rounded text-[11px] font-mono capitalize transition-all bg-x-accent/20 border border-x-accent/40 text-x-ink">working Diff</button><button class="flex-1 py-1 rounded text-[11px] font-mono capitalize transition-all border border-x-line-subtle text-x-muted hover:text-x-ink-secondary">staged Diff</button></div>
 <div class="border border-x-line-subtle bg-x-surface rounded-xl overflow-hidden mb-2.5 max-h-[165px] flex flex-col"><button class="flex items-center gap-1.5 px-2 py-1.5 text-[11px] font-mono border-b border-x-line-subtle transition-colors bg-x-accent/10 text-x-accent">${I('files', 12)} All files</button><div class="flex items-center gap-1.5 px-2 py-1 border-b border-x-line-subtle bg-x-surface-2">${I('search', 11, 'text-x-faint shrink-0')}<input placeholder="Search file names..." class="w-full bg-transparent text-[11px] font-mono text-x-ink-secondary placeholder:text-x-faint focus:outline-none" value=""></div><div class="overflow-y-auto scrollbar-thin py-1 min-h-0">${fileTree(files)}</div></div>
@@ -174,7 +174,7 @@ function unifiedDiff(files) {
  */
 export function reviewFullscreen({ files, view = 'split', workspace = 'orbit', narrow = false }) {
   return html`<div class="fixed inset-0 z-[1000] bg-x-bg flex flex-col ${narrow ? 'p-3' : 'p-6'} overflow-hidden text-x-ink select-text" data-demo-review-full="">
-<div class="flex items-center justify-between pb-4 border-b border-x-line select-none shrink-0 gap-3 flex-wrap"><div><h2 class="text-sm font-semibold font-mono flex items-center gap-2">${I('git-compare-arrows', 16, 'text-x-accent')}<span>Fullscreen Code Review</span></h2><p class="text-[11px] text-x-muted font-mono mt-0.5">Workspace: ${workspace}</p></div><div class="flex items-center gap-4 flex-wrap"><div class="flex bg-x-surface-2 border border-x-line rounded-lg p-0.5"><button type="button" class="${SIDE_BTN(true)} capitalize">working</button><button type="button" class="${SIDE_BTN(false)} capitalize">staged</button></div><div class="flex bg-x-surface-2 border border-x-line rounded-lg p-0.5"><button type="button" class="${SIDE_BTN(view === 'split')}" data-demo-review-view="split">Split View</button><button type="button" class="${SIDE_BTN(view === 'unified')}" data-demo-review-view="unified">Unified View</button></div>${narrow ? '' : html`<button type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-x-line bg-transparent text-[11px] font-mono text-x-ink-secondary hover:text-x-ink hover:bg-x-hover hover:border-x-line-strong transition-colors" title="Collapse to sidebar. Code Review will remember this preference next time.">${I('minimize2', 12)}<span>Collapse to Sidebar</span></button>`}</div></div>
+<div class="flex items-center justify-between pb-4 border-b border-x-line select-none shrink-0 gap-3 flex-wrap"><div><h2 class="text-sm font-semibold font-mono flex items-center gap-2">${I('git-compare-arrows', 16, 'text-x-accent')}<span>Fullscreen Code Review</span></h2><p class="text-[11px] text-x-muted font-mono mt-0.5">Workspace: ${workspace}</p></div><div class="flex items-center gap-4 flex-wrap"><div class="flex bg-x-surface-2 border border-x-line rounded-lg p-0.5"><button type="button" class="${SIDE_BTN(true)} capitalize">working</button><button type="button" class="${SIDE_BTN(false)} capitalize">staged</button></div><div class="flex bg-x-surface-2 border border-x-line rounded-lg p-0.5"><button type="button" class="${SIDE_BTN(view === 'split')}" data-demo-review-view="split">Split View</button><button type="button" class="${SIDE_BTN(view === 'unified')}" data-demo-review-view="unified">Unified View</button></div>${narrow ? '' : html`<button data-demo-review-collapse="" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-x-line bg-transparent text-[11px] font-mono text-x-ink-secondary hover:text-x-ink hover:bg-x-hover hover:border-x-line-strong transition-colors" title="Collapse to sidebar. Code Review will remember this preference next time.">${I('minimize2', 12)}<span>Collapse to Sidebar</span></button>`}</div></div>
 <div class="flex-1 flex gap-6 overflow-hidden mt-4 min-h-0">
 ${narrow ? '' : html`<div class="w-[320px] flex-shrink-0 bg-x-surface rounded-xl border border-x-line-subtle flex flex-col p-4 overflow-hidden select-none"><div class="flex items-center justify-between mb-2"><span class="text-[11px] font-semibold font-mono text-x-accent uppercase tracking-wide">Files Changed</span><span class="text-[11px] font-mono text-x-muted bg-x-hover px-1.5 py-0.5 rounded">${files.length} files</span></div><div class="flex items-center gap-1.5 px-2 py-1.5 border border-x-line bg-x-surface-2 rounded-lg mb-3">${I('search', 11, 'text-x-faint shrink-0')}<input placeholder="Search file names..." class="w-full bg-transparent text-[11px] font-mono text-x-ink-secondary placeholder:text-x-faint focus:outline-none" value=""></div><div class="flex-1 overflow-y-auto scrollbar-thin pr-1"><button type="button" class="w-full flex items-center gap-1.5 px-2 py-2 text-[11px] font-mono border border-transparent rounded-lg transition-colors mb-2 text-left bg-x-accent/10 border-x-accent/20 text-x-accent">${I('files', 12)} All changed files</button>${fileTree(files)}</div></div>`}
 <div class="flex-1 bg-x-surface border border-x-line-subtle rounded-xl flex flex-col overflow-hidden min-w-0">
@@ -204,3 +204,89 @@ export function reviewSessionScreen({ session, files, panel = false, narrow = fa
   const main = html`<div class="ive-session-main flex-1 flex flex-col min-h-0 min-w-0 relative">${brief(session, messages)}<div class="flex-1 flex flex-col min-h-0 bg-x-bg x-canvas ive-conversation select-text relative"><span hidden data-find-anchor="chat"></span>${chatControls(session)}<div class="flex-1 overflow-y-auto px-3 md:px-4 py-3 scrollbar-thin flex flex-col" data-session-scroll="${session.id}"><div class="ive-conversation-layout w-full mx-auto flex-1 flex flex-row gap-6 relative justify-between"><div class="flex-1 min-w-0 flex flex-col justify-between"><div class="flex-1 space-y-1.5 transition-all duration-300 ease-in-out" style="padding-bottom: 163px;">${reviewTranscript()}</div></div></div></div>${composer(session, { bottom: 32 })}</div></div>`;
   return html`<div class="ive-session-screen flex-1 flex min-h-0 min-w-0 relative" data-session-view="${session.id}" data-grid-cell-session="${session.id}">${panel && narrow ? '' : main}${panel ? reviewPanel({ files, wide: narrow }) : ''}</div>`;
 }
+
+/* ── the working-tree diff of the Orbit story (demo data; Sidebar.jsx +18 −2, api.js +24 −6) ── */
+export const DIFF = `diff --git a/src/components/layout/Sidebar.jsx b/src/components/layout/Sidebar.jsx
+index 4b1c2d3..9e8f7a6 100644
+--- a/src/components/layout/Sidebar.jsx
++++ b/src/components/layout/Sidebar.jsx
+@@ -1,6 +1,8 @@
+ import { useMemo } from 'react'
+ import ConnectionStatus from './ConnectionStatus'
+ import CostToday from './CostToday'
++import ThemeToggle from './ThemeToggle'
++import { useTheme } from '../../hooks/useTheme'
+ import { useShortcuts } from '../../hooks/useShortcuts'
+
+ export default function Sidebar({ projects, onSelect }) {
+@@ -284,12 +286,26 @@ export default function Sidebar({ projects, onSelect }) {
+   const shortcuts = useShortcuts()
++  const { theme, toggleTheme } = useTheme()
++  const nextTheme = theme === 'dark' ? 'light' : 'dark'
+
+   return (
+     <aside className="sidebar" aria-label="Projects">
+       <ProjectList projects={projects} onSelect={onSelect} />
+-      <footer className="sidebar-footer">
+-        <ConnectionStatus />
++      <footer className="sidebar-footer" data-theme={theme}>
++        <div className="sidebar-footer-row">
++          <ConnectionStatus />
++          <ThemeToggle
++            theme={theme}
++            label={\`Switch to \${nextTheme} theme\`}
++            onToggle={toggleTheme}
++            size="sm"
++            className="sidebar-theme-toggle"
++          />
++        </div>
++        <p className="sidebar-footer-hint">
++          The theme follows your system until you switch it.
++        </p>
+         <CostToday />
+       </footer>
+     </aside>
+diff --git a/src/lib/api.js b/src/lib/api.js
+index 7c3e9a0..b51d2f4 100644
+--- a/src/lib/api.js
++++ b/src/lib/api.js
+@@ -40,13 +40,31 @@ export async function request(path, options = {}) {
+   return response.json()
+ }
+
+-export async function listSessions() {
+-  const response = await request('/api/sessions')
+-  return response.sessions
+-}
++/** One page of sessions, newest first.
++ *  Pass the returned cursor to get the next page. */
++export async function listSessions({ cursor = null, limit = 50 } = {}) {
++  const params = new URLSearchParams({ limit: String(limit) })
++  if (cursor) params.set('cursor', cursor)
++  const response = await request(\`/api/sessions?\${params}\`)
++  return {
++    sessions: response.sessions,
++    nextCursor: response.next_cursor ?? null,
++  }
++}
++
++export async function listAllSessions() {
++  const sessions = []
++  let cursor = null
++  do {
++    const page = await listSessions({ cursor })
++    sessions.push(...page.sessions)
++    cursor = page.nextCursor
++  } while (cursor)
++  return sessions
++}
+
+ export function sessionEvents(onEvent) {
+-  const socket = new WebSocket(\`\${WS_BASE}/events\`)
+-  socket.onmessage = (event) => onEvent(JSON.parse(event.data))
++  const socket = new WebSocket(\`\${WS_BASE}/events?stream=sessions\`)
++  socket.onmessage = (event) => onEvent({ type: 'session', ...JSON.parse(event.data) })
+   return socket
+ }
+`;
+export const FILES = parseDiff(DIFF);

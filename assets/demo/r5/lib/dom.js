@@ -90,3 +90,23 @@ export function morph(container, markup) {
   tpl.innerHTML = str(markup);
   morphChildren(container, tpl.content);
 }
+
+/**
+ * Containers marked data-stick (and DOM terminals, .dt) follow their end when content grows,
+ * until a visitor scrolls them up; they follow again once scrolled back to the end. Call after
+ * every render. Programmatic writes are flagged so the scroll listener ignores them.
+ */
+export function stick(root) {
+  for (const el of root.querySelectorAll('[data-stick], .dt')) {
+    if (!el.__demoStickBound) {
+      el.__demoStickBound = true;
+      el.addEventListener('scroll', () => {
+        if (el.__demoSetting) { el.__demoSetting = false; return; }
+        el.__demoFree = el.scrollTop + el.clientHeight < el.scrollHeight - 6;
+      }, { passive: true });
+    }
+    if (el.__demoFree) continue;
+    const end = el.scrollHeight - el.clientHeight;
+    if (end > 0 && Math.abs(el.scrollTop - end) > 1) { el.__demoSetting = true; el.scrollTop = end; }
+  }
+}

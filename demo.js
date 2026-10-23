@@ -1,21 +1,23 @@
-/* IVE.DEV · demo.js — the generated IVE demos on the page (round 4, replaces the recordings).
-   Every [data-demo] figure gets a same-origin iframe (assets/demo/frame.html?scene=…&theme=…),
-   play/pause and expand buttons, and a scrubber with the scene's markers. The Inside IVE reel
-   ([data-player] with [data-chapter] buttons) keeps one frame per chapter and advances when a
-   scene ends. One demo plays at a time: the most visible one at least half in view; a hidden
-   tab, reduced motion, a visitor's pause or any pointer interaction inside the demo stops the
-   timer. The expand button opens the same scene full size in a <dialog>.
-   Needs site.js first (window.IVE: reduceMotion, icon). Without JS the figures show their poster. */
+/* IVE.DEV · demo.js — the app demos on the page (round 5).
+   Every [data-demo] figure shows a sharp, generated preview of the IVE interface in a same-origin
+   iframe (assets/demo/frame.html?scene=…&theme=…). Previews always play while in view (one at a
+   time, the most visible), loop, pause off-screen and in a hidden tab; the preview surface itself
+   is inert (no click or wheel inside, no focus). Next to a preview there are two controls only:
+   Pause/Play and "Try it yourself", which opens the IVE app built into the site (frame.html with
+   mode=app) in a <dialog>, at the slot's place in the app. The Inside IVE reel keeps one frame per
+   chapter and advances when a scene ends. Needs site.js first (window.IVE). Without JS the figures
+   show their poster. */
 (function () {
   'use strict';
   var root = document.documentElement;
   var IVE = window.IVE || {};
-  var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   var isGerman = (root.getAttribute('lang') || '').indexOf('de') === 0;
   var TEXT = isGerman
-    ? { pause: 'Demo anhalten', play: 'Demo abspielen', expand: 'Demo groß zeigen', close: 'Schließen', scrub: 'Zeitpunkt in der Demo', at: 'Zu' }
-    : { pause: 'Pause the demo', play: 'Play the demo', expand: 'Expand the demo', close: 'Close', scrub: 'Position in the demo', at: 'Go to' };
-  var FRAME = 'assets/demo/frame.html';
+    ? { pause: 'Pause', play: 'Abspielen', pauseLabel: 'Vorschau anhalten', playLabel: 'Vorschau abspielen', close: 'Schließen', tryIt: 'Selbst ausprobieren', tryTitle: 'IVE Demo' }
+    : { pause: 'Pause', play: 'Play', pauseLabel: 'Pause the preview', playLabel: 'Play the preview', close: 'Close', tryIt: 'Try it yourself', tryTitle: 'IVE demo' };
+  // the app route a preview opens in "Try it yourself" (the Why panel's tile opens the board)
+  var APP_ROUTE = { attention: 'board' };
+  var FRAME = 'assets/demo/r5/frame.html'; // versioned runtime folder (CDN caches these files for hours)
   var demos = [];
   var viewerOpen = false;
 
@@ -30,7 +32,6 @@
     if (attrs) Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
     return e;
   }
-  var PLAY = 'M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z';
   function svg(inner, cls) {
     var s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     s.setAttribute('viewBox', '0 0 16 16');
@@ -41,17 +42,22 @@
   }
   var ICON = {
     pause: '<rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/>',
-    play: '<path class="icon-fill" d="' + PLAY + '"/>',
-    expand: '<path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/>',
+    play: '<path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/>',
     close: '<path d="M4 4l8 8M12 4l-8 8"/>'
   };
 
   /* ── one frame (iframe + its protocol) ── */
   function Frame(scene, theme, extra) {
-    var f = { scene: scene, theme: theme, iframe: null, ready: false, duration: 0, markers: [], poster: 0, time: 0, playing: false, title: '', onTime: null, onEnd: null, onReady: null, onTakeover: null, onPlayState: null };
-    f.mount = function (parent, title) {
+    var f = { scene: scene, theme: theme, iframe: null, ready: false, isApp: false, duration: 0, time: 0, playing: false, title: '', onTime: null, onEnd: null, onReady: null, onPlayState: null };
+    f.mount = function (parent, title, inert) {
       if (f.iframe) return f.iframe;
-      var i = el('iframe', 'demo-frame', { title: title || 'IVE demo', loading: 'lazy', tabindex: '0' });
+      var i = el('iframe', 'demo-frame', { title: title || 'IVE demo', loading: 'lazy' });
+      if (inert) {
+        // a preview surface: no focus, no pointer, not announced (the figure's caption describes it)
+        i.setAttribute('tabindex', '-1');
+        i.setAttribute('aria-hidden', 'true');
+        i.inert = true;
+      } else i.setAttribute('tabindex', '0');
       i.src = frameUrl(scene, theme, extra);
       f.iframe = i;
       parent.appendChild(i);
@@ -67,7 +73,7 @@
     f.seek = function (t) { if (f.ready) f.send({ type: 'seek', time: t }); };
     f.handle = function (d) {
       if (d.type === 'ready') {
-        f.ready = true; f.duration = d.duration || 0; f.markers = d.markers || []; f.poster = d.poster || 0; f.title = d.title || '';
+        f.ready = true; f.isApp = !!d.app; f.duration = d.duration || 0; f.title = d.title || '';
         if (f.onReady) f.onReady(f);
       } else if (d.type === 'time') {
         f.time = d.time; f.duration = d.duration || f.duration;
@@ -78,8 +84,6 @@
       } else if (d.type === 'playstate') {
         f.playing = !!d.playing;
         if (f.onPlayState) f.onPlayState(f.playing);
-      } else if (d.type === 'takeover') {
-        if (f.onTakeover) f.onTakeover(f);
       } else if (d.type === 'key' && d.key === 'Escape') {
         if (dialog && dialog.dialog.open) dialog.dialog.close();
       }
@@ -95,181 +99,83 @@
   });
   function newFrame(scene, theme, extra) { var f = Frame(scene, theme, extra); frames.push(f); return f; }
 
-  /* ── controls: play/pause, expand, scrubber ── */
-  function buildControls(media, demo) {
-    var controls = el('div', 'frame-controls');
-    var toggle = el('button', 'frame-btn', { type: 'button', 'aria-label': TEXT.pause, title: TEXT.pause, 'data-demo-toggle': '' });
+  /* ── the two controls next to a preview: Pause/Play and Try it yourself ── */
+  function controlRow(demo) {
+    var row = demo.figure.querySelector('.try-row');
+    if (!row && demo.section) row = demo.section.querySelector('.player-provenance');
+    return row;
+  }
+  function buildControls(demo) {
+    var row = controlRow(demo);
+    if (!row) return;
+    var toggle = el('button', 'btn btn-outline btn-sm demo-toggle', { type: 'button', 'data-demo-toggle': '', 'aria-label': TEXT.pauseLabel, 'aria-pressed': 'false' });
     toggle.appendChild(svg(ICON.pause, 'icon-pause'));
     toggle.appendChild(svg(ICON.play, 'icon-play'));
-    var expand = el('button', 'frame-btn', { type: 'button', 'aria-label': TEXT.expand, title: TEXT.expand, 'data-demo-expand': '' });
-    expand.appendChild(svg(ICON.expand));
-    controls.appendChild(toggle);
-    controls.appendChild(expand);
-    media.appendChild(controls);
-    var playBig = el('button', 'frame-play', { type: 'button', 'data-demo-play': '' });
-    playBig.appendChild(svg(ICON.play));
-    playBig.appendChild(document.createTextNode(isGerman ? 'Abspielen' : 'Play'));
-    media.appendChild(playBig);
-    var scrub = el('div', 'demo-scrub', { role: 'slider', tabindex: '0', 'aria-label': TEXT.scrub, 'aria-valuemin': '0', 'aria-valuemax': '0', 'aria-valuenow': '0' });
-    var track = el('div', 'demo-scrub-track');
-    var fill = el('div', 'demo-scrub-fill');
-    var marks = el('div', 'demo-scrub-marks');
-    var tip = el('div', 'demo-scrub-tip');
-    track.appendChild(fill);
-    scrub.appendChild(track);
-    scrub.appendChild(marks);
-    scrub.appendChild(tip);
-    media.appendChild(scrub);
-    demo.ui = { toggle: toggle, expand: expand, playBig: playBig, scrub: scrub, fill: fill, marks: marks, tip: tip };
-
-    var resume = function () { demo.userPaused = false; demo.userStarted = true; if (demo.isViewer) { if (demo.frame) demo.frame.play(); } else sync(demo); };
+    toggle.appendChild(document.createTextNode(TEXT.pause));
+    row.insertBefore(toggle, row.firstChild);
+    demo.ui = { toggle: toggle };
     toggle.addEventListener('click', function () {
       if (demo.frame && demo.frame.playing) { demo.userPaused = true; demo.frame.pause(); }
-      else resume();
+      else { demo.userPaused = false; sync(demo); }
+      renderPlayState(demo);
     });
-    playBig.addEventListener('click', resume);
-    if (demo.isViewer) expand.hidden = true;
-    else expand.addEventListener('click', function () { openViewer(demo, expand); });
-
-    var dragging = false;
-    function fractionAt(clientX) {
-      var r = track.getBoundingClientRect();
-      return Math.max(0, Math.min(1, (clientX - r.left) / Math.max(1, r.width)));
+    if (!row.querySelector('[data-demo-try]')) {
+      var tryBtn = el('button', 'btn btn-outline btn-sm', { type: 'button', 'data-demo-try': demo.appRoute || APP_ROUTE[demo.scene] || demo.scene, 'data-demo-try-theme': demo.theme || 'light' });
+      tryBtn.textContent = TEXT.tryIt;
+      row.appendChild(tryBtn);
+      wireTry(tryBtn);
     }
-    function seekTo(p) {
-      var f = demo.frame;
-      if (!f || !f.ready) return;
-      f.seek(p * f.duration);
-    }
-    scrub.addEventListener('pointerdown', function (e) {
-      if (e.button !== 0 || !demo.frame) return;
-      dragging = true;
-      demo.userPaused = true;
-      demo.frame.pause();
-      scrub.setPointerCapture(e.pointerId);
-      seekTo(fractionAt(e.clientX));
-      e.preventDefault();
-    });
-    scrub.addEventListener('pointermove', function (e) {
-      var p = fractionAt(e.clientX);
-      if (demo.frame && demo.frame.duration) showTip(demo, p);
-      if (dragging) seekTo(p);
-    });
-    scrub.addEventListener('pointerleave', function () { tip.classList.remove('is-visible'); });
-    scrub.addEventListener('pointerup', function () { dragging = false; });
-    scrub.addEventListener('pointercancel', function () { dragging = false; });
-    scrub.addEventListener('keydown', function (e) {
-      var f = demo.frame;
-      if (!f || !f.ready) return;
-      var step = e.shiftKey ? 5 : 1, t = f.time;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowUp') t += step;
-      else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') t -= step;
-      else if (e.key === 'Home') t = 0;
-      else if (e.key === 'End') t = f.duration;
-      else if (e.key === ' ' || e.key === 'Enter') { toggle.click(); e.preventDefault(); return; }
-      else return;
-      e.preventDefault();
-      demo.userPaused = true;
-      f.pause();
-      f.seek(Math.max(0, Math.min(f.duration, t)));
-    });
-  }
-  function showTip(demo, p) {
-    var f = demo.frame, tip = demo.ui.tip;
-    var t = p * f.duration, label = '';
-    for (var k = f.markers.length - 1; k >= 0; k--) { if (f.markers[k].t <= t + 0.01) { label = f.markers[k].label; break; } }
-    tip.textContent = (label ? label + ' · ' : '') + t.toFixed(1) + ' s';
-    tip.style.left = (p * 100).toFixed(2) + '%';
-    tip.classList.add('is-visible');
-  }
-  function renderMarkers(demo) {
-    var f = demo.frame, ui = demo.ui;
-    if (!f || !ui) return;
-    ui.marks.textContent = '';
-    ui.scrub.setAttribute('aria-valuemax', String(Math.round(f.duration)));
-    f.markers.forEach(function (m) {
-      if (!f.duration) return;
-      var b = el('button', 'demo-mark', { type: 'button', title: TEXT.at + ' „' + m.label + '“', 'aria-label': TEXT.at + ' ' + m.label });
-      b.style.left = ((m.t / f.duration) * 100).toFixed(2) + '%';
-      b.addEventListener('click', function (e) {
-        e.stopPropagation();
-        demo.userPaused = false;
-        demo.userStarted = true;
-        f.seek(m.t);
-        if (demo.isViewer) f.play(); else sync(demo);
-      });
-      ui.marks.appendChild(b);
-    });
-  }
-  function renderTime(demo) {
-    var f = demo.frame, ui = demo.ui;
-    if (!f || !ui || !f.duration) return;
-    var p = f.time / f.duration;
-    ui.fill.style.transform = 'scaleX(' + p.toFixed(4) + ')';
-    ui.scrub.setAttribute('aria-valuenow', String(Math.round(f.time)));
-    ui.scrub.setAttribute('aria-valuetext', f.time.toFixed(0) + ' s');
-    if (demo.onTime) demo.onTime(f.time, f.duration);
   }
   function renderPlayState(demo) {
     var f = demo.frame, playing = !!(f && f.playing);
     demo.figure.classList.toggle('is-playing', playing);
     demo.figure.classList.toggle('is-paused', !playing);
     demo.figure.classList.toggle('is-paused-by-user', !playing && demo.userPaused);
-    demo.figure.classList.toggle('needs-play', !playing && (motion.matches || demo.userPaused) && !!(f && f.ready));
-    if (demo.ui) {
-      demo.ui.toggle.setAttribute('aria-label', playing ? TEXT.pause : TEXT.play);
-      demo.ui.toggle.setAttribute('title', playing ? TEXT.pause : TEXT.play);
+    if (demo.ui && demo.ui.toggle) {
+      var t = demo.ui.toggle;
+      t.setAttribute('aria-label', playing ? TEXT.pauseLabel : TEXT.playLabel);
+      t.setAttribute('aria-pressed', demo.userPaused ? 'true' : 'false');
+      t.classList.toggle('is-paused', !playing);
+      t.lastChild.nodeValue = playing ? TEXT.pause : TEXT.play;
     }
   }
 
-  /* ── a demo figure ── */
+  /* ── a preview figure ── */
   function Demo(figure, opts) {
     var media = figure.querySelector('.frame-media') || figure;
-    var demo = {
-      figure: figure, media: media, frame: null, ratio: 0, near: false,
-      userPaused: false, userStarted: false, loop: opts.loop !== false, ui: null, onTime: null, onEnd: opts.onEnd || null,
-      mountedFrames: []
-    };
-    if (opts.controls !== false) buildControls(media, demo);
+    var demo = { figure: figure, media: media, section: opts.section || null, frame: null, ratio: 0, near: false, userPaused: false, loop: opts.loop !== false, ui: null, onTime: null, onEnd: opts.onEnd || null, mountedFrames: [] };
     demo.attach = function (frame, title) {
       if (demo.frame === frame) return;
       if (demo.frame) { demo.frame.pause(); if (demo.frame.iframe) demo.frame.iframe.classList.remove('is-active'); }
       demo.frame = frame;
-      var mounted = demo.mountedFrames.indexOf(frame) >= 0;
-      if (!mounted) {
-        frame.mount(media, title);
+      if (demo.mountedFrames.indexOf(frame) < 0) {
+        frame.mount(media, title, true);
         demo.mountedFrames.push(frame);
-        frame.onReady = function () {
-          figure.classList.add('is-ready');
-          if (demo.frame === frame) { renderMarkers(demo); renderTime(demo); renderPlayState(demo); sync(demo); }
-        };
-        frame.onTime = function () { if (demo.frame === frame) renderTime(demo); };
+        frame.onReady = function () { figure.classList.add('is-ready'); if (demo.frame === frame) { renderPlayState(demo); sync(demo.ratio >= 0.5 ? demo : null); } };
+        frame.onTime = function (t, d) { if (demo.frame === frame && demo.onTime) demo.onTime(t, d); };
         frame.onPlayState = function () { if (demo.frame === frame) renderPlayState(demo); };
-        frame.onTakeover = function () { demo.userPaused = true; renderPlayState(demo); };
         frame.onEnd = function () {
           if (demo.frame !== frame) return;
           if (demo.onEnd) { demo.onEnd(demo); return; }
-          if (demo.loop && !motion.matches) {
-            demo.loopTimer = setTimeout(function () { if (demo.frame === frame && wantsPlay(demo)) { frame.seek(0); frame.play(); } }, 1200);
-          } else renderPlayState(demo);
+          if (demo.loop) demo.loopTimer = setTimeout(function () { if (demo.frame === frame && wantsPlay(demo)) { frame.seek(0); frame.play(); } }, 1200);
+          else renderPlayState(demo);
         };
       }
       frame.iframe.classList.add('is-active');
       figure.classList.toggle('is-ready', frame.ready);
-      if (frame.ready) { renderMarkers(demo); renderTime(demo); renderPlayState(demo); }
+      if (frame.ready) renderPlayState(demo);
     };
+    if (opts.controls !== false) buildControls(demo);
     demos.push(demo);
     return demo;
   }
   function wantsPlay(demo) {
     if (document.hidden || viewerOpen || demo.userPaused) return false;
-    if (motion.matches && !demo.userStarted) return false;
     if (IVE.openingIsPinned && IVE.openingIsPinned() && demo.figure.classList.contains('hero-frame')) return false;
-    // a slot of a stacked panel (the Why beats) plays only while it is the shown one
     if (demo.figure.hasAttribute('data-demo-when-active') && !demo.figure.classList.contains('is-active')) return false;
-    return demo.ratio >= 0.5 || (demo.userStarted && demo.ratio > 0);
+    return demo.ratio >= 0.5;
   }
-  var active = null, preferred = null;
+  var preferred = null;
   function sync(prefer) {
     if (prefer) preferred = prefer;
     var best = null, bestRatio = 0;
@@ -279,7 +185,6 @@
       if (d === preferred) bestRatio = 2;
     });
     if (preferred && (!best || best !== preferred)) preferred = null;
-    active = best;
     demos.forEach(function (d) {
       if (!d.frame) return;
       if (d !== best) { if (d.frame.playing) d.frame.pause(); clearTimeout(d.loopTimer); }
@@ -292,11 +197,7 @@
   if ('IntersectionObserver' in window) {
     nearIO = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
-        demos.forEach(function (d) {
-          if (d.figure !== e.target) return;
-          d.near = e.isIntersecting;
-          if (d.near && d.mount) d.mount();
-        });
+        demos.forEach(function (d) { if (d.figure === e.target) { d.near = e.isIntersecting; if (d.near && d.mount) d.mount(); } });
       });
     }, { rootMargin: '100% 0px' });
     viewIO = new IntersectionObserver(function (entries) {
@@ -305,8 +206,8 @@
           if (d.figure !== e.target) return;
           var was = d.ratio;
           d.ratio = e.isIntersecting ? e.intersectionRatio : 0;
-          // leaving view ends a visitor's pause: coming back the demo runs again
-          if (was >= 0.5 && d.ratio < 0.5 && d.userPaused && !motion.matches) { d.userPaused = false; }
+          // leaving view ends a visitor's pause: coming back the preview plays again
+          if (was >= 0.5 && d.ratio < 0.5 && d.userPaused) { d.userPaused = false; renderPlayState(d); }
         });
       });
       sync();
@@ -322,10 +223,10 @@
     var scene = figure.getAttribute('data-demo');
     var theme = figure.getAttribute('data-demo-theme') || 'light';
     var extra = figure.getAttribute('data-demo-params') || '';
-    var title = figure.getAttribute('data-demo-title') || (figure.querySelector('.frame-poster') || {}).alt || 'IVE demo';
+    var title = figure.getAttribute('data-demo-title') || 'IVE demo';
     var demo = Demo(figure, { loop: figure.getAttribute('data-demo-loop') !== 'false', controls: figure.getAttribute('data-demo-controls') !== 'false' });
-    demo.caption = figure.getAttribute('data-demo-caption') || '';
     demo.scene = scene; demo.theme = theme; demo.title = title;
+    demo.appRoute = figure.getAttribute('data-demo-app') || null;
     var frame = newFrame(scene, theme, extra);
     demo.mount = function () { if (!frame.iframe) demo.attach(frame, title); };
     figure.classList.add('demo', 'is-demo');
@@ -345,15 +246,13 @@
       return { btn: btn, li: btn.closest('li'), n: btn.getAttribute('data-chapter'), data: data, frame: data.scene ? newFrame(data.scene, data.theme || 'light', data.params || '') : null };
     });
     var current = -1;
-    var demo = Demo(player, { loop: false });
+    var demo = Demo(player, { loop: false, section: section });
     demo.scene = 'reel'; demo.title = 'Inside IVE';
     demo.onTime = function (t, d) { if (current >= 0 && d) chapters[current].btn.style.setProperty('--p', (t / d).toFixed(4)); };
     demo.onEnd = function () {
       if (current < 0) return;
       chapters[current].btn.style.setProperty('--p', '1');
-      if (motion.matches) { demo.userStarted = false; renderPlayState(demo); return; }
-      var next = (current + 1) % chapters.length;
-      select(next, true);
+      select((current + 1) % chapters.length, true);
     };
     var rail = section.querySelector('[data-chapters]');
     function revealChapter(c) {
@@ -362,7 +261,7 @@
       var r = rail.getBoundingClientRect(), b = c.li.getBoundingClientRect();
       if (b.left >= r.left + pad - 1 && b.right <= r.right - pad + 1) return;
       var left = rail.scrollLeft + (b.left - r.left) - pad;
-      if (rail.scrollTo) rail.scrollTo({ left: left, behavior: motion.matches ? 'auto' : 'smooth' });
+      if (rail.scrollTo) rail.scrollTo({ left: left, behavior: 'smooth' });
       else rail.scrollLeft = left;
     }
     function select(i, restart) {
@@ -379,28 +278,26 @@
         posterImg.setAttribute('src', c.data.poster);
         if (c.data.poster2x) posterImg.setAttribute('srcset', c.data.poster + ' 1600w, ' + c.data.poster2x + ' 3200w');
       }
-      demo.caption = c.data.caption || '';
       demo.theme = c.data.theme || 'light';
       demo.title = c.data.alt || c.btn.textContent;
+      demo.scene = c.data.scene;
+      demo.appRoute = c.data.app || null;
+      var tryBtn = section.querySelector('[data-player-try]');
+      if (tryBtn) { tryBtn.setAttribute('data-demo-try', demo.appRoute || APP_ROUTE[demo.scene] || demo.scene); tryBtn.setAttribute('data-demo-try-theme', demo.theme); }
       demo.attach(c.frame, demo.title);
       if (restart && c.frame.ready) c.frame.seek(0);
       sync(demo.ratio >= 0.5 ? demo : null);
     }
     demo.mount = function () { if (current < 0) select(0, false); };
     chapters.forEach(function (c, i) {
-      c.btn.addEventListener('click', function () {
-        demo.userPaused = false;
-        demo.userStarted = true;
-        select(i, true);
-        sync(demo);
-      });
+      c.btn.addEventListener('click', function () { demo.userPaused = false; select(i, true); sync(demo); });
     });
     player.classList.add('demo', 'is-demo');
     (section.classList ? section : document.body).classList.add('is-live');
     observe(demo);
   }
 
-  /* ── the full-size viewer ── */
+  /* ── "Try it yourself": the IVE app built into the site, in a dialog, at the slot's route ── */
   var dialog = null, dialogFrame = null, dialogOpener = null;
   function buildDialog() {
     var d = el('dialog', 'viewer viewer--demo ink-dark', { 'aria-labelledby': 'demo-viewer-caption' });
@@ -410,7 +307,7 @@
     close.appendChild(svg(ICON.close));
     bar.appendChild(cap); bar.appendChild(close);
     var body = el('div', 'viewer-body viewer-body--demo');
-    var box = el('div', 'viewer-demo');
+    var box = el('div', 'viewer-demo viewer-app');
     body.appendChild(box);
     d.appendChild(bar); d.appendChild(body);
     document.body.appendChild(d);
@@ -420,47 +317,42 @@
       root.classList.remove('viewer-open');
       viewerOpen = false;
       if (dialogFrame) { if (dialogFrame.iframe) dialogFrame.iframe.remove(); frames.splice(frames.indexOf(dialogFrame), 1); dialogFrame = null; }
-      viewerDemo = null;
       sync();
       if (dialogOpener && dialogOpener.focus) dialogOpener.focus({ preventScroll: true });
     });
     dialog = { dialog: d, caption: cap, box: box };
     return dialog;
   }
-  var viewerDemo = null;
-  function openViewer(demo, opener) {
+  function openApp(route, theme, opener) {
     var v = dialog || buildDialog();
-    if (typeof v.dialog.showModal !== 'function' || !demo.frame) return;
+    if (typeof v.dialog.showModal !== 'function') return;
     dialogOpener = opener || document.activeElement;
-    v.caption.textContent = demo.caption || demo.title || '';
-    var at = demo.frame.time || 0;
-    if (demo.frame.playing) demo.frame.pause();
+    v.caption.textContent = TEXT.tryTitle;
     viewerOpen = true;
     sync();
     v.box.textContent = '';
-    v.box.className = 'viewer-demo frame demo' + (demo.theme === 'light' ? ' is-light' : '');
-    dialogFrame = newFrame(demo.frame.scene, demo.frame.theme, 'at=' + at.toFixed(2));
-    // the expanded scene has the same controls as the inline one
-    var vd = viewerDemo = { figure: v.box, media: v.box, frame: dialogFrame, ui: null, userPaused: false, userStarted: true, isViewer: true, caption: demo.caption, title: demo.title, theme: demo.theme };
-    buildControls(v.box, vd);
-    dialogFrame.onReady = function () { renderMarkers(vd); renderTime(vd); renderPlayState(vd); if (!motion.matches) dialogFrame.play(); else { vd.userPaused = true; renderPlayState(vd); } };
-    dialogFrame.onTime = function () { renderTime(vd); };
-    dialogFrame.onPlayState = function () { renderPlayState(vd); };
-    dialogFrame.onTakeover = function () { vd.userPaused = true; renderPlayState(vd); };
-    dialogFrame.onEnd = function () { if (!motion.matches && !vd.userPaused) setTimeout(function () { if (viewerOpen && dialogFrame === vd.frame) { dialogFrame.seek(0); dialogFrame.play(); } }, 1200); else renderPlayState(vd); };
-    dialogFrame.mount(v.box, demo.title || 'IVE demo');
+    v.box.className = 'viewer-demo viewer-app frame demo is-ready' + (theme === 'light' ? ' is-light' : '');
+    dialogFrame = newFrame(route, theme || 'light', 'mode=app');
+    dialogFrame.mount(v.box, TEXT.tryTitle, false);
     dialogFrame.iframe.classList.add('is-active');
-    v.box.classList.add('is-ready');
+    dialogFrame.iframe.removeAttribute('loading');
     v.dialog.showModal();
     root.classList.add('viewer-open');
+    setTimeout(function () { try { dialogFrame.iframe.focus(); } catch (e) {} }, 50);
   }
+  function wireTry(btn) {
+    btn.addEventListener('click', function () {
+      var route = btn.getAttribute('data-demo-try') || 'board';
+      var theme = btn.getAttribute('data-demo-try-theme') || (root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
+      openApp(route, theme, btn);
+    });
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-demo-try]'), wireTry);
+  IVE.openApp = openApp;
 
   document.addEventListener('visibilitychange', sync);
   window.addEventListener('resize', sync);
   document.addEventListener('ive:openingchange', sync);
-  var onMotion = function () { demos.forEach(function (d) { d.userStarted = false; renderPlayState(d); }); sync(); };
-  if (motion.addEventListener) motion.addEventListener('change', onMotion);
-  else if (motion.addListener) motion.addListener(onMotion);
   IVE.demos = demos;
   IVE.syncDemos = sync;
 })();

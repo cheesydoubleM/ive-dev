@@ -15,7 +15,7 @@
 .hero-note { margin-top: 12px; }
 /* A small window into the app. The complete board stays in the viewer. */
 .hero-frame {
-  width: min(100%, 880px);
+  width: 100%;
   margin: 40px 0 0;
 }
 .hero-frame .frame-caption { margin-top: 14px; }

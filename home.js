@@ -102,6 +102,9 @@
       if (k === i) j.setAttribute('aria-current', 'true');
       else j.removeAttribute('aria-current');
     });
+    // the panel's "Try it yourself" opens the app where the active beat is (the review for beat 3)
+    var tryBtn = section.querySelector('.why-try [data-demo-try]');
+    if (tryBtn) tryBtn.setAttribute('data-demo-try', i === 2 ? 'review' : 'board');
     syncVideos();
   }
 

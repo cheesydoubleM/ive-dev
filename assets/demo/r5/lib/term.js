@@ -129,8 +129,10 @@ export function renderTerminal(term, { cols = 80, id = '', focused = true, fontS
     const t = term.typed.slice(0, inner - 2);
     rows += `<div class="dt-box" style="width: calc(${inner + 4} * 1ch)"><span class="dt-box-line"><span class="dt-b">&gt;</span> ${esc(t)}${showCursor ? '<span class="dt-cursor"> </span>' : ''}</span></div>`;
     if (term.hint) row(`  ${D}? for shortcuts${R}`);
+    if (term.queued) row(`  ${D}⏸ Queued, sends when the turn ends: ${term.queued}${R}`);
   }
-  return `<div class="dt" data-term="${esc(id)}" data-cols="${cols}" style="--dt-fs:${fontSize}px"><div class="dt-rows">${rows}</div></div>`;
+  // The hidden input takes the keyboard when a visitor clicks into the terminal (like xterm's helper textarea).
+  return `<div class="dt${focused ? '' : ' dt-cursor-hidden'}" data-term="${esc(id)}" data-cols="${cols}" style="--dt-fs:${fontSize}px"><div class="dt-rows">${rows}</div><textarea class="dt-input" data-term-input="${esc(id)}" aria-label="Terminal input" autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0"></textarea></div>`;
 }
 
 /** Columns that fit a terminal of `width` CSS px at `fontSize` (xterm's cell is about 0.6 em wide). */

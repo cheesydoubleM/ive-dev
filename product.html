@@ -9,21 +9,21 @@
 <meta name="theme-color" content="#0E1014">
 <script>(function(){var d=document.documentElement,t='dark';d.classList.remove('no-js');try{var s=localStorage.getItem('ive-theme');if(s==='light'||s==='dark')t=s;}catch(e){}d.setAttribute('data-theme',t);if(t==='light'){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#F6F7F8');}})();</script>
 <title>Product · IVE</title>
-<meta name="description" content="The IVE interface, rendered live on this page: Home and sessions, the board, the Auto-fix loop, Pipelines, review, loop detection, models, modes and keys.">
+<meta name="description" content="The IVE app, view by view: Home and sessions, the board, the Auto-fix loop, Pipelines, review, loop detection, models, modes and keys.">
 <link rel="canonical" href="https://ive.dev/product.html">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ive.dev/product.html">
 <meta property="og:title" content="Product · IVE">
-<meta property="og:description" content="The IVE app, view by view: its interface rendered live with a demo project.">
+<meta property="og:description" content="The IVE app, view by view: terminals, the board, loops, review.">
 <meta property="og:image" content="https://ive.dev/assets/og.png?v=20261023a">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Product · IVE">
-<meta name="twitter:description" content="The IVE app, view by view: its interface rendered live with a demo project.">
+<meta name="twitter:description" content="The IVE app, view by view: terminals, the board, loops, review.">
 <meta name="twitter:image" content="https://ive.dev/assets/og.png?v=20261023a">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts.css?v=20261023a">
 <link rel="stylesheet" href="site.css?v=20261023b">
-<link rel="stylesheet" href="demo.css?v=20261023a">
+<link rel="stylesheet" href="demo.css?v=20261023c">
 <link rel="stylesheet" href="product.css?v=20261023b">
 </head>
 <body>
@@ -54,7 +54,7 @@
   <div class="wrap">
     <div class="page-head-text">
       <h1>The app, view by view.</h1>
-      <p class="lead">The interface itself, rendered live with a demo project. Scroll inside every demo. No provider ran.</p>
+      <p class="lead">Every view and every loop of the app. Watch, or open the app and click around: <button class="btn btn-outline btn-sm" type="button" data-demo-try="board" data-demo-try-theme="light">Try it yourself</button></p>
     </div>
   </div>
 </header>
@@ -66,13 +66,14 @@
       <h2 id="row-terminal">Terminal</h2>
       <p>Your CLI in its own terminal, inside the app. <kbd>⌘J</kbd> opens it, full size if you like; type into it as you always have. The Overview of the same session shows its steps and replies, one click away, without starting anything new.</p>
     </div>
-    <figure class="frame is-light row-media" data-demo="terminal" data-demo-theme="light" data-demo-title="The the terminal: a session’s terminal inside IVE; an instruction is typed, the CLI works through its steps, then the same session is shown as Overview with the terminal below." data-demo-caption="Terminal. The IVE interface rendered live with a demo project. No provider ran.">
+    <figure class="frame is-light row-media" data-demo="terminal" data-demo-theme="light" data-demo-title="The the terminal: a session’s terminal inside IVE; an instruction is typed, the CLI works through its steps, then the same session is shown as Overview with the terminal below." data-demo-caption="Terminal.">
       <div class="frame-media">
         <picture class="frame-poster">
           <source media="(max-width: 719.98px)" srcset="assets/demo/posters/terminal-m.webp">
           <img src="assets/demo/posters/terminal.webp" srcset="assets/demo/posters/terminal.webp 1600w, assets/demo/posters/terminal@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The the terminal: a session’s terminal inside IVE; an instruction is typed, the CLI works through its steps, then the same session is shown as Overview with the terminal below." decoding="async">
         </picture>
       </div>
+      <figcaption class="try-row frame-caption"><button class="btn btn-outline btn-sm" type="button" data-demo-try="terminal" data-demo-try-theme="light">Try it yourself</button></figcaption>
     </figure>
   </section>
   <section class="row is-flipped" id="home" aria-labelledby="row-home">
@@ -80,13 +81,14 @@
       <h2 id="row-home">Home and sessions</h2>
       <p>What do you want to work on? One box, slash commands, @ for files. A session shows steps and replies in one conversation. Queued messages wait under Up next and go out when the turn ends.</p>
     </div>
-    <figure class="frame is-light row-media" data-demo="start" data-demo-theme="light" data-demo-title="The Home and a session: a goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it, then the agent picks it up." data-demo-caption="Home and sessions. The IVE interface rendered live with a demo project. No provider ran.">
+    <figure class="frame is-light row-media" data-demo="start" data-demo-theme="light" data-demo-title="The Home and a session: a goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it, then the agent picks it up." data-demo-caption="Home and sessions.">
       <div class="frame-media">
         <picture class="frame-poster">
           <source media="(max-width: 719.98px)" srcset="assets/demo/posters/start-m.webp">
           <img src="assets/demo/posters/start.webp" srcset="assets/demo/posters/start.webp 1600w, assets/demo/posters/start@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The Home and a session: a goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it, then the agent picks it up." loading="lazy" decoding="async">
         </picture>
       </div>
+      <figcaption class="try-row frame-caption"><button class="btn btn-outline btn-sm" type="button" data-demo-try="start" data-demo-try-theme="light">Try it yourself</button></figcaption>
     </figure>
   </section>
   <section class="row" id="board" aria-labelledby="row-board">
@@ -94,13 +96,14 @@
       <h2 id="row-board">Board</h2>
       <p>Every session as a tile with its state and its terminal, or its conversation. Layouts from one tile to a grid; ten at once is the take shown here. Answer a prompt in place, open any tile at full size, come back to the board.</p>
     </div>
-    <figure class="frame is-light row-media" data-demo="terminals" data-demo-theme="light" data-demo-title="The the board: the board with ten sessions as terminal tiles; output streams in every tile, a waiting tile is answered with Enter, one terminal is opened at full size." data-demo-caption="Board. The IVE interface rendered live with a demo project. No provider ran.">
+    <figure class="frame is-light row-media" data-demo="terminals" data-demo-theme="light" data-demo-title="The the board: the board with ten sessions as terminal tiles; output streams in every tile, a waiting tile is answered with Enter, one terminal is opened at full size." data-demo-caption="Board.">
       <div class="frame-media">
         <picture class="frame-poster">
           <source media="(max-width: 719.98px)" srcset="assets/demo/posters/terminals-m.webp">
           <img src="assets/demo/posters/terminals.webp" srcset="assets/demo/posters/terminals.webp 1600w, assets/demo/posters/terminals@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The the board: the board with ten sessions as terminal tiles; output streams in every tile, a waiting tile is answered with Enter, one terminal is opened at full size." loading="lazy" decoding="async">
         </picture>
       </div>
+      <figcaption class="try-row frame-caption"><button class="btn btn-outline btn-sm" type="button" data-demo-try="terminals" data-demo-try-theme="light">Try it yourself</button></figcaption>
     </figure>
   </section>
 </div>
@@ -109,13 +112,14 @@
   <h2 class="t-h2-sm" id="loops-title">Loops.</h2>
   <div class="loops-pair">
     <section class="loops-item" id="loop" aria-labelledby="row-loop">
-      <figure class="frame is-light loops-media" data-demo="autofix" data-demo-theme="light" data-demo-title="The the Auto-fix loop on a guided task: the plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes and the result is accepted." data-demo-caption="Auto-fix loop. The IVE interface rendered live with a demo project. No provider ran.">
+      <figure class="frame is-light loops-media" data-demo="autofix" data-demo-theme="light" data-demo-title="The the Auto-fix loop on a guided task: the plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes and the result is accepted." data-demo-caption="Auto-fix loop.">
         <div class="frame-media">
           <picture class="frame-poster">
             <source media="(max-width: 719.98px)" srcset="assets/demo/posters/autofix-m.webp">
             <img src="assets/demo/posters/autofix.webp" srcset="assets/demo/posters/autofix.webp 1600w, assets/demo/posters/autofix@2x.webp 3200w" sizes="(max-width: 1023.98px) 80vw, 588px" width="1600" height="1000" alt="The the Auto-fix loop on a guided task: the plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes and the result is accepted." loading="lazy" decoding="async">
           </picture>
         </div>
+        <figcaption class="try-row frame-caption"><button class="btn btn-outline btn-sm" type="button" data-demo-try="autofix" data-demo-try-theme="light">Try it yourself</button></figcaption>
       </figure>
       <div class="loops-text">
         <h3 id="row-loop">Auto-fix loop</h3>
@@ -123,13 +127,14 @@
       </div>
     </section>
     <section class="loops-item" id="pipelines" aria-labelledby="row-pipelines">
-      <figure class="frame is-light loops-media" data-demo="pipelines" data-demo-theme="light" data-demo-title="The Pipelines: a saved pipeline is opened and run on the canvas; the check fails, the fix stage runs, and the second cycle passes." data-demo-caption="Pipelines. The IVE interface rendered live with a demo project. No provider ran.">
+      <figure class="frame is-light loops-media" data-demo="pipelines" data-demo-theme="light" data-demo-title="The Pipelines: a saved pipeline is opened and run on the canvas; the check fails, the fix stage runs, and the second cycle passes." data-demo-caption="Pipelines.">
         <div class="frame-media">
           <picture class="frame-poster">
             <source media="(max-width: 719.98px)" srcset="assets/demo/posters/pipelines-m.webp">
             <img src="assets/demo/posters/pipelines.webp" srcset="assets/demo/posters/pipelines.webp 1600w, assets/demo/posters/pipelines@2x.webp 3200w" sizes="(max-width: 1023.98px) 80vw, 588px" width="1600" height="1000" alt="The Pipelines: a saved pipeline is opened and run on the canvas; the check fails, the fix stage runs, and the second cycle passes." loading="lazy" decoding="async">
           </picture>
         </div>
+        <figcaption class="try-row frame-caption"><button class="btn btn-outline btn-sm" type="button" data-demo-try="pipelines" data-demo-try-theme="light">Try it yourself</button></figcaption>
       </figure>
       <div class="loops-text">
         <h3 id="row-pipelines">Pipelines</h3>
@@ -145,13 +150,14 @@
       <h2 id="row-review">Review</h2>
       <p>A file tree beside the diff, Stage and Unstage, Annotate, Copy, and Fullscreen in split or unified view.</p>
     </div>
-    <figure class="frame is-light row-media" data-demo="review" data-demo-theme="light" data-demo-title="The Review: the side panel opens with the working diff and the file tree, then the review goes fullscreen, switches to unified view and scrolls." data-demo-caption="Review. The IVE interface rendered live with a demo project. No provider ran.">
+    <figure class="frame is-light row-media" data-demo="review" data-demo-theme="light" data-demo-title="The Review: the side panel opens with the working diff and the file tree, then the review goes fullscreen, switches to unified view and scrolls." data-demo-caption="Review.">
       <div class="frame-media">
         <picture class="frame-poster">
           <source media="(max-width: 719.98px)" srcset="assets/demo/posters/review-m.webp">
           <img src="assets/demo/posters/review.webp" srcset="assets/demo/posters/review.webp 1600w, assets/demo/posters/review@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The Review: the side panel opens with the working diff and the file tree, then the review goes fullscreen, switches to unified view and scrolls." loading="lazy" decoding="async">
         </picture>
       </div>
+      <figcaption class="try-row frame-caption"><button class="btn btn-outline btn-sm" type="button" data-demo-try="review" data-demo-try-theme="light">Try it yourself</button></figcaption>
     </figure>
   </section>
   <section class="row is-flipped" id="loopguard" aria-labelledby="row-loopguard">
@@ -159,13 +165,14 @@
       <h2 id="row-loopguard">Loop detection</h2>
       <p>It watches each session’s recent tool calls for repeats and A-B-A-B patterns, warns at most once a minute, and types the correction at the agent’s next pause. Switch it off under Experimental features.</p>
     </div>
-    <figure class="frame is-light row-media" data-demo="loopdetect" data-demo-theme="light" data-demo-title="The loop detection: an agent runs the same npm test three times, IVE shows Loop detected and sends a corrective message, and the agent changes its approach." data-demo-caption="Loop detection. The IVE interface rendered live with a demo project. No provider ran.">
+    <figure class="frame is-light row-media" data-demo="loopdetect" data-demo-theme="light" data-demo-title="The loop detection: an agent runs the same npm test three times, IVE shows Loop detected and sends a corrective message, and the agent changes its approach." data-demo-caption="Loop detection.">
       <div class="frame-media">
         <picture class="frame-poster">
           <source media="(max-width: 719.98px)" srcset="assets/demo/posters/loopdetect-m.webp">
           <img src="assets/demo/posters/loopdetect.webp" srcset="assets/demo/posters/loopdetect.webp 1600w, assets/demo/posters/loopdetect@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The loop detection: an agent runs the same npm test three times, IVE shows Loop detected and sends a corrective message, and the agent changes its approach." loading="lazy" decoding="async">
         </picture>
       </div>
+      <figcaption class="try-row frame-caption"><button class="btn btn-outline btn-sm" type="button" data-demo-try="loopdetect" data-demo-try-theme="light">Try it yourself</button></figcaption>
     </figure>
   </section>
 </div>
@@ -215,6 +222,6 @@
   </div>
 </footer>
 <script src="site.js?v=20261023b" defer></script>
-<script src="demo.js?v=20261023a" defer></script>
+<script src="demo.js?v=20261023c" defer></script>
 </body>
 </html>
