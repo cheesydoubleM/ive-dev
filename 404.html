@@ -147,6 +147,8 @@ h1 {
   transition: background-color var(--t-fast) ease, border-color var(--t-fast) ease, color var(--t-fast) ease, transform var(--t-fast) ease;
 }
 .btn:active { transform: scale(0.98); }
+.btn-fill { background: var(--accent-fill, var(--accent)); color: var(--on-accent, #fff); }
+.btn-fill:hover { background: var(--accent-fill-hover, var(--accent)); }
 .btn-outline { border-color: var(--line-strong); background: transparent; }
 .btn-outline:hover { background: var(--bg-raised); border-color: var(--text-4); }
 .btn-quiet {
