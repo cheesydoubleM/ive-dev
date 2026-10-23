@@ -132,7 +132,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
 - The app demos are generated, not recorded (owner decision 2026-10-23: "diese Videos
   haben total schlechte Qualität … generiert und keine Aufnahme aus IVE, jedes einzelne
   Video"). Each is the IVE interface rendered live inside a same-origin iframe
-  (`assets/demo/r6/frame.html`) from the app's own stylesheet and DOM markup, so text is
+  (`assets/demo/r7/frame.html`) from the app's own stylesheet and DOM markup, so text is
   sharp at every size, selectable and scrollable; a deterministic script drives the
   scene, and a scrubber with markers lets a visitor move through it. A frame is
   created one viewport ahead and plays when at least half in view, always (owner,
@@ -147,7 +147,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   Maker film is the one clip with sound.
 - Try it yourself (owner, 2026-10-23 evening and night): the previews are what they are; the
   app is reached from two places only, the hero's CTA row and the Product lead, and opens as
-  `try.html`: the IVE app built into the site (`assets/demo/r6`, `lib/app.js`) at window size
+  `try.html`: the IVE app built into the site (`assets/demo/r7`, `lib/app.js`) at window size
   and native scale under a slim strip (brand, the introduction's Skip/Again, Back to ive.dev),
   like a freshly started IVE, with normal browser Back. No dialog, no controls under the
   previews except Pause/Play.
@@ -175,7 +175,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   in a normal terminal inside IVE and that ten of them fit on the board. So the hero
   lead names the terminals, the reel opens with the Terminal and the Ten-at-once
   chapters, and Product opens with a Terminal row. The terminal text in those scenes is
-  scripted demo output in the style of the CLIs (`assets/demo/r6/lib/term.js`), rendered
+  scripted demo output in the style of the CLIs (`assets/demo/r7/lib/term.js`), rendered
   as DOM rows in the look of the app's xterm; typing and Enter are part of the script.
 - `prefers-reduced-motion`: nothing starts by itself, the two scenes show their
   static states, transitions are instant. Without JS every page is a calm static
@@ -225,7 +225,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
 - Static HTML, CSS and JS, no build step. Shared: `site.css`, `site.js`; homepage
   adds `opening.css`, `home.css`, `opening.js`, `home.js`, `madeby.js`; pages with
   app demos add `demo.css`, `demo.js` and `frame-src 'self'` to their CSP. The demo
-  document (`assets/demo/r6/frame.html`) has its own CSP (`style-src 'unsafe-inline'`
+  document (`assets/demo/r7/frame.html`) has its own CSP (`style-src 'unsafe-inline'`
   for the app's inline geometry; scripts `'self'` only).
 - Every page: strict CSP meta (`default-src 'none'`, `'self'` only, inline scripts
   and styles by sha256 hash, `media-src 'self'` only on pages with video (the Maker film),

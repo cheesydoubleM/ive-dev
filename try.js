@@ -20,7 +20,7 @@
   frame.className = 'try-frame';
   frame.title = 'IVE';
   frame.setAttribute('tabindex', '0');
-  frame.src = 'assets/demo/r6/frame.html?scene=' + encodeURIComponent(at) + '&mode=app&tour=' + tour + '&chip=parent&minScale=1&theme=' + theme;
+  frame.src = 'assets/demo/r7/frame.html?scene=' + encodeURIComponent(at) + '&mode=app&tour=' + tour + '&chip=parent&minScale=1&theme=' + theme;
   stage.appendChild(frame);
   frame.addEventListener('load', function () { try { frame.focus(); } catch (e) {} });
 
