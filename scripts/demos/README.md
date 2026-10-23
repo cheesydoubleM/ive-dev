@@ -18,7 +18,7 @@ and one should be able to scroll through it.
   with only `url(/fonts/` rewritten to `url(fonts/`; `assets/demo/fonts/` holds the app's Inter
   400/500/600 and JetBrains Mono 400/500 (OFL). So the demos are styled by the app's stylesheet,
   tokens (`--x-*`), theme switch (`html[data-theme]`) and all.
-- `assets/demo/r7/frame.html` + `frame.js`: one scene per same-origin iframe
+- `assets/demo/r8/frame.html` + `frame.js`: one scene per same-origin iframe
   (`?scene=<id>&theme=light|dark[&variant=hero][&at=seconds][&phone=1]`). The stage (`#stage`,
   the app window) scales to the iframe but never below the scene's `fit.minScale` (0.72 default,
   0.6 for the board's establishing view): below that the app window itself gets narrower, so
@@ -26,7 +26,7 @@ and one should be able to scroll through it.
   (seek/play/pause/time/duration/markers/poster) and postMessage (`ready`, `time`, `ended`,
   `playstate`, `takeover`, `key`) are the protocol with the parent page (`demo.js`). Any pointer
   press, wheel or key inside the stage pauses the timer.
-- `assets/demo/r7/lib/`: `dom.js` (`html` template tag, `morph` patches the live DOM so scroll
+- `assets/demo/r8/lib/`: `dom.js` (`html` template tag, `morph` patches the live DOM so scroll
   positions and selections survive a re-render), `timeline.js` (`script()`: hold/click/type/do/
   every/mark/scroll, `createPlayer`: `seek(t)` replays the deterministic event list from the
   start when scrubbing backwards, pointer and click ring, data-stick containers follow new output
@@ -38,7 +38,7 @@ and one should be able to scroll through it.
   card), `home.js` (Home screen, composer queue, toast), `taskflow.js` (Needs your attention, the
   guided task window, Run details), `pipeline.js` (Pipeline editor, canvas, Run Detail),
   `review.js` (review panel, fullscreen review, diff renderer).
-- `assets/demo/r7/scenes/`: `board`, `attention`, `terminal`, `terminals`, `start`, `autofix`,
+- `assets/demo/r8/scenes/`: `board`, `attention`, `terminal`, `terminals`, `start`, `autofix`,
   `pipelines`, `loopdetect`, `review`, each a port of the clip script of the same story
   (`clips/hero-board.mjs`, `terminal.mjs`, `terminals.mjs`, `start-queue.mjs`, `loop-task.mjs`,
   `loop-canvas.mjs`, `loop-detect.mjs`, `review.mjs`). A scene exports `{ id, title, script,
@@ -66,7 +66,7 @@ Owner steering: "ich will, dass in der Website die IVE-App quasi gebaut ist"; re
 thread to a hybrid: a sharp automatic preview per slot and a "Try it yourself" button next to it
 that opens the usable app.
 
-- `assets/demo/r7/lib/app.js`: the interactive model of the 1.0.17 interface. State: view (home,
+- `assets/demo/r8/lib/app.js`: the interactive model of the 1.0.17 interface. State: view (home,
   board, session), active session, board tabs, sessions, per-session Overview rows and terminal
   model (one source, `lib/data.js`), modes (overview, drawer, full terminal), tile views (chat,
   terminal), queue (UP NEXT), toasts, agents (canned programs with timed events: step, say,
@@ -346,5 +346,5 @@ script is still `hero-board.mjs --light` (`meta.lightId`).
 ## Rules
 
 - Keep the demos honest: the app's own markup and stylesheet, labelled demo data, no provider claims.
-- After an app release that changes the views: dump again (`snapshot.mjs`), update `assets/demo/app.css`, the fonts and the markup in `assets/demo/r7/lib/`, regenerate the posters, bump the site's `?v=`.
+- After an app release that changes the views: dump again (`snapshot.mjs`), update `assets/demo/app.css`, the fonts and the markup in `assets/demo/r8/lib/`, regenerate the posters, bump the site's `?v=`.
 - Do not commit frame or dump directories; they are scratch.

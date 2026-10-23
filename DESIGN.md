@@ -132,7 +132,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
 - The app demos are generated, not recorded (owner decision 2026-10-23: "diese Videos
   haben total schlechte Qualität … generiert und keine Aufnahme aus IVE, jedes einzelne
   Video"). Each is the IVE interface rendered live inside a same-origin iframe
-  (`assets/demo/r7/frame.html`) from the app's own stylesheet and DOM markup, so text is
+  (`assets/demo/r8/frame.html`) from the app's own stylesheet and DOM markup, so text is
   sharp at every size, selectable and scrollable; a deterministic script drives the
   scene, and a scrubber with markers lets a visitor move through it. A frame is
   created one viewport ahead and plays when at least half in view, always (owner,
@@ -147,7 +147,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   Maker film is the one clip with sound.
 - Try it yourself (owner, 2026-10-23 evening and night): the previews are what they are; the
   app is reached from two places only, the hero's CTA row and the Product lead, and opens as
-  `try.html`: the IVE app built into the site (`assets/demo/r7`, `lib/app.js`) at window size
+  `try.html`: the IVE app built into the site (`assets/demo/r8`, `lib/app.js`) at window size
   and native scale under a slim strip (brand, the introduction's Skip/Again, Back to ive.dev),
   like a freshly started IVE, with normal browser Back. No dialog, no controls under the
   previews except Pause/Play.
@@ -162,6 +162,32 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   gets "Open the request" (the session, with the permission card in its conversation), a
   hidden sidebar "Open the sidebar", an open Review panel "Back to the session", an empty box
   "Describe a task". Done is one word. Codex's audit: review/CODEX-ONBOARDING-AUDIT.md.
+- Round 7 (owner, 2026-10-23 22:39: "das Try it yourself ist viel zu subtil … an mehr Stellen …
+  alle Knöpfe, die man anklicken kann, funktionieren … beim Board nicht den Overview zeigen,
+  sondern alle Terminals, die cleanen Terminals, die man kennt"): "Try it yourself" is the
+  primary action at page level and supersedes the exactly-two rule: the header CTA on every
+  page, the hero's filled button (Download for Mac outlined beside it), the Try band before
+  Get IVE, a line in Get IVE, the Product head and closer, the Download head, the footer;
+  still never under a preview. The app's Board opens as terminal tiles (Overview is the
+  per-tile toggle); the introduction's answer step says "Click in, press Enter" there. Every
+  control in the app does something real, local to the browser, and says so where the app would
+  talk to the Mac (Codex's control audit, review/CODEX-ROUND7-CONTROL-AUDIT.md, is the acceptance
+  table): `lib/mod-ui.js` (⌘K palette, sidebar filter, session menus, merge, projects, sort/drag,
+  Board scope/layout, menus/dialogs for every module), `lib/mod-session.js` (model/mode/options
+  menus, Details, History, Copy, attachments read locally, dictation when the browser has it, Add
+  context, the side chat that answers from the transcript, brief details, the permission card's
+  controls, the queue), `lib/mod-settings.js` (Settings, Knowledge, Connectors, Phone, Cost & tokens),
+  Codex's `mod-review.js`/`review.js`, `mod-pipelines.js`/`pipeline.js`, `mod-flow.js`/`taskflow.js`.
+  No generic "not in the demo" toasts. Runtime `assets/demo/r8`; r5/r6/r7 stay immutable.
+- IVE for iPhone (owner, 2026-10-24 04:15: "die iPhone App … 'control your agents from everywhere'
+  … 'built-in terminal on your iPhone' … das Stärkste: ein Terminal immer und überall im Handy …
+  das iPhone-Mockup von der mehrmal-Website nehmen"): Home section `#iphone` ("Your terminal,
+  everywhere."), a Product row and a Download panel. The mockup is the mehrmal site's device frame
+  (`assets/phone/iphone-frame.webp`, cropped to the phone in CSS) with IVE's phone terminal drawn
+  in site CSS (`.ph*` in site.css). Claims come from apps/ios/README.md, WATCH.md and
+  frontend/src/components/settings/PhonePanel.jsx: pairing after starting the secure connection,
+  one-time code, Face ID and PIN optional, no store listing, the Watch app "built alongside, not in
+  the public repository yet". On phones the mockup comes right after the heading.
 - No footnotes under the demos (owner, 2026-10-23 night: "diese Notizen unten dran … die will
   keiner sehen … alle dieser Art"): no provenance or sample-project notes under previews, in the
   Why panel, under Product figures or in the viewer header; the only text next to a preview is
@@ -175,7 +201,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   in a normal terminal inside IVE and that ten of them fit on the board. So the hero
   lead names the terminals, the reel opens with the Terminal and the Ten-at-once
   chapters, and Product opens with a Terminal row. The terminal text in those scenes is
-  scripted demo output in the style of the CLIs (`assets/demo/r7/lib/term.js`), rendered
+  scripted demo output in the style of the CLIs (`assets/demo/r8/lib/term.js`), rendered
   as DOM rows in the look of the app's xterm; typing and Enter are part of the script.
 - `prefers-reduced-motion`: nothing starts by itself, the two scenes show their
   static states, transitions are instant. Without JS every page is a calm static
@@ -225,7 +251,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
 - Static HTML, CSS and JS, no build step. Shared: `site.css`, `site.js`; homepage
   adds `opening.css`, `home.css`, `opening.js`, `home.js`, `madeby.js`; pages with
   app demos add `demo.css`, `demo.js` and `frame-src 'self'` to their CSP. The demo
-  document (`assets/demo/r7/frame.html`) has its own CSP (`style-src 'unsafe-inline'`
+  document (`assets/demo/r8/frame.html`) has its own CSP (`style-src 'unsafe-inline'`
   for the app's inline geometry; scripts `'self'` only).
 - Every page: strict CSP meta (`default-src 'none'`, `'self'` only, inline scripts
   and styles by sha256 hash, `media-src 'self'` only on pages with video (the Maker film),

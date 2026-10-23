@@ -14,13 +14,14 @@
   var q = new URLSearchParams(location.search);
   var at = (q.get('at') || 'home').replace(/[^a-z0-9-]/g, '') || 'home';
   var tour = q.get('tour') === '0' ? '0' : '1';
+  var sid = (q.get('sid') || '').replace(/[^a-z0-9-]/g, '');
   var stage = document.querySelector('[data-try-stage]');
   if (!stage) return;
   var frame = document.createElement('iframe');
   frame.className = 'try-frame';
   frame.title = 'IVE';
   frame.setAttribute('tabindex', '0');
-  frame.src = 'assets/demo/r7/frame.html?scene=' + encodeURIComponent(at) + '&mode=app&tour=' + tour + '&chip=parent&minScale=1&theme=' + theme;
+  frame.src = 'assets/demo/r8/frame.html?scene=' + encodeURIComponent(at) + (sid ? '&sid=' + encodeURIComponent(sid) : '') + '&mode=app&tour=' + tour + '&chip=parent&minScale=1&theme=' + theme;
   stage.appendChild(frame);
   frame.addEventListener('load', function () { try { frame.focus(); } catch (e) {} });
 
@@ -33,7 +34,14 @@
   if (skip) skip.addEventListener('click', function () { send('skip'); });
   if (again) again.addEventListener('click', function () { send('replay'); });
   window.addEventListener('message', function (e) {
-    if (e.origin !== location.origin || !e.data || e.data.source !== 'ive-demo' || e.data.type !== 'tour' || !guide) return;
+    if (e.origin !== location.origin || !e.data || e.data.source !== 'ive-demo') return;
+    if (e.data.type === 'theme' && (e.data.theme === 'dark' || e.data.theme === 'light')) {
+      root.setAttribute('data-theme', e.data.theme);
+      if (meta) meta.setAttribute('content', e.data.theme === 'dark' ? '#0E1014' : '#FFFFFF');
+      try { localStorage.setItem('ive-theme', e.data.theme); } catch (err) {}
+      return;
+    }
+    if (e.data.type !== 'tour' || !guide) return;
     var t = e.data;
     guide.hidden = !t.started;
     if (!t.started) return;

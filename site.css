@@ -1155,3 +1155,50 @@ html.viewer-open { overflow: hidden; }
   .site-footer { border-top: 1px solid #CCCCCC; }
   a[href^="http"]::after { content: ' (' attr(href) ')'; font-size: 0.8em; }
 }
+
+/* ── Try it yourself (round 7): the primary action at page level, never per video ── */
+.btn-lg { height: 52px; padding: 0 24px; font-size: 16px; }
+.page-head-cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+.closer-pair { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px; }
+.closer-pair .btn { margin-inline: 0; }
+
+/* ── IVE for iPhone (round 7, owner): the phone mockup (the device frame of the mehrmal site) with IVE's phone terminal inside ── */
+.ph { position: relative; width: min(380px, 100%); margin-inline: auto; }
+/* the clip keeps the frame's overhang off the page; the padding keeps the floating card inside the clip */
+.phone-visual, .row-media.phone-visual { overflow: hidden; padding: 12px 16px 28px 44px; }
+/* the frame image carries transparent margins (its phone spans x 19.3–80.7 %, y 4.6–93.2 %); the body is the phone itself and the image overhangs it */
+.ph-body { position: relative; aspect-ratio: 628 / 1360; }
+.ph-shadow { position: absolute; left: 10%; bottom: -2%; width: 80%; height: 8%; border-radius: 50%; background: rgba(0, 0, 0, .4); filter: blur(24px); z-index: 0; }
+.ph-device { position: absolute; left: -31.4%; right: -31.4%; top: -5.2%; bottom: -7.7%; container-type: inline-size; }
+.ph-frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; z-index: 3; pointer-events: none; user-select: none; }
+.ph-screen {
+  position: absolute; top: 6.7%; left: 22.3%; width: 55.4%; height: 84.7%; z-index: 4;
+  display: flex; flex-direction: column; overflow: hidden;
+  border-radius: 12% / 5.4%;
+  background: #0f1115; color: #e8eaf0;
+  font-family: var(--mono); font-size: clamp(9px, 2.35cqw, 12.5px); line-height: 1.5;
+}
+.ph-status { display: flex; justify-content: space-between; padding: 7% 8% 0; font-family: var(--sans); font-weight: 600; font-size: 1.05em; color: #fff; }
+.ph-head { display: flex; align-items: center; gap: .6em; padding: 1.2em 6% .8em; font-family: var(--sans); font-size: 1em; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+.ph-head strong { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; color: #fff; }
+.ph-back { color: #7c9bff; white-space: nowrap; }
+.ph-state { font-size: .85em; color: #f5a524; white-space: nowrap; }
+.ph-term { flex: 1; min-height: 0; margin: 0; padding: .9em 6% 0; white-space: pre; overflow: hidden; color: #d6d9e0; }
+.ph-term b { font-weight: 700; color: #fff; }
+.ph-g { color: #4ade80; }
+.ph-d { color: #8b90a0; }
+.ph-sel { color: #fff; font-weight: 700; }
+.ph-cursor { display: inline-block; width: .6em; height: 1.1em; background: #e8eaf0; vertical-align: text-bottom; animation: ph-blink 1.1s steps(1) infinite; }
+@keyframes ph-blink { 50% { opacity: 0; } }
+.ph-keys { display: flex; gap: 2.5%; padding: .7em 5% 1.6em; background: #15181e; border-top: 1px solid rgba(255, 255, 255, .08); }
+.ph-keys span { flex: 1; display: inline-flex; align-items: center; justify-content: center; height: 2.6em; border-radius: .5em; background: #272b34; color: #e8eaf0; font-size: .95em; }
+.ph-keys .ph-key-enter { background: #3b5bff; color: #fff; }
+.ph-event {
+  position: absolute; left: -8%; bottom: 13%; z-index: 5;
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-radius: 12px; background: var(--bg-raised); border: 1px solid var(--line); box-shadow: 0 12px 32px rgba(0, 0, 0, .25);
+  font-family: var(--sans); font-size: 13px; color: var(--text-1); max-width: 78%;
+}
+.ph-event small { display: block; font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--text-4); margin-bottom: 2px; }
+.ph-event-icon { width: 10px; height: 10px; border-radius: 50%; background: #f5a524; box-shadow: 0 0 0 4px rgba(245, 165, 36, .18); flex: none; font-size: 0; }
+@media (prefers-reduced-motion: reduce) { .ph-cursor { animation: none; } }
