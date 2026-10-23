@@ -13,18 +13,21 @@ export const SITE_CONTROLS = { right: 150, top: 76 };
 
 export function createCamera(page, { cut = PHONE_CUT, dpr = 2 } = {}) {
   const { width, height } = page.viewportSize();
-  const maxX = width * dpr - cut.w, maxY = height * dpr - cut.h;
   const clamp = (v, max) => Math.max(0, Math.min(max, Math.round(v)));
   const segments = [];
   const cam = {
     /** Width of the cut in CSS px. */
     span: cut.w / dpr,
-    /** Moves the camera so its left edge is at CSS x (and its top edge at CSS y), from frame `from` on. */
-    to(rec, x, { pan = 0, y = 0, from = rec.frameCount } = {}) {
-      const seg = { from, x: clamp(x * dpr, maxX), y: clamp(y * dpr, maxY), w: cut.w, h: cut.h, pan };
+    /**
+     * Moves the camera so its left edge is at CSS x (and its top edge at CSS y), from frame `from` on.
+     * `cut` gives this segment another size (a wide establishing view, then a 1:1 close-up); the
+     * encoder then cuts hard between segments (no pans) and scales them all to the same output.
+     */
+    to(rec, x, { pan = 0, y = 0, from = rec.frameCount, cut: c = cut } = {}) {
+      const seg = { from, x: clamp(x * dpr, width * dpr - c.w), y: clamp(y * dpr, height * dpr - c.h), w: c.w, h: c.h, pan };
       const last = segments.at(-1);
       if (last && last.from === seg.from) segments.pop();
-      if (!last || last.x !== seg.x || last.y !== seg.y || last.from === seg.from) segments.push(seg);
+      if (!last || last.x !== seg.x || last.y !== seg.y || last.w !== seg.w || last.h !== seg.h || last.from === seg.from) segments.push(seg);
       return cam;
     },
     /**

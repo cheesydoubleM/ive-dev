@@ -130,6 +130,46 @@ plays the inline and phone files. The dark `start-queue`, `loop-task`, `loop-can
 switch (git history keeps them); the dark `hero-board`, `hero-board-s`, their posters,
 `why-attention*` and `review-why*` stay.
 
+## Terminal takes (round 3, 23 Oct 2026)
+
+Owner request on 23 Oct: people should see at once that their CLI runs in a normal terminal inside
+IVE, "nur halt enhanced", and that ten of them run on the board at the same time; the clips should
+not only use the Overview. Two takes, light theme, 60 fps, CRF 18/19/19, recorded with
+`record.mjs --light [--phone] terminal terminals`:
+
+| Clip | Window | Length | Shows | Used by |
+|---|---|---|---|---|
+| `terminal` → `terminal-light*` | 1600×1000 (phone 768×664) | 13.9 s | Session "Build the workspace" at Session level with the terminal expanded to the full view (the app's own drawer bar "Terminal · claude", ⌘J; `ive.terminal-drawer` = `{drawer: {interface: 'full'}}`). A click into the terminal, the instruction "Add a dark theme toggle to the sidebar." typed and sent with Enter (real keystrokes into xterm, `input` actions on the transport), the CLI-style transcript streams (Read, Search, Update, Bash, the reply, the prompt box returns), the session turns Done, then "Restore small terminal": the same session as Overview (steps, reply) above and the terminal below. | reel chapter 01, Product row Terminal |
+| `terminals` → `terminals-light*` | 2080×1300, master 4160×2600, `-s` 1600×1000 | 14.2 s | The Board with the sidebar, ten Orbit sessions as tiles in the app's Terminal view (`cc-terminalBoardMode`, `cc-gridColumns` 5; 362 px tiles keep the 9 px preview font floor, below 360 px it is 8 px). Every tile a full screen of CLI-style transcript, live steps keep landing, spinners tick; "7 running" becomes "5 running" as Update the docs and Add the audit log finish; the waiting tile Check the sign-in flow shows the CLI's own permission dialog, a click into the tile and Enter answer it (its status goes Running, then Done); at the end "Open" on Fix the flaky test shows that terminal at full size at Session level. Ten is the configuration shown, not a limit. | reel chapter 02, Product row Board (replaces `board-light*`) |
+
+Phone cuts: `terminal-m` is the usual 1:1 cut from a 768×664 window, camera on the main column
+(250), moving right for the Restore button and back. `terminals-m` comes from the same 2080×1300
+window: the board as a wide 3:4 view of the full window height (1950×2600 device px scaled to
+996×1328: both rows and the sidebar list, it establishes ten and the status words rather than
+reading), a hard cut from the left half (the Enter) to the right half (Update the docs finishing),
+back to the left for the Open click, then the opened terminal 1:1 at 996×1328 (the drawer bar and
+the first rows, 13 px font). `lib/camera.mjs` takes a `cut` per segment for this; the encoder
+concatenates segments of different sizes with hard cuts and scales them to one output.
+
+What is real and what is scripted: the app, its xterm terminals, the tiles, the status words, the
+sidebar, the drawer and the view switch are the real frontend; the click, the typing, Enter and
+"Open" are real input (the transport records them as `input` actions). The terminal **text** is
+scripted demo output written to look like a coding CLI's transcript for the Orbit story
+(`lib/tui.mjs`: a Claude Code-style transcript with ⏺ tool lines, a spinner line and the bordered
+prompt box; a Codex-style one with › and •), fed through the transport's PTY `output` channel the
+way a CLI's output would arrive, with the transport's own "IVE test transport · no provider
+process" banner cleared first. No CLI and no provider ran; every number in the transcripts is
+demo data. The same provenance line applies: IVE app · demo project · no provider ran.
+
+Recording notes: the first eight terminals on a page render with WebGL, the rest with xterm's
+DOM renderer (`MAX_WEBGL_TERMINALS` in `Terminal.jsx`); the recorder's CDP capture at DPR 2
+renders both cleanly. Playwright's plain `page.screenshot()` shows WebGL terminals blank, so it
+cannot judge these takes; use the captured frames. In a tile, `.xterm-screen` keeps the
+Session-level geometry (wider and taller than the tile), so a click must target the tile's
+`[data-terminal-slot]`, not the screen. The permission in the terminal take is the CLI's own
+dialog text; IVE's card is not shown in Terminal view, the tile and the sidebar mark the session
+as waiting.
+
 ## What is demo data, and what the clips add through the transport
 
 All project, session, task, run and report content is demo data for project Orbit; no numbers
@@ -167,6 +207,7 @@ node scripts/demos/record.mjs --encode-only review     # re-encode kept frames (
 node scripts/demos/record.mjs --phone --encode-only loop-task   # the same for a phone cut
 node scripts/demos/record.mjs --light hero-board start-queue loop-task loop-canvas loop-detect review          # light takes, 60 fps
 node scripts/demos/record.mjs --light --phone hero-board start-queue loop-task loop-canvas loop-detect review  # their phone cuts
+node scripts/demos/record.mjs --light terminal terminals           # round 3: the terminal takes (and --phone)
 node scripts/demos/stills.mjs                          # still-model, still-mode, still-palette
 ```
 
@@ -196,6 +237,8 @@ frame because the next chapter follows. A full-frame dissolve costs about 0.4 MB
 
 Clips not in the redesign (`board`, `home`, `session`, `setup`) are the 1.0.12 light recordings'
 scripts; their files go with those recordings.
+`board-light*` (the four-tile light board of round 2B) was removed from `assets/app` in round 3; its
+script is still `hero-board.mjs --light` (`meta.lightId`).
 
 ## Notes for 1.0.18 and the owner
 

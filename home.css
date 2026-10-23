@@ -287,7 +287,7 @@ html:not(.no-js) .why:not(.is-near) .why-media img { display: none; }
 .inside.is-live .inside-static { display: none; }
 .chapters {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   margin-top: 40px;
   border-bottom: 1px solid var(--line);
 }
@@ -335,7 +335,7 @@ html:not(.no-js) .why:not(.is-near) .why-media img { display: none; }
 }
 .player-caption.is-active { opacity: 1; visibility: visible; transition: opacity var(--t-med) ease, visibility 0s; }
 .player-provenance { grid-column: 9 / 13; text-align: right; padding-top: 4px; }
-/* no JS: four figures in normal flow */
+/* no JS: six figures in normal flow */
 .inside-static { display: grid; gap: 48px; margin-top: 40px; }
 .inside-static figure { margin: 0; }
 .inside-static .frame-media { margin-bottom: 16px; }

@@ -251,10 +251,10 @@
   syncMode();
 })();
 
-/* ── Inside IVE: a reel of four recorded chapters ─────────────────
+/* ── Inside IVE: a reel of six recorded chapters ──────────────────
    At least half of the player in view: the current chapter loads and plays;
    timeupdate drives the rail underline (--p); on ended the next chapter
-   follows, after the fourth the first. A click switches at once and keeps the
+   follows, after the last the first. A click switches at once and keeps the
    auto-advance. Off-screen or a hidden tab: pause, resume where it was.
    Reduced motion: posters, a centred play button, no autoplay, no advance.
    A chapter whose clip fails to load leaves the rail. */

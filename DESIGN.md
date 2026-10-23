@@ -23,7 +23,7 @@ of the app, very little text. The footage carries the message; text only frames 
 | Page | Job |
 |---|---|
 | `index.html` | Opening scene, hero, Why IVE, Inside IVE, Get IVE, Maker |
-| `product.html` | The catalogue: every view and every loop, one row each, real footage |
+| `product.html` | The catalogue: every view and every loop, one row each, real footage; Terminal is the first row, Board shows ten terminal tiles |
 | `download.html` | Mac app, terminal install, source, requirements, removal, five questions |
 | `architecture.html` | Engineering page (old content, restyled) |
 | `imprint.html`, `privacy.html` | Legal; `<main class="legal-main">` is byte-identical, only the chrome changes |
@@ -38,7 +38,7 @@ No two neighbours share a composition, and none appears twice.
 | Opening (in `#hero`) | The problem and the payoff without words, then the name | Pinned scroll scene on a dark ground in both themes: inside the machine, a grid corridor with ring ribs and camera drift (owner decision 2026-10-22), the swarm in it, board, zoom out of the V, IVE unfolds into Integrated Vibecoding Environment |
 | Hero `#hero` | Name the product and show it | Left headline block, then an 880px window into the dark board recording (two sessions; the full board on expand) |
 | Why IVE `#why` | The four reasons | Viewport-wide question that docks, statement column plus sticky media panel (pinned at 720px and up, in flow on phones) |
-| Inside IVE `#inside` | What IVE really does, as it happens | Chapter rail, one wide player, caption block; four real clips auto-advance: start and queue, Auto-fix loop, Pipelines, loop detection |
+| Inside IVE `#inside` | What IVE really does, as it happens; the terminal first | Chapter rail, one wide player, caption block; six real clips auto-advance: a session's terminal (typed into, then the same session as Overview), ten terminals on the board, start and queue, Auto-fix loop, Pipelines, loop detection |
 | Get IVE `#install` | The action | Centred headline, two panels: Mac app and terminal |
 | Maker `#aiforeu` | Who makes it | Signature strip: the approved logo film left, one line right |
 
@@ -134,10 +134,16 @@ Status glyphs belong only to product states inside diagrams and recordings.
   in the viewer, `-m` 3:4 crops below 720px. One video plays at a time; off-screen,
   a hidden tab or the open viewer pauses it. The Maker film is the one clip with sound.
 - Theme of the footage: the Inside IVE reel and every Product row play the app's
-  light theme (`<name>-light*`, `board-light*`, 60 fps); the hero and the Why panel
+  light theme (`<name>-light*` incl. `terminal-light*` and `terminals-light*`, 60 fps); the hero and the Why panel
   keep the dark board take (`hero-board*`, `why-attention*`, `review-why*`, 30 fps),
   owner decision 2026-10-23 ("der dunkle Hero war besser, aber die Clips sollten von
   dem hellen Dashboard sein"). A frame that shows a light take carries `is-light`.
+- Terminal first (owner, 2026-10-23): newcomers should see at once that their CLI runs
+  in a normal terminal inside IVE and that ten of them fit on the board. So the hero
+  lead names the terminals, the reel opens with the Terminal and the Ten-at-once
+  chapters, and Product opens with a Terminal row. The terminal text in those takes is
+  scripted demo output in the style of the CLIs (`scripts/demos/lib/tui.mjs`), rendered
+  by the app's real xterm terminals; typing and Enter are real keystrokes.
 - `prefers-reduced-motion`: nothing starts by itself, the two scenes show their
   static states, transitions are instant. Without JS every page is a calm static
   page with posters, captions and plain navigation.
@@ -148,7 +154,8 @@ Status glyphs belong only to product states inside diagrams and recordings.
   vocabulary (unlock, seamless, supercharge, revolutionize, elevate and their kin).
 - Hard word budgets per section (brief 2.4). Measured on the rendered homepage
   after Gemini came back (2026-10-22): 274 marketing words (hero 17 of 17, Why 109,
-  Inside 111, Get 31, Maker 6).
+  Inside 111, Get 31, Maker 6). Round 3 (2026-10-23, terminal first, owner request)
+  adds 4 words to the hero lead and two chapters to Inside (about 50 words).
 - One primary home per claim (brief 2.5). The homepage gives the short version,
   Product describes the view or mechanism in other words. Functional lines
   (commands, requirements, provenance, legal, buttons) may repeat where needed.
