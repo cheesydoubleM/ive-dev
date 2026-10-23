@@ -21,7 +21,7 @@
   frame.className = 'try-frame';
   frame.title = 'IVE';
   frame.setAttribute('tabindex', '0');
-  frame.src = 'assets/demo/r8/frame.html?scene=' + encodeURIComponent(at) + (sid ? '&sid=' + encodeURIComponent(sid) : '') + '&mode=app&tour=' + tour + '&chip=parent&minScale=1&theme=' + theme;
+  frame.src = 'assets/demo/r9/frame.html?scene=' + encodeURIComponent(at) + (sid ? '&sid=' + encodeURIComponent(sid) : '') + '&mode=app&tour=' + tour + '&chip=parent&minScale=1&theme=' + theme;
   stage.appendChild(frame);
   frame.addEventListener('load', function () { try { frame.focus(); } catch (e) {} });
 

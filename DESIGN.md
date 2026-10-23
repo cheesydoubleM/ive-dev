@@ -147,7 +147,7 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   Maker film is the one clip with sound.
 - Try it yourself (owner, 2026-10-23 evening and night): the previews are what they are; the
   app is reached from two places only, the hero's CTA row and the Product lead, and opens as
-  `try.html`: the IVE app built into the site (`assets/demo/r8`, `lib/app.js`) at window size
+  `try.html`: the IVE app built into the site (`assets/demo/r9`, `lib/app.js`) at window size
   and native scale under a slim strip (brand, the introduction's Skip/Again, Back to ive.dev),
   like a freshly started IVE, with normal browser Back. No dialog, no controls under the
   previews except Pause/Play.
@@ -185,9 +185,12 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   everywhere."), a Product row and a Download panel. The mockup is the mehrmal site's device frame
   (`assets/phone/iphone-frame.webp`, cropped to the phone in CSS) with IVE's phone terminal drawn
   in site CSS (`.ph*` in site.css). Claims come from apps/ios/README.md, WATCH.md and
-  frontend/src/components/settings/PhonePanel.jsx: pairing after starting the secure connection,
-  one-time code, Face ID and PIN optional, no store listing, the Watch app "built alongside, not in
-  the public repository yet". On phones the mockup comes right after the heading.
+  frontend/src/components/settings/PhonePanel.jsx (pairing with the Mac app, Face ID optional, the
+  Watch app comes with it). Owner, 2026-10-24 00:13: "nimm den iPhone-Install unbedingt von der
+  Website … die Anzeige ist sehr geil, aber nicht, dass man das schon installieren kann, sag
+  einfach soon on App Store": the site shows the app and says "Coming soon to the App Store"
+  (the `.soon` badge, never a link), with no install, build or pairing instructions anywhere,
+  the demo's Phone view included. On phones the mockup comes right after the heading.
 - No footnotes under the demos (owner, 2026-10-23 night: "diese Notizen unten dran … die will
   keiner sehen … alle dieser Art"): no provenance or sample-project notes under previews, in the
   Why panel, under Product figures or in the viewer header; the only text next to a preview is

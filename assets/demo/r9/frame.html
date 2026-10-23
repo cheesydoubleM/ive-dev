@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- The IVE demo (a preview scene, or the app with ?mode=app). Same-origin document inside the site's figures;
+     ../app.css is the IVE 1.0.17 frontend stylesheet, demo.css the stage and the DOM terminal. The runtime lives in a
+     versioned folder (r9; r6, r7 and r8 are frozen earlier releases) because the CDN caches these files for hours: a new release gets a new folder.
+     Inline styles are the app's own (Tailwind arbitrary values and xterm geometry), hence style-src 'unsafe-inline' here. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; frame-src blob:; base-uri 'none'; form-action 'none'">
+<meta name="robots" content="noindex">
+<title>IVE demo</title>
+<link rel="stylesheet" href="../app.css">
+<link rel="stylesheet" href="demo.css">
+</head>
+<body class="bg-x-bg text-x-ink">
+<div id="stage"><div id="root"></div></div>
+<script type="module" src="frame.js"></script>
+</body>
+</html>
