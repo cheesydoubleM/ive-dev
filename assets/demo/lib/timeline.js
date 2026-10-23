@@ -80,7 +80,7 @@ export function createPlayer(scene, { stage, root, ctx, onTime, onEnd, onPlaySta
   // Scripted scroll containers start at their declared baseline (deterministic before the first scroll event).
   const baseline = () => Object.fromEntries(scrollTargets.map((x) => [x.selector, x.from]));
   let state = Object.assign(scene.init(), { _scroll: baseline() });
-  let idx = 0, time = 0, playing = false, raf = 0, last = 0;
+  let idx = 0, time = 0, playing = false, raf = 0, last = 0, dirty = false;
   const appliedScroll = new Map();
 
   // Synthetic pointer: headless-style cursor and click ring inside the stage.
@@ -167,7 +167,9 @@ export function createPlayer(scene, { stage, root, ctx, onTime, onEnd, onPlaySta
 
   function seek(t, { silent = false } = {}) {
     t = Math.max(0, Math.min(duration, t));
-    if (t < time) {
+    // Backwards, or after a visitor's own view toggle (dirty): rebuild the scripted state from the start.
+    if (t < time || dirty) {
+      dirty = false;
       state = Object.assign(scene.init(), { _scroll: baseline() });
       idx = 0;
       appliedScroll.clear();
@@ -204,7 +206,7 @@ export function createPlayer(scene, { stage, root, ctx, onTime, onEnd, onPlaySta
     if (!scene.interact) return;
     let changed = false;
     try { changed = !!scene.interact(e, state, ctx); } catch { changed = false; }
-    if (changed) { e.preventDefault(); render(); }
+    if (changed) { dirty = true; e.preventDefault(); render(); }
   });
 
   const api = {
