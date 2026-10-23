@@ -20,6 +20,7 @@
   var FRAME = 'assets/demo/r5/frame.html'; // versioned runtime folder (CDN caches these files for hours)
   var demos = [];
   var viewerOpen = false;
+  var whyGroup = [];
 
   function frameUrl(scene, theme, extra) {
     var q = 'scene=' + encodeURIComponent(scene) + '&theme=' + encodeURIComponent(theme || 'light');
@@ -127,6 +128,7 @@
     }
   }
   function renderPlayState(demo) {
+    if (demo.ui && demo.ui === (whyGroup[0] && whyGroup[0].ui) && whyGroup.length) demo = activeWhy() || demo;
     var f = demo.frame, playing = !!(f && f.playing);
     demo.figure.classList.toggle('is-playing', playing);
     demo.figure.classList.toggle('is-paused', !playing);
@@ -172,8 +174,13 @@
   function wantsPlay(demo) {
     if (document.hidden || viewerOpen || demo.userPaused) return false;
     if (IVE.openingIsPinned && IVE.openingIsPinned() && demo.figure.classList.contains('hero-frame')) return false;
-    if (demo.figure.hasAttribute('data-demo-when-active') && !demo.figure.classList.contains('is-active')) return false;
+    if (demo.figure.hasAttribute('data-demo-when-active') && stackedMode(demo) && !demo.figure.classList.contains('is-active')) return false;
     return demo.ratio >= 0.5;
+  }
+  // a slot of a stacked panel (the Why beats) plays only while shown, as long as the panel stacks
+  function stackedMode(demo) {
+    var sec = demo.figure.closest('[data-why]');
+    return !!sec && (sec.classList.contains('is-pinned') || sec.classList.contains('is-flow'));
   }
   var preferred = null;
   function sync(prefer) {
@@ -185,11 +192,14 @@
       if (d === preferred) bestRatio = 2;
     });
     if (preferred && (!best || best !== preferred)) preferred = null;
+    // paired previews (two figures side by side, data-demo-pair) play together
+    var playing = best ? [best] : [];
+    if (best && best.pair) demos.forEach(function (d) { if (d !== best && d.frame && d.pair === best.pair && wantsPlay(d)) playing.push(d); });
     demos.forEach(function (d) {
       if (!d.frame) return;
-      if (d !== best) { if (d.frame.playing) d.frame.pause(); clearTimeout(d.loopTimer); }
+      if (playing.indexOf(d) < 0) { if (d.frame.playing) d.frame.pause(); clearTimeout(d.loopTimer); }
     });
-    if (best && best.frame.ready && !best.frame.playing) best.frame.play();
+    playing.forEach(function (d) { if (d.frame.ready && !d.frame.playing) d.frame.play(); });
   }
 
   /* ── intersection: mount when near, play when half in view ── */
@@ -227,11 +237,38 @@
     var demo = Demo(figure, { loop: figure.getAttribute('data-demo-loop') !== 'false', controls: figure.getAttribute('data-demo-controls') !== 'false' });
     demo.scene = scene; demo.theme = theme; demo.title = title;
     demo.appRoute = figure.getAttribute('data-demo-app') || null;
+    demo.pair = figure.getAttribute('data-demo-pair') || null;
+    if (figure.hasAttribute('data-demo-when-active')) whyGroup.push(demo);
     var frame = newFrame(scene, theme, extra);
     demo.mount = function () { if (!frame.iframe) demo.attach(frame, title); };
     figure.classList.add('demo', 'is-demo');
     observe(demo);
   });
+
+  /* ── the Why panel's slots share one Pause/Play (the shown slot, or the most visible one) ── */
+  function activeWhy() {
+    var act = whyGroup.filter(function (d) { return d.figure.classList.contains('is-active'); })[0];
+    if (act) return act;
+    return whyGroup.slice().sort(function (a, b) { return b.ratio - a.ratio; })[0] || null;
+  }
+  (function () {
+    var row = document.querySelector('.why-try');
+    if (!row || !whyGroup.length) return;
+    var toggle = el('button', 'btn btn-outline btn-sm demo-toggle', { type: 'button', 'data-demo-toggle': '', 'aria-label': TEXT.pauseLabel, 'aria-pressed': 'false' });
+    toggle.appendChild(svg(ICON.pause, 'icon-pause'));
+    toggle.appendChild(svg(ICON.play, 'icon-play'));
+    toggle.appendChild(document.createTextNode(TEXT.pause));
+    row.insertBefore(toggle, row.firstChild);
+    var shared = { toggle: toggle };
+    whyGroup.forEach(function (d) { d.ui = shared; });
+    toggle.addEventListener('click', function () {
+      var d = activeWhy();
+      if (!d) return;
+      if (d.frame && d.frame.playing) { whyGroup.forEach(function (x) { x.userPaused = true; }); d.frame.pause(); }
+      else { whyGroup.forEach(function (x) { x.userPaused = false; }); sync(d); }
+      renderPlayState(d);
+    });
+  })();
 
   /* ── the reel: [data-player] with [data-chapter] buttons ── */
   var player = document.querySelector('[data-player][data-demo-player]');
