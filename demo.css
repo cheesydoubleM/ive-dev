@@ -21,8 +21,12 @@
 .frame.demo .frame-media { background: #0E1014; }
 .frame.demo.is-light .frame-media { background: #FFFFFF; }
 /* inline previews behave like a film: the wheel scrolls the page, the controls stay live;
-   scrolling and clicking inside happen in the expanded preview and in "Try it yourself" */
+   clicking and scrolling inside happen in "Try it yourself". The frame's highlight layer
+   (site.css ::after) takes the pointer so WebKit scrolls the page over an inert preview too. */
 .frame.demo:not(.viewer-demo) .frame-media > .demo-frame { pointer-events: none; }
+.frame.demo:not(.viewer-demo) .frame-media::after { pointer-events: auto; }
+.why-media.demo > .demo-frame { pointer-events: none; }
+.why-media.demo::after { content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: auto; }
 /* phones: a 3:4 window of the app, as the recordings were cut; the hero footer stacks */
 @media (max-width: 719.98px) {
   .frame.demo .frame-media { aspect-ratio: 3 / 4; }
