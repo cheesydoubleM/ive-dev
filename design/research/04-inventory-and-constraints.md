@@ -275,7 +275,7 @@ Spot checks in 1.0.17:
 - A version number or file size for the Mac app. Even though 1.0.17 is current, the site shows no version (site README).
 - Release dates or an OS matrix (DESIGN).
 - **Antigravity CLI.** A profile exists in the 1.0.17 source (`ANTIGRAVITY_PROFILE`), but the README and release notes do not mention it, so it is not public.
-- **iPhone companion app** (`apps/ios/` in the repo) or phone access as a feature. Both exist, but the site does not announce them and nothing says they are distributed. Ask the owner first.
+- **iPhone companion app** (native, kept out of the public repository) or phone access as a feature. Both exist, but the site does not announce them and nothing says they are distributed. Ask the owner first.
 - Old-site features with unknown 1.0.17 status: multiplayer, invites, QR, PWA push, memory sync, deep research, visual pipelines editor, 8,000+ skills.
 - "EU-backed" (DESIGN). Retired lines: "One brain. Infinite hands.", "agent army" or "agent armies", "tmux wishes it could do this". Old-site lines: "Humanity's Last IDE", "Zero cloud. Zero config.", "Run 10 Claude Code sessions at once".
 - **Model names in illustrations.** The site README allows only Haiku, Sonnet, Opus, Gemini Pro and Flash. The current page already breaks this: `gpt-6-astra` (index.html L282) and `gemini-2.5-flash` (L557, L565). The real recordings show `gpt-6-astra` because that is the demo's Codex config value. Decide one rule for the rebuild.

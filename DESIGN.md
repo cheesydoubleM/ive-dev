@@ -184,9 +184,9 @@ Status glyphs belong only to product states inside diagrams and the app demos.
   das iPhone-Mockup von der mehrmal-Website nehmen"): Home section `#iphone` ("Your terminal,
   everywhere."), a Product row and a Download panel. The mockup is the mehrmal site's device frame
   (`assets/phone/iphone-frame.webp`, cropped to the phone in CSS) with IVE's phone terminal drawn
-  in site CSS (`.ph*` in site.css). Claims come from apps/ios/README.md, WATCH.md and
-  frontend/src/components/settings/PhonePanel.jsx (pairing with the Mac app, Face ID optional, the
-  Watch app "built alongside", no release promised for it). Owner, 2026-10-24 00:13: "nimm den iPhone-Install unbedingt von der
+  in site CSS (`.ph*` in site.css). Claims come from the apps' own notes in the owner's private
+  repository and from the Mac app's Phone panel (pairing with the Mac app, Face ID optional, the
+  Watch app "built alongside", no release promised for it); the native apps are not public. Owner, 2026-10-24 00:13: "nimm den iPhone-Install unbedingt von der
   Website … die Anzeige ist sehr geil, aber nicht, dass man das schon installieren kann, sag
   einfach soon on App Store": the site shows the app and says "Coming soon to the App Store"
   (the `.soon` badge, never a link), with no install, build or pairing instructions anywhere,
