@@ -3,8 +3,8 @@
 // says so where the app would talk to the Mac: Settings (this machine, this workspace, connections &
 // models, agents & boundaries, access & sharing, advanced, cost & tokens), Knowledge (notes: read,
 // write, save, delete, use as context), Connectors (AI accounts, MCP servers, custom APIs: enable
-// per project, details; real set-up happens in the app), Phone (how pairing works in the app, a
-// navigable preview of what the phone shows; no fake pairing token).
+// per project, details; real set-up happens in the app), Phone (coming soon to the App Store; a
+// navigable preview of what the phone shows; no install or pairing instructions, no fake pairing token).
 //
 // State: state.prefs = { theme, fontScale, density, workspace: { cli, model, mode }, agents: { safetyGate,
 //        loopDetection, askBeforeEdits }, connectors: { enabled: {}, custom: [] } }, state.settingsTab,
@@ -114,7 +114,7 @@ ${sectionClose()}`;
 ${row('This app', html`<button type="button" class="ive-project-action" data-demo-act="share-copy" data-demo-arg="">${ic('copy', 11)}Copy link</button>`, 'Opens the demo at Home.')}
 ${row('Current session', html`<button type="button" class="ive-project-action" data-demo-act="share-copy" data-demo-arg="${st.activeId || ''}"${st.activeId ? '' : raw(' disabled=""')}>${ic('copy', 11)}Copy link</button>`, st.activeId ? `Opens the demo at “${(st.sessions.find((s) => s.id === st.activeId) || {}).name}”.` : 'Open a session first.')}
 ${sectionClose()}${sectionOpen('Phone')}
-${row('iPhone app', html`<button type="button" class="ive-project-action" data-nav="phone">${ic('smartphone', 11)}Open Phone</button>`, 'Control your sessions from your phone; pairing happens in the app.')}
+${row('iPhone app', html`<button type="button" class="ive-project-action" data-nav="phone">${ic('smartphone', 11)}Open Phone</button>`, 'Coming soon to the App Store; see what it shows.')}
 ${sectionClose()}${sectionOpen('Team', 'In the app, teammates join a project with a code. The demo has no server to invite anyone to.')}
 ${row('Members', html`<span class="demo-pill">You</span>`)}
 ${sectionClose()}`;
@@ -183,7 +183,7 @@ function phoneMain(st) {
   const sessions = st.sessions.filter((s) => !s.hidden);
   const waiting = sessions.filter((s) => s.state === 'waiting'), running = sessions.filter((s) => s.state === 'running'), rest = sessions.filter((s) => s.state !== 'waiting' && s.state !== 'running');
   const group = (title, list) => (list.length ? html`<div class="ive-phone-group">${title}</div>${list.map((s) => html`<li data-key="ph-${s.id}"><button type="button" class="ive-phone-card" data-demo-act="phone-open-session" data-demo-arg="${s.id}"><span class="ive-phone-card-top"><span class="ive-phone-card-name">${s.name}</span><span class="ive-phone-chip is-${s.state}">${s.state}</span></span><span class="ive-phone-card-meta">${s.cli} · ${s.model}${s.state === 'waiting' ? ' · needs your answer' : ''}</span></button></li>`)}` : '');
-  return html`<div class="demo-phone"><section class="demo-settings-section"><h3>${ic('smartphone', 15)} Connect your iPhone</h3><p class="demo-settings-sub">In the app: install IVE on the phone, start the secure connection under Settings → Phone on your Mac and scan the code it shows. The phone then controls these sessions through your Mac; keep the Mac awake and IVE open. Nothing pairs in this browser demo, so there is no code here.</p><div class="demo-phone-steps"><div><b>1</b><span>Install IVE on the iPhone: it is in the repository under apps/ios, built with Xcode for your own phone.</span></div><div><b>2</b><span>On the Mac: Settings → Phone, start the secure connection, then Show code; it works once, for five minutes.</span></div><div><b>3</b><span>Scan, pick a PIN if you want one, done. Lock the Mac with ⌃⌘Q; the sessions keep running.</span></div></div><div class="demo-note-actions"><a class="ive-project-action" href="../../../download.html#iphone" target="_top">${ic('external-link', 11)}The iPhone app, built from source</a><a class="ive-project-action" href="../../../download.html" target="_top">${ic('external-link', 11)}Get IVE for the Mac</a></div></section>
+  return html`<div class="demo-phone"><section class="demo-settings-section"><h3>${ic('smartphone', 15)} IVE for iPhone</h3><p class="demo-settings-sub">Coming soon to the App Store. The app pairs with IVE on your Mac and shows these sessions on the phone: the terminal with its key bar, permission questions, Stop, a push notification when an agent needs you. The agents keep running on the Mac.</p><span class="demo-pill is-on">Coming soon to the App Store</span></section>
 <section class="demo-settings-section"><h3>What the phone shows</h3><p class="demo-settings-sub">The same sessions, one column. Tap one to open it here.</p><div class="ive-phone-overview demo-phone-preview"><div class="ive-phone-overview-head"><h1>${st.ws.name}</h1><span class="t-meta">${sessions.length} sessions</span></div><ul class="ive-phone-list">${group('Needs you', waiting)}${group('Running', running)}${group('Done', rest)}</ul></div></section></div>`;
 }
 
