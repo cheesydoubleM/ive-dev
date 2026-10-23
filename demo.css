@@ -138,8 +138,13 @@
 .try-note { font-family: var(--mono); font-size: 12px; line-height: 1.4; color: var(--text-4); }
 
 .frame .try-row.frame-caption { margin-top: 12px; }
-/* the Why panel's Try button: under the panel in the pinned layout, after the stage on phones */
+/* the Why panel's controls: under the panel in the pinned layout, after the stage on phones;
+   in the static layout (reduced motion, short windows) each slot has its own row at the start
+   of its beat, right under the preview, and the shared row is hidden */
 .why-try { margin-top: 12px; }
+.why:not(.is-pinned):not(.is-flow) .why-try { display: none; }
+.why-slot-row { margin-bottom: 16px; }
+.why.is-pinned .why-slot-row, .why.is-flow .why-slot-row { display: none; }
 .why.is-pinned .why-try { grid-column: 6 / 13; grid-row: 3; justify-self: end; margin-top: 12px; }
 .why.is-pinned .why-layout { grid-template-rows: 1fr auto auto; }
 .why.is-pinned .why-panel { grid-row: 1 / 2; }

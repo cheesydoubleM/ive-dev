@@ -127,19 +127,19 @@
       wireTry(tryBtn);
     }
   }
+  function paintToggle(t, playing, userPaused) {
+    t.setAttribute('aria-label', playing ? TEXT.pauseLabel : TEXT.playLabel);
+    t.setAttribute('aria-pressed', userPaused ? 'true' : 'false');
+    t.classList.toggle('is-paused', !playing);
+    t.lastChild.nodeValue = playing ? TEXT.pause : TEXT.play;
+  }
   function renderPlayState(demo) {
-    if (demo.ui && demo.ui === (whyGroup[0] && whyGroup[0].ui) && whyGroup.length) demo = activeWhy() || demo;
     var f = demo.frame, playing = !!(f && f.playing);
     demo.figure.classList.toggle('is-playing', playing);
     demo.figure.classList.toggle('is-paused', !playing);
     demo.figure.classList.toggle('is-paused-by-user', !playing && demo.userPaused);
-    if (demo.ui && demo.ui.toggle) {
-      var t = demo.ui.toggle;
-      t.setAttribute('aria-label', playing ? TEXT.pauseLabel : TEXT.playLabel);
-      t.setAttribute('aria-pressed', demo.userPaused ? 'true' : 'false');
-      t.classList.toggle('is-paused', !playing);
-      t.lastChild.nodeValue = playing ? TEXT.pause : TEXT.play;
-    }
+    if (demo.ui && demo.ui.toggle) paintToggle(demo.ui.toggle, playing, demo.userPaused);
+    if (whyShared && whyGroup.indexOf(demo) >= 0 && activeWhy() === demo) paintToggle(whyShared.toggle, playing, demo.userPaused);
   }
 
   /* ── a preview figure ── */
@@ -245,28 +245,53 @@
     observe(demo);
   });
 
-  /* ── the Why panel's slots share one Pause/Play (the shown slot, or the most visible one) ── */
+  /* ── the Why panel: one shared Pause/Play under the stacked panel (pinned and flow layouts);
+        in the static layout each slot gets its own Pause + Try row at the start of its beat ── */
+  var whyShared = null;
   function activeWhy() {
     var act = whyGroup.filter(function (d) { return d.figure.classList.contains('is-active'); })[0];
     if (act) return act;
     return whyGroup.slice().sort(function (a, b) { return b.ratio - a.ratio; })[0] || null;
   }
-  (function () {
-    var row = document.querySelector('.why-try');
-    if (!row || !whyGroup.length) return;
+  function makeToggle() {
     var toggle = el('button', 'btn btn-outline btn-sm demo-toggle', { type: 'button', 'data-demo-toggle': '', 'aria-label': TEXT.pauseLabel, 'aria-pressed': 'false' });
     toggle.appendChild(svg(ICON.pause, 'icon-pause'));
     toggle.appendChild(svg(ICON.play, 'icon-play'));
     toggle.appendChild(document.createTextNode(TEXT.pause));
+    return toggle;
+  }
+  (function () {
+    var row = document.querySelector('.why-try');
+    if (!row || !whyGroup.length) return;
+    var toggle = makeToggle();
     row.insertBefore(toggle, row.firstChild);
-    var shared = { toggle: toggle };
-    whyGroup.forEach(function (d) { d.ui = shared; });
+    whyShared = { toggle: toggle };
     toggle.addEventListener('click', function () {
       var d = activeWhy();
       if (!d) return;
       if (d.frame && d.frame.playing) { whyGroup.forEach(function (x) { x.userPaused = true; }); d.frame.pause(); }
       else { whyGroup.forEach(function (x) { x.userPaused = false; }); sync(d); }
       renderPlayState(d);
+    });
+    // static layout: a row of its own right under each preview, inside the beat that follows it
+    whyGroup.forEach(function (d) {
+      var n = d.figure.getAttribute('data-why-media');
+      var beat = document.querySelector('[data-why-beat="' + n + '"]');
+      if (!beat) return;
+      var own = el('div', 'try-row why-slot-row');
+      var t = makeToggle();
+      own.appendChild(t);
+      var tryBtn = el('button', 'btn btn-outline btn-sm', { type: 'button', 'data-demo-try': d.appRoute || APP_ROUTE[d.scene] || d.scene, 'data-demo-try-theme': d.theme || 'dark' });
+      tryBtn.textContent = TEXT.tryIt;
+      own.appendChild(tryBtn);
+      wireTry(tryBtn);
+      beat.insertBefore(own, beat.firstChild);
+      d.ui = { toggle: t };
+      t.addEventListener('click', function () {
+        if (d.frame && d.frame.playing) { d.userPaused = true; d.frame.pause(); }
+        else { d.userPaused = false; sync(d); }
+        renderPlayState(d);
+      });
     });
   })();
 
