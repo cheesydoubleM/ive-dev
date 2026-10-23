@@ -23,7 +23,7 @@ of the app, very little text. The footage carries the message; text only frames 
 | Page | Job |
 |---|---|
 | `index.html` | Opening scene, hero, Why IVE, Inside IVE, Get IVE, Maker |
-| `product.html` | The catalogue: every view and every loop, one row each, real footage; Terminal is the first row, Board shows ten terminal tiles |
+| `product.html` | The catalogue: every view and every loop, one row each, the interface rendered live (generated demos); Terminal is the first row, Board shows ten terminal tiles |
 | `download.html` | Mac app, terminal install, source, requirements, removal, five questions |
 | `architecture.html` | Engineering page (old content, restyled) |
 | `imprint.html`, `privacy.html` | Legal; `<main class="legal-main">` is byte-identical, only the chrome changes |
@@ -36,9 +36,9 @@ No two neighbours share a composition, and none appears twice.
 | Section | One job | Composition |
 |---|---|---|
 | Opening (in `#hero`) | The problem and the payoff without words, then the name | Pinned scroll scene on a dark ground in both themes: inside the machine, a grid corridor with ring ribs and camera drift (owner decision 2026-10-22), the swarm in it, board, zoom out of the V, IVE unfolds into Integrated Vibecoding Environment |
-| Hero `#hero` | Name the product and show it | Left headline block, then an 880px window into the dark board recording (two sessions; the full board on expand) |
+| Hero `#hero` | Name the product and show it | Left headline block, then an 880px window into the dark board, rendered live (the two working sessions in view, the rest of the board by scrolling; the whole window on expand) |
 | Why IVE `#why` | The four reasons | Viewport-wide question that docks, statement column plus sticky media panel (pinned at 720px and up, in flow on phones) |
-| Inside IVE `#inside` | What IVE really does, as it happens; the terminal first | Chapter rail, one wide player, caption block; six real clips auto-advance: a session's terminal (typed into, then the same session as Overview), ten terminals on the board, start and queue, Auto-fix loop, Pipelines, loop detection |
+| Inside IVE `#inside` | What IVE really does, as it happens; the terminal first | Chapter rail, one wide player, caption block; six generated scenes of the interface auto-advance, each scrubbable and scrollable: a session's terminal (typed into, then the same session as Overview), ten terminals on the board, start and queue, Auto-fix loop, Pipelines, loop detection |
 | Get IVE `#install` | The action | Centred headline, two panels: Mac app and terminal |
 | Maker `#aiforeu` | Who makes it | Signature strip: the approved logo film left, one line right |
 
@@ -123,27 +123,36 @@ inline SVG, never font glyphs.
 ```
 
 IBM Plex Mono, a symbol always paired with a word, readable without colour.
-Status glyphs belong only to product states inside diagrams and recordings.
+Status glyphs belong only to product states inside diagrams and the app demos.
 
-## Motion and video
+## Motion and the app demos
 
-- Budget: the opening scene, Why IVE, the recordings, and 120 to 220ms hover and
+- Budget: the opening scene, Why IVE, the app demos, and 120 to 220ms hover and
   crossfade transitions. No scroll reveals, no parallax, no blur on text.
-- Recordings are muted product loops that play only in view: `preload="none"`, the
-  source is attached one viewport ahead, `-s` (1600) inline and the 3200 master only
-  in the viewer, `-m` 3:4 crops below 720px. One video plays at a time; off-screen,
-  a hidden tab or the open viewer pauses it. The Maker film is the one clip with sound.
-- Theme of the footage: the Inside IVE reel and every Product row play the app's
-  light theme (`<name>-light*` incl. `terminal-light*` and `terminals-light*`, 60 fps); the hero and the Why panel
-  keep the dark board take (`hero-board*`, `why-attention*`, `review-why*`, 30 fps),
-  owner decision 2026-10-23 ("der dunkle Hero war besser, aber die Clips sollten von
-  dem hellen Dashboard sein"). A frame that shows a light take carries `is-light`.
+- The app demos are generated, not recorded (owner decision 2026-10-23: "diese Videos
+  haben total schlechte Qualität … generiert und keine Aufnahme aus IVE, jedes einzelne
+  Video"). Each is the IVE interface rendered live inside a same-origin iframe
+  (`assets/demo/frame.html`) from the app's own stylesheet and DOM markup, so text is
+  sharp at every size, selectable and scrollable; a deterministic script drives the
+  scene, and a scrubber with markers lets a visitor move through it. A frame is
+  created one viewport ahead and plays when at least half in view; one demo plays at a
+  time; off-screen, a hidden tab or the open viewer pauses it; any pointer action
+  inside a demo pauses its timer (a visitor's scrolling is never overwritten). A
+  scene never scales its text below 0.72 (0.6 for the board's establishing view):
+  below that the app window itself gets narrower, like the app in a small window
+  (sidebar hidden under 1000 stage px). Phones get a 3:4 window. Expand opens the
+  same scene at window size in the `<dialog>` viewer, with the same controls. The
+  Maker film is the one clip with sound.
+- Theme of the demos: the Inside IVE reel and every Product row show the app's light
+  theme; the hero and the Why panel show the dark theme (owner decision 2026-10-23,
+  kept from the recordings: "der dunkle Hero war besser, aber die Clips sollten von dem
+  hellen Dashboard sein"). A frame that shows a light scene carries `is-light`.
 - Terminal first (owner, 2026-10-23): newcomers should see at once that their CLI runs
   in a normal terminal inside IVE and that ten of them fit on the board. So the hero
   lead names the terminals, the reel opens with the Terminal and the Ten-at-once
-  chapters, and Product opens with a Terminal row. The terminal text in those takes is
-  scripted demo output in the style of the CLIs (`scripts/demos/lib/tui.mjs`), rendered
-  by the app's real xterm terminals; typing and Enter are real keystrokes.
+  chapters, and Product opens with a Terminal row. The terminal text in those scenes is
+  scripted demo output in the style of the CLIs (`assets/demo/lib/term.js`), rendered
+  as DOM rows in the look of the app's xterm; typing and Enter are part of the script.
 - `prefers-reduced-motion`: nothing starts by itself, the two scenes show their
   static states, transitions are instant. Without JS every page is a calm static
   page with posters, captions and plain navigation.
@@ -177,9 +186,11 @@ Status glyphs belong only to product states inside diagrams and recordings.
   Models depend on the installed CLI and account; illustrations name only Haiku,
   Sonnet, Opus and the Gemini Pro and Flash models (`gemini-3.1-pro`,
   `gemini-3.5-flash`).
-- Recordings are the real IVE frontend on its isolated test transport with the
-  demo project Orbit; no provider ran. The opening scene and the Why ledger are the
-  only illustrations. Never fake app UI where a recording exists.
+- The app demos are the IVE 1.0.17 interface, generated from the frontend's own
+  stylesheet and DOM markup (DOM dumps of the real frontend on its isolated test
+  transport, `scripts/demos/snapshot.mjs`), with the demo project Orbit; no provider
+  ran. The opening scene and the Why ledger are the only illustrations. Never invent
+  app UI the app does not have: every control, label and state comes from the dumps.
 - Numeric totals (Architecture only) sit beside "Development snapshot ·
   capabilities may change during the beta.".
 - No Windows support, no Intel Mac app, no version number or file size for the
@@ -188,9 +199,12 @@ Status glyphs belong only to product states inside diagrams and recordings.
 ## Technical contract
 
 - Static HTML, CSS and JS, no build step. Shared: `site.css`, `site.js`; homepage
-  adds `opening.css`, `home.css`, `opening.js`, `home.js`, `madeby.js`.
+  adds `opening.css`, `home.css`, `opening.js`, `home.js`, `madeby.js`; pages with
+  app demos add `demo.css`, `demo.js` and `frame-src 'self'` to their CSP. The demo
+  document (`assets/demo/frame.html`) has its own CSP (`style-src 'unsafe-inline'`
+  for the app's inline geometry; scripts `'self'` only).
 - Every page: strict CSP meta (`default-src 'none'`, `'self'` only, inline scripts
-  and styles by sha256 hash, `media-src 'self'` only on pages with video,
+  and styles by sha256 hash, `media-src 'self'` only on pages with video (the Maker film),
   `base-uri 'none'`, `form-action 'none'`). Recompute a hash after any change to
   an inline block. No external requests; fonts are local.
 - `?v=` cache version on every CSS and JS reference; raise it with every change

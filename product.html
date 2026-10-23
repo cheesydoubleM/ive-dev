@@ -3,26 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-qFS7eZILz935x6ekROjFtuQlrwNUlvdxFi6sW9J7f30='; style-src 'self'; img-src 'self' data:; media-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'sha256-qFS7eZILz935x6ekROjFtuQlrwNUlvdxFi6sW9J7f30='; style-src 'self'; img-src 'self' data:; media-src 'self'; font-src 'self'; frame-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="color-scheme" content="dark light">
 <meta name="theme-color" content="#0E1014">
 <script>(function(){var d=document.documentElement,t='dark';d.classList.remove('no-js');try{var s=localStorage.getItem('ive-theme');if(s==='light'||s==='dark')t=s;}catch(e){}d.setAttribute('data-theme',t);if(t==='light'){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content','#F6F7F8');}})();</script>
 <title>Product · IVE</title>
-<meta name="description" content="Real recordings of the IVE app: Home and sessions, the board, the Auto-fix loop, Pipelines, review, loop detection, models, modes and keys.">
+<meta name="description" content="The IVE interface, rendered live on this page: Home and sessions, the board, the Auto-fix loop, Pipelines, review, loop detection, models, modes and keys.">
 <link rel="canonical" href="https://ive.dev/product.html">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ive.dev/product.html">
 <meta property="og:title" content="Product · IVE">
-<meta property="og:description" content="The IVE app, view by view, recorded from the app itself with a demo project.">
+<meta property="og:description" content="The IVE app, view by view: its interface rendered live with a demo project.">
 <meta property="og:image" content="https://ive.dev/assets/og.png?v=20261023a">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Product · IVE">
-<meta name="twitter:description" content="The IVE app, view by view, recorded from the app itself with a demo project.">
+<meta name="twitter:description" content="The IVE app, view by view: its interface rendered live with a demo project.">
 <meta name="twitter:image" content="https://ive.dev/assets/og.png?v=20261023a">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/fonts.css?v=20261023a">
 <link rel="stylesheet" href="site.css?v=20261023b">
+<link rel="stylesheet" href="demo.css?v=20261023a">
 <link rel="stylesheet" href="product.css?v=20261023b">
 </head>
 <body>
@@ -53,7 +54,7 @@
   <div class="wrap">
     <div class="page-head-text">
       <h1>The app, view by view.</h1>
-      <p class="lead">Recorded from the app itself with a demo project. No provider ran.</p>
+      <p class="lead">The interface itself, rendered live with a demo project. Scroll inside every demo. No provider ran.</p>
     </div>
   </div>
 </header>
@@ -65,18 +66,12 @@
       <h2 id="row-terminal">Terminal</h2>
       <p>Your CLI in its own terminal, inside the app. <kbd>⌘J</kbd> opens it, full size if you like; type into it as you always have. The Overview of the same session shows its steps and replies, one click away, without starting anything new.</p>
     </div>
-    <figure class="frame is-light row-media" data-clip>
+    <figure class="frame is-light row-media" data-demo="terminal" data-demo-theme="light" data-demo-title="The the terminal: a session’s terminal inside IVE; an instruction is typed, the CLI works through its steps, then the same session is shown as Overview with the terminal below." data-demo-caption="Terminal. The IVE interface rendered live with a demo project. No provider ran.">
       <div class="frame-media">
         <picture class="frame-poster">
-          <source media="(max-width: 719.98px)" srcset="assets/app/terminal-light-m@2x.webp">
-          <img src="assets/app/terminal-light.webp" srcset="assets/app/terminal-light.webp 1600w, assets/app/terminal-light@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="" decoding="async">
+          <source media="(max-width: 719.98px)" srcset="assets/demo/posters/terminal-m.webp">
+          <img src="assets/demo/posters/terminal.webp" srcset="assets/demo/posters/terminal.webp 1600w, assets/demo/posters/terminal@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The the terminal: a session’s terminal inside IVE; an instruction is typed, the CLI works through its steps, then the same session is shown as Overview with the terminal below." decoding="async">
         </picture>
-        <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/terminal-light.mp4" data-src-small="assets/app/terminal-light-s.mp4" data-src-m="assets/app/terminal-light-m.mp4" aria-label="Recording of the terminal: a session’s terminal inside IVE; an instruction is typed, the CLI works through its steps, then the same session is shown as Overview with the terminal below."></video>
-        <div class="frame-controls">
-          <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
-          <a class="frame-btn" href="assets/app/terminal-light.mp4" data-clip-expand data-caption="Terminal. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
-        </div>
-        <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
       </div>
     </figure>
   </section>
@@ -85,18 +80,12 @@
       <h2 id="row-home">Home and sessions</h2>
       <p>What do you want to work on? One box, slash commands, @ for files. A session shows steps and replies in one conversation. Queued messages wait under Up next and go out when the turn ends.</p>
     </div>
-    <figure class="frame is-light row-media" data-clip>
+    <figure class="frame is-light row-media" data-demo="start" data-demo-theme="light" data-demo-title="The Home and a session: a goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it, then the agent picks it up." data-demo-caption="Home and sessions. The IVE interface rendered live with a demo project. No provider ran.">
       <div class="frame-media">
         <picture class="frame-poster">
-          <source media="(max-width: 719.98px)" srcset="assets/app/start-queue-light-m@2x.webp">
-          <img src="assets/app/start-queue-light.webp" srcset="assets/app/start-queue-light.webp 1600w, assets/app/start-queue-light@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
+          <source media="(max-width: 719.98px)" srcset="assets/demo/posters/start-m.webp">
+          <img src="assets/demo/posters/start.webp" srcset="assets/demo/posters/start.webp 1600w, assets/demo/posters/start@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The Home and a session: a goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it, then the agent picks it up." loading="lazy" decoding="async">
         </picture>
-        <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/start-queue-light.mp4" data-src-small="assets/app/start-queue-light-s.mp4" data-src-m="assets/app/start-queue-light-m.mp4" aria-label="Recording of Home and a session: a goal is typed on Home and started; while the agent works, the next instruction is typed and Enter queues it, then the agent picks it up."></video>
-        <div class="frame-controls">
-          <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
-          <a class="frame-btn" href="assets/app/start-queue-light.mp4" data-clip-expand data-caption="Home and sessions. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
-        </div>
-        <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
       </div>
     </figure>
   </section>
@@ -105,18 +94,12 @@
       <h2 id="row-board">Board</h2>
       <p>Every session as a tile with its state and its terminal, or its conversation. Layouts from one tile to a grid; ten at once is the take shown here. Answer a prompt in place, open any tile at full size, come back to the board.</p>
     </div>
-    <figure class="frame is-light row-media" data-clip>
+    <figure class="frame is-light row-media" data-demo="terminals" data-demo-theme="light" data-demo-title="The the board: the board with ten sessions as terminal tiles; output streams in every tile, a waiting tile is answered with Enter, one terminal is opened at full size." data-demo-caption="Board. The IVE interface rendered live with a demo project. No provider ran.">
       <div class="frame-media">
         <picture class="frame-poster">
-          <source media="(max-width: 719.98px)" srcset="assets/app/terminals-light-m@2x.webp">
-          <img src="assets/app/terminals-light.webp" srcset="assets/app/terminals-light.webp 1600w, assets/app/terminals-light@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
+          <source media="(max-width: 719.98px)" srcset="assets/demo/posters/terminals-m.webp">
+          <img src="assets/demo/posters/terminals.webp" srcset="assets/demo/posters/terminals.webp 1600w, assets/demo/posters/terminals@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The the board: the board with ten sessions as terminal tiles; output streams in every tile, a waiting tile is answered with Enter, one terminal is opened at full size." loading="lazy" decoding="async">
         </picture>
-        <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/terminals-light.mp4" data-src-small="assets/app/terminals-light-s.mp4" data-src-m="assets/app/terminals-light-m.mp4" aria-label="Recording of the board: the board with ten sessions as terminal tiles; output streams in every tile, a waiting tile is answered with Enter, one terminal is opened at full size."></video>
-        <div class="frame-controls">
-          <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
-          <a class="frame-btn" href="assets/app/terminals-light.mp4" data-clip-expand data-caption="Board. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
-        </div>
-        <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
       </div>
     </figure>
   </section>
@@ -126,18 +109,12 @@
   <h2 class="t-h2-sm" id="loops-title">Loops.</h2>
   <div class="loops-pair">
     <section class="loops-item" id="loop" aria-labelledby="row-loop">
-      <figure class="frame is-light loops-media" data-clip>
+      <figure class="frame is-light loops-media" data-demo="autofix" data-demo-theme="light" data-demo-title="The the Auto-fix loop on a guided task: the plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes and the result is accepted." data-demo-caption="Auto-fix loop. The IVE interface rendered live with a demo project. No provider ran.">
         <div class="frame-media">
           <picture class="frame-poster">
-            <source media="(max-width: 719.98px)" srcset="assets/app/loop-task-light-m@2x.webp">
-            <img src="assets/app/loop-task-light.webp" srcset="assets/app/loop-task-light.webp 1600w, assets/app/loop-task-light@2x.webp 3200w" sizes="(max-width: 1023.98px) 80vw, 588px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
+            <source media="(max-width: 719.98px)" srcset="assets/demo/posters/autofix-m.webp">
+            <img src="assets/demo/posters/autofix.webp" srcset="assets/demo/posters/autofix.webp 1600w, assets/demo/posters/autofix@2x.webp 3200w" sizes="(max-width: 1023.98px) 80vw, 588px" width="1600" height="1000" alt="The the Auto-fix loop on a guided task: the plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes and the result is accepted." loading="lazy" decoding="async">
           </picture>
-          <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/loop-task-light.mp4" data-src-small="assets/app/loop-task-light-s.mp4" data-src-m="assets/app/loop-task-light-m.mp4" aria-label="Recording of the Auto-fix loop on a guided task: the plan is approved, a testing agent checks the work, the failed check goes back with its report, the second check passes and the result is accepted."></video>
-          <div class="frame-controls">
-            <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
-            <a class="frame-btn" href="assets/app/loop-task-light.mp4" data-clip-expand data-caption="Auto-fix loop. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
-          </div>
-          <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
         </div>
       </figure>
       <div class="loops-text">
@@ -146,18 +123,12 @@
       </div>
     </section>
     <section class="loops-item" id="pipelines" aria-labelledby="row-pipelines">
-      <figure class="frame is-light loops-media" data-clip>
+      <figure class="frame is-light loops-media" data-demo="pipelines" data-demo-theme="light" data-demo-title="The Pipelines: a saved pipeline is opened and run on the canvas; the check fails, the fix stage runs, and the second cycle passes." data-demo-caption="Pipelines. The IVE interface rendered live with a demo project. No provider ran.">
         <div class="frame-media">
           <picture class="frame-poster">
-            <source media="(max-width: 719.98px)" srcset="assets/app/loop-canvas-light-m@2x.webp">
-            <img src="assets/app/loop-canvas-light.webp" srcset="assets/app/loop-canvas-light.webp 1600w, assets/app/loop-canvas-light@2x.webp 3200w" sizes="(max-width: 1023.98px) 80vw, 588px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
+            <source media="(max-width: 719.98px)" srcset="assets/demo/posters/pipelines-m.webp">
+            <img src="assets/demo/posters/pipelines.webp" srcset="assets/demo/posters/pipelines.webp 1600w, assets/demo/posters/pipelines@2x.webp 3200w" sizes="(max-width: 1023.98px) 80vw, 588px" width="1600" height="1000" alt="The Pipelines: a saved pipeline is opened and run on the canvas; the check fails, the fix stage runs, and the second cycle passes." loading="lazy" decoding="async">
           </picture>
-          <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/loop-canvas-light.mp4" data-src-small="assets/app/loop-canvas-light-s.mp4" data-src-m="assets/app/loop-canvas-light-m.mp4" aria-label="Recording of Pipelines: a saved pipeline is opened and run on the canvas; the check fails, the fix stage runs, and the second cycle passes."></video>
-          <div class="frame-controls">
-            <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
-            <a class="frame-btn" href="assets/app/loop-canvas-light.mp4" data-clip-expand data-caption="Pipelines. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
-          </div>
-          <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
         </div>
       </figure>
       <div class="loops-text">
@@ -174,18 +145,12 @@
       <h2 id="row-review">Review</h2>
       <p>A file tree beside the diff, Stage and Unstage, Annotate, Copy, and Fullscreen in split or unified view.</p>
     </div>
-    <figure class="frame is-light row-media" data-clip>
+    <figure class="frame is-light row-media" data-demo="review" data-demo-theme="light" data-demo-title="The Review: the side panel opens with the working diff and the file tree, then the review goes fullscreen, switches to unified view and scrolls." data-demo-caption="Review. The IVE interface rendered live with a demo project. No provider ran.">
       <div class="frame-media">
         <picture class="frame-poster">
-          <source media="(max-width: 719.98px)" srcset="assets/app/review-light-m@2x.webp">
-          <img src="assets/app/review-light.webp" srcset="assets/app/review-light.webp 1600w, assets/app/review-light@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
+          <source media="(max-width: 719.98px)" srcset="assets/demo/posters/review-m.webp">
+          <img src="assets/demo/posters/review.webp" srcset="assets/demo/posters/review.webp 1600w, assets/demo/posters/review@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The Review: the side panel opens with the working diff and the file tree, then the review goes fullscreen, switches to unified view and scrolls." loading="lazy" decoding="async">
         </picture>
-        <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/review-light.mp4" data-src-small="assets/app/review-light-s.mp4" data-src-m="assets/app/review-light-m.mp4" aria-label="Recording of Review: the side panel opens with the working diff and the file tree, then the review goes fullscreen, switches to unified view and scrolls."></video>
-        <div class="frame-controls">
-          <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
-          <a class="frame-btn" href="assets/app/review-light.mp4" data-clip-expand data-caption="Review. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
-        </div>
-        <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
       </div>
     </figure>
   </section>
@@ -194,18 +159,12 @@
       <h2 id="row-loopguard">Loop detection</h2>
       <p>It watches each session’s recent tool calls for repeats and A-B-A-B patterns, warns at most once a minute, and types the correction at the agent’s next pause. Switch it off under Experimental features.</p>
     </div>
-    <figure class="frame is-light row-media" data-clip>
+    <figure class="frame is-light row-media" data-demo="loopdetect" data-demo-theme="light" data-demo-title="The loop detection: an agent runs the same npm test three times, IVE shows Loop detected and sends a corrective message, and the agent changes its approach." data-demo-caption="Loop detection. The IVE interface rendered live with a demo project. No provider ran.">
       <div class="frame-media">
         <picture class="frame-poster">
-          <source media="(max-width: 719.98px)" srcset="assets/app/loop-detect-light-m@2x.webp">
-          <img src="assets/app/loop-detect-light.webp" srcset="assets/app/loop-detect-light.webp 1600w, assets/app/loop-detect-light@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="" loading="lazy" decoding="async">
+          <source media="(max-width: 719.98px)" srcset="assets/demo/posters/loopdetect-m.webp">
+          <img src="assets/demo/posters/loopdetect.webp" srcset="assets/demo/posters/loopdetect.webp 1600w, assets/demo/posters/loopdetect@2x.webp 3200w" sizes="(max-width: 1023.98px) 100vw, 800px" width="1600" height="1000" alt="The loop detection: an agent runs the same npm test three times, IVE shows Loop detected and sends a corrective message, and the agent changes its approach." loading="lazy" decoding="async">
         </picture>
-        <video class="frame-video" muted playsinline loop preload="none" width="1600" height="1000" data-src="assets/app/loop-detect-light.mp4" data-src-small="assets/app/loop-detect-light-s.mp4" data-src-m="assets/app/loop-detect-light-m.mp4" aria-label="Recording of loop detection: an agent runs the same npm test three times, IVE shows Loop detected and sends a corrective message, and the agent changes its approach."></video>
-        <div class="frame-controls">
-          <button class="frame-btn" type="button" data-clip-toggle aria-label="Pause the recording"><svg class="icon icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect class="icon-fill" x="4.25" y="3" width="2.5" height="10" rx="0.6"/><rect class="icon-fill" x="9.25" y="3" width="2.5" height="10" rx="0.6"/></svg><svg class="icon icon-play" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg></button>
-          <a class="frame-btn" href="assets/app/loop-detect-light.mp4" data-clip-expand data-caption="Loop detection. Recorded from the IVE app with a demo project. No provider ran." aria-label="Expand the recording"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.75 2.75h3.5v3.5M13.25 2.75 9 7M6.25 13.25h-3.5v-3.5M2.75 13.25 7 9"/></svg></a>
-        </div>
-        <button class="frame-play" type="button" data-clip-play hidden><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path class="icon-fill" d="M5 3.4v9.2a.6.6 0 0 0 .92.5l7.2-4.6a.6.6 0 0 0 0-1L5.92 2.9A.6.6 0 0 0 5 3.4Z"/></svg>Play</button>
       </div>
     </figure>
   </section>
@@ -256,5 +215,6 @@
   </div>
 </footer>
 <script src="site.js?v=20261023b" defer></script>
+<script src="demo.js?v=20261023a" defer></script>
 </body>
 </html>

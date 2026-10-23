@@ -1,0 +1,130 @@
+/* ═══════════════════════════════════════════════════════════════
+   IVE.DEV · demo.css — the generated IVE demos in the page frames (round 4).
+   A [data-demo] figure keeps the site's .frame/.frame-media; demo.js adds the
+   iframe, the controls and the scrubber. Loaded after site.css (and home.css).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* the demo fills the frame; the poster stays until the first frame is painted */
+.frame-media > .demo-frame {
+  position: absolute; inset: 0; z-index: 1;
+  width: 100%; height: 100%;
+  border: 0;
+  display: none;
+  background: transparent;
+  opacity: 0;
+  transition: opacity var(--t-med) ease;
+}
+.frame-media > .demo-frame.is-active { display: block; }
+.frame.is-ready .frame-media > .demo-frame.is-active { opacity: 1; }
+.frame.is-ready .frame-poster { opacity: 0; transition: opacity var(--t-med) ease; }
+/* dark app window: the inset ground; light: white */
+.frame.demo .frame-media { background: #0E1014; }
+.frame.demo.is-light .frame-media { background: #FFFFFF; }
+/* phones: a 3:4 window of the app, as the recordings were cut */
+@media (max-width: 719.98px) {
+  .frame.demo .frame-media { aspect-ratio: 3 / 4; }
+  .frame.demo.hero-frame .frame-media { aspect-ratio: 3 / 4; }
+}
+/* the hero keeps its wide window on desktops */
+.hero-frame.demo .frame-media { aspect-ratio: 2704 / 936; }
+.hero-frame.demo .frame-media > .frame-poster,
+.hero-frame.demo .frame-media > .frame-poster img { inset: 0; left: 0; top: 0; width: 100%; height: 100%; max-width: 100%; object-fit: cover; object-position: 0 0; }
+
+/* controls: the site's buttons, shown on hover; the demo's scrubber at the bottom */
+.frame.demo .frame-controls { z-index: 4; }
+.frame.demo .frame-play { z-index: 4; }
+.frame.demo.is-paused .frame-btn[data-demo-toggle] .icon-pause { display: none; }
+.frame.demo.is-paused .frame-btn[data-demo-toggle] .icon-play { display: block; }
+.frame.demo:not(.is-paused) .frame-btn[data-demo-toggle] .icon-play { display: none; }
+.demo-scrub {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4;
+  height: 22px;
+  cursor: pointer;
+  touch-action: none;
+  opacity: 0;
+  transition: opacity var(--t-med) ease;
+}
+.frame.demo:hover .demo-scrub,
+.frame.demo:focus-within .demo-scrub,
+.frame.demo.is-paused-by-user .demo-scrub,
+.demo-scrub:focus-visible { opacity: 1; }
+@media (hover: none) { .demo-scrub { opacity: 1; } }
+.demo-scrub:focus-visible { outline: none; }
+.demo-scrub-track {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 3px;
+  background: rgba(127, 127, 127, 0.35);
+}
+.demo-scrub:focus-visible .demo-scrub-track { height: 5px; box-shadow: 0 0 0 2px var(--accent); }
+.demo-scrub-fill {
+  position: absolute; inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.demo-scrub-marks { position: absolute; left: 0; right: 0; bottom: 0; height: 22px; }
+.demo-mark {
+  position: absolute; bottom: 0;
+  width: 14px; height: 22px;
+  margin-left: -7px;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.demo-mark::before {
+  content: '';
+  position: absolute; left: 6px; bottom: 0;
+  width: 2px; height: 7px;
+  background: var(--text-1);
+  opacity: 0.7;
+}
+.demo-mark:hover::before, .demo-mark:focus-visible::before { opacity: 1; background: var(--accent); }
+.demo-mark:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.demo-scrub-tip {
+  position: absolute; bottom: 14px;
+  padding: 3px 7px;
+  transform: translateX(-50%);
+  border-radius: var(--r-chip);
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--line-strong);
+  font-family: var(--mono);
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text-2);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--t-fast) ease;
+}
+.demo-scrub-tip.is-visible { opacity: 1; }
+
+/* the Why panel: a demo fills the panel like the recordings did */
+.why-media > .demo-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 1; opacity: 0; transition: opacity var(--t-med) ease; }
+.why-media.is-ready > .demo-frame.is-active { opacity: 1; }
+.why-media.is-ready > .frame-poster { opacity: 0; }
+.why-media .frame-poster, .why-media .frame-poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 0 0; }
+.why-media .frame-controls, .why-media .frame-play, .why-media .demo-scrub { display: none; }
+.why-media.demo { background: #0E1014; }
+
+/* the full-size viewer hosts the same scene */
+.viewer-body--demo { padding: 0 20px 20px; }
+.viewer-demo {
+  position: relative;
+  width: min(100%, calc((100vh - 110px) * 1.6));
+  aspect-ratio: 16 / 10;
+  border-radius: var(--r-panel);
+  overflow: hidden;
+  background: #0E1014;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1), 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+.viewer-demo > .demo-frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+.viewer-demo .frame-controls, .viewer-demo .demo-scrub { opacity: 1; }
+.viewer-demo .frame-controls .frame-btn[hidden] { display: none; }
+@media (max-width: 719.98px) {
+  .viewer-body--demo { padding: 0 8px 8px; }
+  .viewer-demo { width: 100%; aspect-ratio: 3 / 4; }
+}
+@media print {
+  .demo-frame, .demo-scrub { display: none !important; }
+}

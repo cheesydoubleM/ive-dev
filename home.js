@@ -90,6 +90,7 @@
 
   function syncVideos() {
     if (IVE.syncInline) IVE.syncInline();
+    if (IVE.syncDemos) IVE.syncDemos();
   }
 
   function setActive(i) {
@@ -251,7 +252,8 @@
   syncMode();
 })();
 
-/* ── Inside IVE: a reel of six recorded chapters ──────────────────
+/* ── Inside IVE: a reel of six chapters. Since round 4 the chapters are generated demos
+   (demo.js, [data-demo-player]); this block only runs for a page that still has a <video>. ──
    At least half of the player in view: the current chapter loads and plays;
    timeupdate drives the rail underline (--p); on ended the next chapter
    follows, after the last the first. A click switches at once and keeps the

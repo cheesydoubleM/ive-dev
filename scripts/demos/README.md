@@ -1,12 +1,74 @@
 # App demos for ive.dev
 
+**Round 4 (23 Oct 2026): the site plays no recordings any more.** Every app demo is generated on
+the page from the frontend's own stylesheet and DOM markup (`assets/demo/`, see *Generated demos*
+below). The recorder in this folder stays as the storyboard source (`clips/`) and as the
+reference tool: `snapshot.mjs` runs a clip's story through the real frontend and writes the DOM
+dumps and screenshots the generated scenes are copied from; `posters.mjs` renders the generated
+scenes to the poster images. The sections after *Generated demos* describe the recordings as they
+were (rounds 1 to 3) and still apply to `record.mjs`.
+
+## Generated demos (round 4, 23 Oct 2026)
+
+Owner steering (German, 18:11): the recordings had bad quality; every single video is to be
+replaced by UI generated on the website, exactly like the real IVE app, no recording from IVE,
+and one should be able to scroll through it.
+
+- `assets/demo/app.css` is `ive-oss/frontend/dist/assets/index-DpuWca4j.css` (the 1.0.17 build)
+  with only `url(/fonts/` rewritten to `url(fonts/`; `assets/demo/fonts/` holds the app's Inter
+  400/500/600 and JetBrains Mono 400/500 (OFL). So the demos are styled by the app's stylesheet,
+  tokens (`--x-*`), theme switch (`html[data-theme]`) and all.
+- `assets/demo/frame.html` + `frame.js`: one scene per same-origin iframe
+  (`?scene=<id>&theme=light|dark[&variant=hero][&at=seconds][&phone=1]`). The stage (`#stage`,
+  the app window) scales to the iframe but never below the scene's `fit.minScale` (0.72 default,
+  0.6 for the board's establishing view): below that the app window itself gets narrower, so
+  text stays legible (a 588 px Product column shows the app at about 817 px wide). `window.IVE_DEMO`
+  (seek/play/pause/time/duration/markers/poster) and postMessage (`ready`, `time`, `ended`,
+  `playstate`, `takeover`, `key`) are the protocol with the parent page (`demo.js`). Any pointer
+  press, wheel or key inside the stage pauses the timer.
+- `assets/demo/lib/`: `dom.js` (`html` template tag, `morph` patches the live DOM so scroll
+  positions and selections survive a re-render), `timeline.js` (`script()`: hold/click/type/do/
+  every/mark/scroll, `createPlayer`: `seek(t)` replays the deterministic event list from the
+  start when scrubbing backwards, pointer and click ring, data-stick containers follow new output
+  until a visitor scrolls them up), `term.js` (terminal screens as DOM rows in the look of the
+  app's xterm: 13 px SF Mono/Menlo, 18 px rows, the CLI-style transcript helpers from the former
+  `lib/tui.mjs`, the bordered prompt box as a real frame), `icons.js` (the lucide icons as the app
+  emits them, generated from the dumps), `ui.js` (shell, sidebar, header, session screen, brief,
+  transcript, composer, terminal drawer, launch strips), `board.js` (SessionGrid tiles, permission
+  card), `home.js` (Home screen, composer queue, toast), `taskflow.js` (Needs your attention, the
+  guided task window, Run details), `pipeline.js` (Pipeline editor, canvas, Run Detail),
+  `review.js` (review panel, fullscreen review, diff renderer).
+- `assets/demo/scenes/`: `board`, `attention`, `terminal`, `terminals`, `start`, `autofix`,
+  `pipelines`, `loopdetect`, `review`, each a port of the clip script of the same story
+  (`clips/hero-board.mjs`, `terminal.mjs`, `terminals.mjs`, `start-queue.mjs`, `loop-task.mjs`,
+  `loop-canvas.mjs`, `loop-detect.mjs`, `review.mjs`). A scene exports `{ id, title, script,
+  poster, fit, init, render(state, ctx) }`; `render` returns the whole app window as markup.
+- References: `node scripts/demos/snapshot.mjs --light terminal terminals start-queue loop-task
+  loop-canvas loop-detect review` and `node scripts/demos/snapshot.mjs hero-board` (dark) write
+  `<clip>[-light]/NN-<state>.html` (outerHTML, canvases removed) and `.png` (2×) per snap, mark
+  and hold into `$DEMO_REF` (default `$TMPDIR/ive-demo-ref`). Markup in `lib/*.js` is copied from
+  these dumps; when the app changes, dump again and diff.
+- Posters: `node scripts/demos/posters.mjs [names]` renders each scene at its poster time through
+  a static server of the worktree (`DEMO_BASE`, default `http://127.0.0.1:4180/`) and writes
+  `assets/demo/posters/<name>.webp` (1600), `<name>@2x.webp` (3200) and `<name>-m.webp` (phone,
+  780×1040); `board-hero` (1600×554, `variant=hero`), `attention` and `review-dark` (1280×880) for
+  the hero and the Why panel.
+- What is real and what is scripted: the markup, class names, labels, states and the stylesheet
+  are the app's; the data is the Orbit demo project as before; the CLI-style terminal text, the
+  agent steps, reports and diffs are demo data written to the story; typing, clicks and scrolling
+  are scripted pointer and keyboard actions, and the visitor's own scrolling and selecting are
+  real. No provider ran. Provenance line: **IVE interface, rendered live · demo project · no
+  provider ran.**
+
+## The recordings (rounds 1 to 3, kept for `record.mjs`)
+
 Recorded on 22 Oct 2026 from the **real IVE 1.0.17 frontend**, dark theme, project *Orbit*.
 Round 2 (22 to 23 Oct 2026): `loop-task` and `loop-canvas` open on their own view instead of
 Home (the trim is in the clip scripts; both re-recorded), and all six phone cuts (`-m`) are
 recorded a second time in a phone window, with text 1.5x larger on a phone (see *Phone cuts*).
 Round 2B (23 Oct 2026): every story recorded again in the app's **light theme at 60 fps** as its
-own file family (see *Light takes*). The site plays the light takes in the Inside IVE reel and on
-the Product page; the hero and the Why panel keep the dark `hero-board` take (owner decision).
+own file family (see *Light takes*). Round 3 added the terminal takes. Since round 4 none of these
+files is on the site; `record.mjs` still produces them into `assets/app/` if ever needed.
 
 - Frontend: `ive-oss/frontend/dist`, built from ive-oss `951a002`. That is the release commit
   `5d33e8e` ("Release 1.0.17") plus one commit that only changes two strings in
@@ -257,6 +319,6 @@ script is still `hero-board.mjs --light` (`meta.lightId`).
 
 ## Rules
 
-- Keep the recordings honest: real frontend, labelled demo data, no provider claims.
-- Re-record after an app release that changes the views; bump the site's `?v=`.
-- Do not commit frame directories; they are scratch.
+- Keep the demos honest: the app's own markup and stylesheet, labelled demo data, no provider claims.
+- After an app release that changes the views: dump again (`snapshot.mjs`), update `assets/demo/app.css`, the fonts and the markup in `assets/demo/lib/`, regenerate the posters, bump the site's `?v=`.
+- Do not commit frame or dump directories; they are scratch.
