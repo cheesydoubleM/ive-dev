@@ -1,11 +1,13 @@
 // Clip: the board (hero). Four Orbit sessions side by side in the dark theme: two are
 // working, one asks for permission to run `npm test`, one is done. The permission is
 // answered on the board with "Allow once" and every session finishes.
+// `record.mjs --light hero-board` records the same story in the light theme as `board-light*`
+// for the Product page's Board row; the hero and the Why panel keep the dark take.
 // Provenance: IVE app 1.0.17 · demo project · no provider ran.
 import { openDemo, agentStep, demoSessions, transcripts, permissionAttention, PERMISSION_SCREEN, blocks, msg, VIEWPORT } from '../lib/fixture.mjs';
 import { createCamera } from '../lib/camera.mjs';
 
-export const meta = { id: 'hero-board', title: 'The board', seconds: 14 };
+export const meta = { id: 'hero-board', title: 'The board', seconds: 14, lightId: 'board-light' };
 // Master-pixel geometry of the 2x2 board at 1600x1000 CSS (sidebar 240 CSS px):
 // left tile column x 488-1836, top tile y 96-1032, waiting tile y 1048-1992.
 export const encoding = {

@@ -123,12 +123,16 @@ const TASKFLOW_LABEL_PATCH = [
 ];
 export const labelPatchLog = [];
 
+// The app theme of every recording unless a clip passes its own (`record.mjs --light` sets 'light').
+let defaultTheme = 'dark';
+export function setDefaultTheme(theme) { defaultTheme = theme; }
+
 /**
  * Opens the real frontend with the demo workspace. `outputScreens` maps a session id to
  * the terminal screen its prompt snapshot should show (a Claude Code permission dialog
  * makes the Allow/Don't allow card appear).
  */
-export async function openDemo(wrapped, { sessions = demoSessions(), messages = transcripts, storage = {}, outputScreens = {}, diff = '', stagedDiff = '', gitStatus = null, workspacePatch = {}, theme = 'dark', tasks = [], runs = [], pipelines = [], viewport = VIEWPORT } = {}) {
+export async function openDemo(wrapped, { sessions = demoSessions(), messages = transcripts, storage = {}, outputScreens = {}, diff = '', stagedDiff = '', gitStatus = null, workspacePatch = {}, theme = defaultTheme, tasks = [], runs = [], pipelines = [], viewport = VIEWPORT } = {}) {
   const f = await createTourFixture(wrapped, {
     dist: DIST, viewport, theme,
     settings: { product_tour_version: '2', language: 'en' },

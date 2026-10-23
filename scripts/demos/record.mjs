@@ -5,10 +5,12 @@
 //   DEMO_OUT=/path/for/output DEMO_FRAMES=/path/for/frames
 // --phone records the same story a second time in a short, narrow window (PHONE_VIEWPORT in
 // lib/fixture.mjs) and writes only the 3:4 phone cut `<name>-m.mp4` and its poster `<name>-m@2x.webp`.
+// --light records the story in the app's light theme at 60 fps (CRF 18/19/19) as its own family
+// `<name>-light*` (a clip may name it otherwise with `meta.lightId`); combine with --phone for the cut.
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { launch, checkDist, labelPatchLog } from './lib/fixture.mjs';
+import { launch, checkDist, labelPatchLog, setDefaultTheme } from './lib/fixture.mjs';
 import { createRecorder, encode } from './lib/recorder.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -18,16 +20,24 @@ const args = process.argv.slice(2);
 // --encode-only: re-encode the frames of an earlier capture (crops, CRF) without recording again.
 const encodeOnly = args.includes('--encode-only');
 const phone = args.includes('--phone');
+const light = args.includes('--light');
 const names = args.filter((a) => !a.startsWith('--'));
-if (!names.length) { console.error('usage: record.mjs [--phone] [--encode-only] <clip> [clip…]'); process.exit(2); }
-const framesFor = (name) => join(FRAMES, phone ? `${name}-phone` : name);
+if (!names.length) { console.error('usage: record.mjs [--phone] [--light] [--encode-only] <clip> [clip…]'); process.exit(2); }
+const framesFor = (name) => join(FRAMES, `${name}${light ? '-light' : ''}${phone ? '-phone' : ''}`);
 // Desktop: the clip's own settings plus what the recording measured. Phone: only the crops the
 // phone recording returns (and the clip's loop dissolve, CRF 25); the desktop files stay untouched.
-const settingsFor = (clip, measured = {}) => (phone
-  ? { loopFade: clip.encoding?.loopFade ?? 0, crfCrop: 25, ...measured, main: false }
-  : { ...(clip.encoding || {}), ...measured });
+// Light: 60 fps and CRF 18/19/19 like the hero-focus set, the clip's own CRF notwithstanding; no
+// desktop crops or stills (the Why panel keeps its dark board crops), the phone cut as usual.
+const LIGHT = { crf: 18, crfSmall: 19, crfCrop: 19 };
+const settingsFor = (clip, measured = {}) => {
+  if (phone) return { loopFade: clip.encoding?.loopFade ?? 0, crfCrop: light ? LIGHT.crfCrop : 25, ...measured, main: false };
+  const own = { ...(clip.encoding || {}), ...measured };
+  return light ? { ...own, ...LIGHT, crops: [], stills: [] } : own;
+};
+const outName = (clip, name) => (light ? (clip.meta?.lightId || `${name}-light`) : name);
 mkdirSync(OUT, { recursive: true });
-console.log('frontend', JSON.stringify(await checkDist()));
+setDefaultTheme(light ? 'light' : 'dark');
+console.log('frontend', JSON.stringify(await checkDist()), light ? 'theme light, 60 fps' : 'theme dark, 30 fps', phone ? '(phone cut)' : '');
 
 if (encodeOnly) {
   for (const name of names) {
@@ -35,7 +45,7 @@ if (encodeOnly) {
     const framesDir = framesFor(name);
     const meta = JSON.parse(readFileSync(join(framesDir, 'meta.json'), 'utf8'));
     const dyn = existsSync(join(framesDir, 'encoding.json')) ? JSON.parse(readFileSync(join(framesDir, 'encoding.json'), 'utf8')) : {};
-    const result = encode(framesDir, join(OUT, name), { fps: meta.fps, snaps: meta.snaps, marks: meta.marks, ...settingsFor(clip, dyn) });
+    const result = encode(framesDir, join(OUT, outName(clip, name)), { fps: meta.fps, snaps: meta.snaps, marks: meta.marks, ...settingsFor(clip, dyn) });
     console.log(`[${name}] re-encoded ${result.seconds.toFixed(1)}s → ${result.outputs.map((o) => o.split('/').pop()).join(' ')}`);
   }
   process.exit(0);
@@ -52,15 +62,15 @@ try {
     try {
       ({ fixture, encoding } = await clip.record(wrapped, async (page, context, opts = {}) => {
         lastPage = page;
-        recorder = await createRecorder(page, context, { fps: 30, framesDir, name, ...opts });
+        recorder = await createRecorder(page, context, { fps: light ? 60 : 30, framesDir, name, ...opts });
         return recorder;
-      }, { phone }));
+      }, { phone, light }));
       const captured = ((Date.now() - t0) / 1000).toFixed(0);
       console.log(`[${name}] ${recorder.frameCount} frames captured in ${captured}s; errors=${JSON.stringify(fixture.errors)} unexpected writes=${fixture.unexpected.filter((u) => u.method && u.method !== 'GET').map((u) => `${u.method} ${u.path}`).join(',') || 'none'}`);
       if (labelPatchLog.length) console.log(`[${name}] guided-task label patch: ${JSON.stringify(labelPatchLog.splice(0))}`);
       await fixture.context.close();
       if (encoding) writeFileSync(join(framesDir, 'encoding.json'), JSON.stringify(encoding, null, 1));
-      const result = recorder.encode(join(OUT, name), settingsFor(clip, encoding || {}));
+      const result = recorder.encode(join(OUT, outName(clip, name)), settingsFor(clip, encoding || {}));
       console.log(`[${name}] encoded ${result.seconds.toFixed(1)}s → ${result.outputs.map((o) => o.split('/').pop()).join(' ')}`);
     } catch (error) {
       failed++;

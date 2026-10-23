@@ -4,6 +4,9 @@ Recorded on 22 Oct 2026 from the **real IVE 1.0.17 frontend**, dark theme, proje
 Round 2 (22 to 23 Oct 2026): `loop-task` and `loop-canvas` open on their own view instead of
 Home (the trim is in the clip scripts; both re-recorded), and all six phone cuts (`-m`) are
 recorded a second time in a phone window, with text 1.5x larger on a phone (see *Phone cuts*).
+Round 2B (23 Oct 2026): every story recorded again in the app's **light theme at 60 fps** as its
+own file family (see *Light takes*). The site plays the light takes in the Inside IVE reel and on
+the Product page; the hero and the Why panel keep the dark `hero-board` take (owner decision).
 
 - Frontend: `ive-oss/frontend/dist`, built from ive-oss `951a002`. That is the release commit
   `5d33e8e` ("Release 1.0.17") plus one commit that only changes two strings in
@@ -98,6 +101,35 @@ to "Your Pipelines"; loop-task holds 1 s on "Fixing issues" before the reports s
 scrolls further (the window is shorter), so cycle 2 shows as the reports ("Test evidence: No
 report yet", then 14 passed) rather than the next-step heading.
 
+## Light takes (round 2B, 23 Oct 2026)
+
+Owner decision after the light hero went live for a moment on 23 Oct: "der dunkle Hero war besser,
+aber die Clips sollten von dem hellen Dashboard sein". So the hero and the Why panel keep the dark
+`hero-board` take (with `why-attention` and `review-why`), and every clip the reel and the Product
+page play is a light take. `record.mjs --light` records the same story with the app in its light
+theme (the app's test fixture sets `ive-theme.v2` before the app loads; nothing is injected or
+recoloured) at 60 fps, CRF 18 master, 19 inline, 19 phone cut (the hero-focus set's values; the
+clips' own CRF 26 for `loop-task` and `review` do not apply). The family is `<name>-light`;
+`hero-board` names its light family `board-light` (`meta.lightId`). The light desktop run writes
+no crops or stills (no light `review-why` or `why-attention`); the phone cut works as in round 2.
+Frames go to `<name>-light` and `<name>-light-phone`. Each light take is its own take (timestamps,
+typing rhythm); windows, cameras and stories are those of the dark takes.
+
+| Clip | Light family | Length desktop / phone | Master / inline / phone cut | Used by |
+|---|---|---|---|---|
+| `hero-board` | `board-light*` | 13.5 s / 13.5 s | 2383 KB / 951 KB / 603 KB | the Board row on Product |
+| `start-queue` | `start-queue-light*` | 18.7 s / 18.8 s | 1029 KB / 436 KB / 595 KB | reel chapter 1, Product row Home and sessions |
+| `loop-task` | `loop-task-light*` | 15.4 s / 16.4 s | 1593 KB / 607 KB / 1357 KB | reel chapter 2, Product Auto-fix loop |
+| `loop-canvas` | `loop-canvas-light*` | 14.6 s / 18.4 s | 765 KB / 331 KB / 713 KB | reel chapter 3, Product Pipelines |
+| `loop-detect` | `loop-detect-light*` | 9.8 s / 9.8 s | 738 KB / 308 KB / 345 KB | reel chapter 4, Product Loop detection |
+| `review` | `review-light*` | 10.8 s / 10.8 s | 1984 KB / 835 KB / 1065 KB | Product row Review |
+
+Masters are larger than the dark ones (60 fps, CRF 18); they play only in the viewer, the site
+plays the inline and phone files. The dark `start-queue`, `loop-task`, `loop-canvas`,
+`loop-detect` and `review` families and `hero-board-m*` were removed from `assets/app` with the
+switch (git history keeps them); the dark `hero-board`, `hero-board-s`, their posters,
+`why-attention*` and `review-why*` stay.
+
 ## What is demo data, and what the clips add through the transport
 
 All project, session, task, run and report content is demo data for project Orbit; no numbers
@@ -133,12 +165,15 @@ node scripts/demos/record.mjs hero-board start-queue loop-task loop-canvas loop-
 node scripts/demos/record.mjs --phone hero-board start-queue loop-task loop-canvas loop-detect review
 node scripts/demos/record.mjs --encode-only review     # re-encode kept frames (crops, CRF)
 node scripts/demos/record.mjs --phone --encode-only loop-task   # the same for a phone cut
+node scripts/demos/record.mjs --light hero-board start-queue loop-task loop-canvas loop-detect review          # light takes, 60 fps
+node scripts/demos/record.mjs --light --phone hero-board start-queue loop-task loop-canvas loop-detect review  # their phone cuts
 node scripts/demos/stills.mjs                          # still-model, still-mode, still-palette
 ```
 
 The desktop run writes `<name>.mp4`, `-s.mp4`, the posters and the desktop crops (`review-why`,
 `why-attention`); the `--phone` run writes only `<name>-m.mp4` and `<name>-m@2x.webp`, so either
-can be repeated without touching the other's files. Round 2 recorded the desktop `loop-task` and
+can be repeated without touching the other's files. `--light` writes the `<name>-light` family
+(`board-light` for `hero-board`) and never touches the dark files. Round 2 recorded the desktop `loop-task` and
 `loop-canvas` and all six `--phone` cuts; the other desktop files are round 1's.
 
 Environment: `DEMO_OUT` (default `assets/app`), `DEMO_FRAMES` (frame scratch directory; each clip

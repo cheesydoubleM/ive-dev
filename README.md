@@ -14,8 +14,8 @@ Then open `http://localhost:8000/`. The marketing pages can also be opened from 
 
 ## File map
 
-- `index.html`: homepage. The opening scene (agent swarm, board, IVE unfolds into "Integrated Vibecoding Environment"), the hero with the board recording, Why IVE (four reasons, pinned), Inside IVE (a reel of four real recordings: start and queue, Auto-fix loop, Pipelines, loop detection), Get IVE (`#install`; `#waitlist` and `#get-ive` stay as alias anchors) and the AIFOREU maker strip
-- `product.html`: every view and every loop of the app, one row each, with real recordings
+- `index.html`: homepage. The opening scene (agent swarm, board, IVE unfolds into "Integrated Vibecoding Environment"), the hero with the dark board recording, Why IVE (four reasons, pinned), Inside IVE (a reel of four real recordings in the app's light theme: start and queue, Auto-fix loop, Pipelines, loop detection), Get IVE (`#install`; `#waitlist` and `#get-ive` stay as alias anchors) and the AIFOREU maker strip
+- `product.html`: every view and every loop of the app, one row each, with real recordings in the app's light theme
 - `download.html`: Mac app, terminal install (`#terminal`), source install, requirements, removal and five questions
 - `architecture.html`: engineering architecture page
 - `imprint.html` and `privacy.html`: legal provider information and site-specific privacy notice (their `<main>` is unchanged by the redesign)
@@ -24,7 +24,7 @@ Then open `http://localhost:8000/`. The marketing pages can also be opened from 
 - `opening.css`, `opening.js`: the homepage opening scene
 - `home.css`, `home.js`: homepage sections, Why IVE and the Inside IVE reel
 - `madeby.js`: the AIFOREU logo film in the maker strip
-- `assets/app/`: recorded application demos (`<name>.mp4` at 3200×2000, `<name>-s.mp4` at 1600×1000, `<name>-m.mp4` 3:4 phone cuts, WebP posters, three stills); made by `scripts/demos/record.mjs` and `scripts/demos/stills.mjs`
+- `assets/app/`: recorded application demos (`<name>.mp4` at 3200×2000, `<name>-s.mp4` at 1600×1000, `<name>-m.mp4` 3:4 phone cuts, WebP posters, three stills; the light-theme takes at 60 fps are `<name>-light*` and `board-light*`, the dark takes `hero-board*`, `why-attention*` and `review-why*`); made by `scripts/demos/record.mjs` and `scripts/demos/stills.mjs`
 - `assets/aiforeu/`: the AIFOREU logo film and its poster
 - `scripts/demos/`: the recorder: the real IVE frontend on the isolated test transport, driven frame by frame (`lib/recorder.mjs`), one script per clip in `clips/`
 - `design/`: redesign brief, research and shared partials (`design/partials/USAGE.md`); not published

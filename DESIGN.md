@@ -36,7 +36,7 @@ No two neighbours share a composition, and none appears twice.
 | Section | One job | Composition |
 |---|---|---|
 | Opening (in `#hero`) | The problem and the payoff without words, then the name | Pinned scroll scene on a dark ground in both themes: inside the machine, a grid corridor with ring ribs and camera drift (owner decision 2026-10-22), the swarm in it, board, zoom out of the V, IVE unfolds into Integrated Vibecoding Environment |
-| Hero `#hero` | Name the product and show it | Left headline block, then a 1,320px product frame with the board recording |
+| Hero `#hero` | Name the product and show it | Left headline block, then an 880px window into the dark board recording (two sessions; the full board on expand) |
 | Why IVE `#why` | The four reasons | Viewport-wide question that docks, statement column plus sticky media panel (pinned at 720px and up, in flow on phones) |
 | Inside IVE `#inside` | What IVE really does, as it happens | Chapter rail, one wide player, caption block; four real clips auto-advance: start and queue, Auto-fix loop, Pipelines, loop detection |
 | Get IVE `#install` | The action | Centred headline, two panels: Mac app and terminal |
@@ -130,9 +130,14 @@ Status glyphs belong only to product states inside diagrams and recordings.
 - Budget: the opening scene, Why IVE, the recordings, and 120 to 220ms hover and
   crossfade transitions. No scroll reveals, no parallax, no blur on text.
 - Recordings are muted product loops that play only in view: `preload="none"`, the
-  source is attached one viewport ahead, `-s` (1600) unless width × DPR > 1700,
-  `-m` 3:4 crops below 720px. One video plays at a time; off-screen, a hidden tab or
-  the open viewer pauses it. The Maker film is the one clip with sound.
+  source is attached one viewport ahead, `-s` (1600) inline and the 3200 master only
+  in the viewer, `-m` 3:4 crops below 720px. One video plays at a time; off-screen,
+  a hidden tab or the open viewer pauses it. The Maker film is the one clip with sound.
+- Theme of the footage: the Inside IVE reel and every Product row play the app's
+  light theme (`<name>-light*`, `board-light*`, 60 fps); the hero and the Why panel
+  keep the dark board take (`hero-board*`, `why-attention*`, `review-why*`, 30 fps),
+  owner decision 2026-10-23 ("der dunkle Hero war besser, aber die Clips sollten von
+  dem hellen Dashboard sein"). A frame that shows a light take carries `is-light`.
 - `prefers-reduced-motion`: nothing starts by itself, the two scenes show their
   static states, transitions are instant. Without JS every page is a calm static
   page with posters, captions and plain navigation.

@@ -572,6 +572,8 @@ html.no-js [data-theme-toggle] { display: none; }
 }
 .frame-video { z-index: 1; opacity: 0; transition: opacity var(--t-med) ease; background: transparent; }
 .frame-video.is-ready { opacity: 1; }
+/* a frame with a light-theme take: the app's white instead of the dark inset while the poster loads */
+.frame.is-light .frame-media { background: #FFFFFF; }
 /* portrait crop on phones when the clip ships a -m file */
 @media (max-width: 719.98px) {
   .frame-media:has(.frame-video[data-src-m]),
