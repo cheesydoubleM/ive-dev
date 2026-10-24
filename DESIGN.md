@@ -47,7 +47,7 @@ Bento grids, icon walls, card stacks and repeated split sections are out.
 ## Navigation and footer
 
 - Header on every page: fixed, 64px (56px below 720px), transparent until 8px of
-  scroll, then glass with a hairline. Left the wordmark "IVE" at 22px with the blue
+  scroll, then glass with a hairline. Left the wordmark "IVE" at 22px with the petrol
   dot, no by-line. Right, all in one button family (36px, 6px radius): the quiet
   links Product, Download, Architecture; the theme switch as an icon button
   (sun in dark, moon in light, the label names the action); the GitHub icon button;
@@ -75,15 +75,20 @@ Dark is the default (also without JS); `html[data-theme="light"]` overrides.
 --text-2         #C6CAD1               #3E434A
 --text-3         #8B919B               #646A73
 --text-4         #7C828C               #686E77    (lifted in QA round 1: at least 4.5:1 on all three grounds)
---accent         #5B8CFF               #1647FF    (links, running, focus, the dot)
---accent-fill    #3A66FA               #1647FF    (filled hero button, white text 4.7:1 and 6.2:1)
+--accent         #8EC6BC               #216C63    (links, focus, the wordmark dot)
+--accent-fill    #E7E9EC               #272A2E    (primary buttons)
+--accent-fill-hover #FFFFFF            #17191C
+--on-accent      #17191C               #FFFFFF    (button text: at least 14.4:1)
+--running        #5B8CFF               #1647FF    (running and thinking states)
 --done           #7DCE82               #087A4B
 --waiting        #E0A54A               #B7791F
 --attention      #F2545B               #C83B24
 ```
 
-One accent. Blue only for running states, links, focus, the wordmark dot and the
-filled hero button. No purple, no neon, no glows.
+Owner-approved palette, 2026-10-24: graphite primary actions in light mode,
+light neutral primary actions in dark mode, and petrol for links, focus and the
+wordmark dot. Running states keep their blue; product demos retain the app's
+own colors. No purple, no neon, no glows.
 
 ## Type
 

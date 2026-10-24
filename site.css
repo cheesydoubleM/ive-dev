@@ -25,14 +25,15 @@ html.mark-dark .site-header {
   --text-3: #8B919B;
   /* brief value #6B717B gives 3.87:1 on --bg; #7C828C is at least 4.6:1 on all three grounds (QA round 1) */
   --text-4: #7C828C;
-  --accent: #5B8CFF;
-  /* brief value #3D6BFF gives white text 4.43:1; #3A66FA is the nearest blue at 4.71:1 (5.8) */
-  --accent-fill: #3A66FA;
-  --accent-fill-hover: #4A74FF;
+  /* Graphite actions and petrol brand accents (2026-10-24). */
+  --accent: #8EC6BC;
+  --accent-fill: #E7E9EC;
+  --accent-fill-hover: #FFFFFF;
+  --running: #5B8CFF;
   --done: #7DCE82;
   --waiting: #E0A54A;
   --attention: #F2545B;
-  --on-accent: #FFFFFF;
+  --on-accent: #17191C;
   --frame-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
   --frame-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   --code-bg: rgba(255, 255, 255, 0.06);
@@ -50,9 +51,10 @@ html[data-theme="light"] {
   --text-3: #646A73;
   /* brief value #7C828B gives 3.61:1 on --bg; #686E77 is at least 4.5:1 on all three grounds (QA round 1) */
   --text-4: #686E77;
-  --accent: #1647FF;
-  --accent-fill: #1647FF;
-  --accent-fill-hover: #0E3BE6;
+  --accent: #216C63;
+  --accent-fill: #272A2E;
+  --accent-fill-hover: #17191C;
+  --running: #1647FF;
   --done: #087A4B;
   --waiting: #B7791F;
   --attention: #C83B24;
@@ -924,7 +926,7 @@ html.viewer-open { overflow: hidden; }
   font: 500 12px/1.3 var(--mono);
   white-space: nowrap;
 }
-.st-running, .st-thinking { color: var(--accent); }
+.st-running, .st-thinking { color: var(--running); }
 .st-done { color: var(--done); }
 .st-waiting, .st-queued { color: var(--waiting); }
 .st-attention { color: var(--attention); }
